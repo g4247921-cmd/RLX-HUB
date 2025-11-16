@@ -1,0 +1,210 @@
+-- RLX MULTI-HUB PRO++ (FINAL PREMIUM EDITION)
+-- By AnjasRelaxz
+
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+local TweenService = game:GetService("TweenService")
+
+if playerGui:FindFirstChild("RLX_UI_PRO") then
+	playerGui.RLX_UI_PRO:Destroy()
+end
+
+local ScreenGui = Instance.new("ScreenGui", playerGui)
+ScreenGui.Name = "RLX_UI_PRO"
+ScreenGui.ResetOnSpawn = false
+
+-- SOUND CLICK
+local ClickSound = Instance.new("Sound", ScreenGui)
+ClickSound.SoundId = "rbxassetid://9118823104"
+ClickSound.Volume = 1
+
+-- MAIN FRAME
+local Main = Instance.new("Frame", ScreenGui)
+Main.Size = UDim2.new(0, 270, 0, 445)
+Main.Position = UDim2.new(0.1, 0, 0.2, 0)
+Main.BackgroundColor3 = Color3.fromRGB(18,18,18)
+Main.Active = true
+Main.Draggable = true
+Instance.new("UICorner", Main).CornerRadius = UDim.new(0,22)
+
+-- SHADOW
+local Shadow = Instance.new("ImageLabel", Main)
+Shadow.ZIndex = -1
+Shadow.AnchorPoint = Vector2.new(0.5,0.5)
+Shadow.Position = UDim2.new(0.5,0,0.5,0)
+Shadow.Size = UDim2.new(1,30,1,30)
+Shadow.Image = "rbxassetid://6015897843"
+Shadow.BackgroundTransparency = 1
+Shadow.ImageTransparency = 0.45
+Shadow.ScaleType = Enum.ScaleType.Slice
+Shadow.SliceCenter = Rect.new(49,49,450,450)
+
+---------------------------------------
+-- HEADER
+---------------------------------------
+local Header = Instance.new("Frame", Main)
+Header.Size = UDim2.new(1,0,0,55)
+Header.BackgroundColor3 = Color3.fromRGB(25,25,25)
+Instance.new("UICorner", Header).CornerRadius = UDim.new(0,22)
+
+-- LOGO UTAMA RLX (punya kamu)
+local Logo = Instance.new("ImageLabel", Header)
+Logo.Size = UDim2.new(0,42,0,42)
+Logo.Position = UDim2.new(0,10,0.1,0)
+Logo.BackgroundTransparency = 1
+Logo.Image = "rbxassetid://106815601173123"
+
+-- TITLE
+local Title = Instance.new("TextLabel", Header)
+Title.Position = UDim2.new(0,60,0,0)
+Title.Size = UDim2.new(1,-120,1,0)
+Title.Text = "RLX MULTI-HUB PRO++"
+Title.Font = Enum.Font.GothamBold
+Title.TextColor3 = Color3.fromRGB(255,255,255)
+Title.TextSize = 17
+Title.TextXAlignment = Enum.TextXAlignment.Left
+Title.BackgroundTransparency = 1
+
+-- MINIMIZE MAIN
+local ToggleMain = Instance.new("TextButton", Header)
+ToggleMain.Size = UDim2.new(0,40,0,30)
+ToggleMain.Position = UDim2.new(1,-50,0.2,0)
+ToggleMain.Text = "-"
+ToggleMain.Font = Enum.Font.GothamBold
+ToggleMain.TextSize = 24
+ToggleMain.BackgroundColor3 = Color3.fromRGB(40,40,40)
+ToggleMain.TextColor3 = Color3.fromRGB(255,255,255)
+Instance.new("UICorner", ToggleMain).CornerRadius = UDim.new(0,14)
+
+---------------------------------------
+-- SCROLL AREA
+---------------------------------------
+local ScrollHolder = Instance.new("Frame", Main)
+ScrollHolder.Size = UDim2.new(1,-20,1,-70)
+ScrollHolder.Position = UDim2.new(0,10,0,65)
+ScrollHolder.BackgroundTransparency = 1
+
+local Scroll = Instance.new("ScrollingFrame", ScrollHolder)
+Scroll.Size = UDim2.new(1,0,1,0)
+Scroll.CanvasSize = UDim2.new(0,0,0,1250)
+Scroll.ScrollBarThickness = 4
+Scroll.ScrollBarImageColor3 = Color3.fromRGB(120,120,120)
+Scroll.BackgroundTransparency = 1
+
+local ScrollList = Instance.new("UIListLayout", Scroll)
+ScrollList.Padding = UDim.new(0,6)
+ScrollList.SortOrder = Enum.SortOrder.LayoutOrder
+
+-- LOGO KECIL DI ATAS SCROLL (ANIMASI)
+local MiniLogo = Instance.new("ImageLabel", ScrollHolder)
+MiniLogo.Size = UDim2.new(0,30,0,30)
+MiniLogo.Position = UDim2.new(1,-35,-0.02,0)
+MiniLogo.BackgroundTransparency = 1
+MiniLogo.Image = "rbxassetid://17010090642"
+
+TweenService:Create(MiniLogo, TweenInfo.new(2, Enum.EasingStyle.Sine, Enum.EasingDirection.Out, -1, true), {
+	Rotation = 15
+}):Play()
+
+-- TOGGLE SCROLL
+local ScrollToggle = Instance.new("TextButton", ScrollHolder)
+ScrollToggle.Size = UDim2.new(0,35,0,26)
+ScrollToggle.Position = UDim2.new(1,-40,1,-30)
+ScrollToggle.Text = "↓"
+ScrollToggle.Font = Enum.Font.GothamBold
+ScrollToggle.TextSize = 20
+ScrollToggle.BackgroundColor3 = Color3.fromRGB(35,35,35)
+ScrollToggle.TextColor3 = Color3.fromRGB(255,255,255)
+Instance.new("UICorner", ScrollToggle).CornerRadius = UDim.new(0,10)
+
+local scrollOpen = true
+ScrollToggle.MouseButton1Click:Connect(function()
+	ClickSound:Play()
+	scrollOpen = not scrollOpen
+	Scroll.Visible = scrollOpen
+	ScrollToggle.Text = scrollOpen and "↓" or "↑"
+end)
+
+---------------------------------------
+-- MAIN MINIMIZE ANIMATION
+---------------------------------------
+local mainOpen = true
+ToggleMain.MouseButton1Click:Connect(function()
+	ClickSound:Play()
+	mainOpen = not mainOpen
+
+	local targetSize = mainOpen and UDim2.new(0,270,0,445) or UDim2.new(0,270,0,60)
+	TweenService:Create(Main, TweenInfo.new(.28, Enum.EasingStyle.Quad), {Size = targetSize}):Play()
+	ToggleMain.Text = mainOpen and "-" or "+"
+end)
+
+---------------------------------------
+-- FACTORY
+---------------------------------------
+local function AddLabel(text)
+	local L = Instance.new("TextLabel", Scroll)
+	L.Size = UDim2.new(1,0,0,28)
+	L.Font = Enum.Font.GothamBold
+	L.Text = "— "..text.." —"
+	L.TextSize = 14
+	L.TextColor3 = Color3.fromRGB(230,230,230)
+	L.BackgroundTransparency = 1
+end
+
+local function AddHub(name, url)
+	local B = Instance.new("TextButton", Scroll)
+	B.Size = UDim2.new(1,0,0,38)
+	B.BackgroundColor3 = Color3.fromRGB(37,37,37)
+	B.Text = name
+	B.TextColor3 = Color3.fromRGB(255,255,255)
+	B.Font = Enum.Font.GothamSemibold
+	B.TextSize = 14
+	Instance.new("UICorner", B).CornerRadius = UDim.new(0,12)
+
+	B.MouseButton1Click:Connect(function()
+		ClickSound:Play()
+		task.spawn(function()
+			loadstring(game:HttpGet(url))()
+		end)
+	end)
+end
+
+---------------------------------------
+-- CATEGORIES + HUB LIST
+---------------------------------------
+
+AddLabel("POPULAR HUB")
+AddHub("Limit Hub","https://raw.githubusercontent.com/FakeModz/LimitHub/refs/heads/main/LimitHub_Luarmor_E.lua")
+AddHub("Chloe-X","https://raw.githubusercontent.com/MajestySkie/Chloe-X/main/Main/ChloeX")
+AddHub("SoraHub","https://raw.githubusercontent.com/elainaceles/SoraHub/refs/heads/main/Fishit.lua")
+AddHub("Panda Dev","https://pandadevelopment.net/virtual/file/ecd9069dab3d2aa3")
+
+AddLabel("LOADERS")
+AddHub("x2zu Loader","https://raw.githubusercontent.com/x2zu/loader/main/freeloader.lua")
+AddHub("Junkie Loader","https://api.junkie-development.de/api/v1/luascripts/public/f9ecec6fa3ba4e7717a62cc0c25915644ad4ad7a01b09afb77a42226210884d7/download")
+AddHub("Speed Hub X","https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua")
+AddHub("Chiyo Hub","https://raw.githubusercontent.com/kaisenlmao/loader/refs/heads/main/chiyo.lua")
+
+AddLabel("FISHING HUB")
+AddHub("VinzHub – FishIt","https://raw.githubusercontent.com/Vinzyy13/VinzHub/refs/heads/main/Fish-It")
+AddHub("Zokada FishIt","https://raw.githubusercontent.com/ZOKADA/zokadascript/refs/heads/main/Fishittt.lua")
+AddHub("Hendarscript FishIt","https://raw.githubusercontent.com/collectorhenfi-wq/Hendarscriptt/refs/heads/main/Fish%20it")
+
+AddLabel("UTILITY")
+AddHub("Auto Clicker","https://rawscripts.net/raw/Universal-Script-Auto-Clicker-47778")
+AddHub("Majesty Game List","https://raw.githubusercontent.com/MajestySkie/list/refs/heads/main/games")
+
+AddLabel("RLX MEGA PACK")
+AddHub("🔥 RLX EXTRA LOADER PACK","https://pastebin.com/raw/Xiqw3ujD")
+AddHub("🔥 RLX Loader V2","https://pastefy.app/Es2TXL5z/raw")
+AddHub("🔥 RLX Loader V3","https://pastefy.app/k2hIroUH/raw")
+AddHub("🔥 Extra 4","https://pastebin.com/raw/Bp89QXZs")
+AddHub("🔥 Extra 5","https://raw.githubusercontent.com/karbid-dev/Karbid/main/zpp0kogh0t")
+AddHub("🔥 Extra 6","https://raw.githubusercontent.com/stormskmonkey/JinkX/refs/heads/main/Loader.lua")
+AddHub("🔥 Extra 7","https://raw.githubusercontent.com/IsThisMe01/Project-Madara/refs/heads/main/loader.lua")
+AddHub("🔥 Extra 8","https://raw.githubusercontent.com/NAVAAI098/Thunder-Hub/main/Loader.lua")
+AddHub("🔥 Extra 9","https://vinzhub.netlify.app/loader")
+AddHub("🔥 Extra 10","https://raw.githubusercontent.com/rxito/ZenithHub/refs/heads/main/Loader")
+
+return ScreenGui

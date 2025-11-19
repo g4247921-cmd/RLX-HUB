@@ -1,0 +1,570 @@
+--==================================================
+-- RLX HUB V22 — SIMPLE PREMIUM (FINAL ONE-FILE)
+-- Ready to paste
+-- Logo (intro) : 106628403485337
+--==================================================
+
+-- Services
+local Players      = game:GetService("Players")
+local LocalPlayer  = Players.LocalPlayer
+local PlayerGui    = LocalPlayer:WaitForChild("PlayerGui")
+local TweenService = game:GetService("TweenService")
+local UIS          = game:GetService("UserInputService")
+local RunService   = game:GetService("RunService")
+local HttpService  = game:GetService("HttpService")
+local Debris       = game:GetService("Debris")
+
+-- Defensive remove previous
+if PlayerGui:FindFirstChild("RLX_V22") then
+	pcall(function() PlayerGui.RLX_V22:Destroy() end)
+end
+
+-- safeLoad helper (returns ok, err)
+local function safeLoad(url)
+	if not url or url == "" then return false, "empty url" end
+	local ok, res = pcall(function() return game:HttpGet(url) end)
+	if not ok then return false, res end
+	local fn, err = loadstring(res)
+	if not fn then return false, err end
+	local ok2, err2 = pcall(fn)
+	return ok2, err2
+end
+
+-- tween helper
+local function tween(inst, props, t)
+	local info = TweenInfo.new(t or 0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+	local suc, tw = pcall(function() return TweenService:Create(inst, info, props) end)
+	if suc and tw then tw:Play() end
+	return tw
+end
+
+-- UI root
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "RLX_V22"
+ScreenGui.Parent = PlayerGui
+ScreenGui.ResetOnSpawn = false
+ScreenGui.IgnoreGuiInset = true
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+-- sounds (soft)
+local function makeSound(parent, id, vol)
+	local s = Instance.new("Sound", parent)
+	s.SoundId = "rbxassetid://"..tostring(id)
+	s.Volume = vol or 1
+	return s
+end
+local ClickSound = makeSound(ScreenGui, 9118823101, 0.9)
+local OpenSound  = makeSound(ScreenGui, 4590657391, 0.8)
+local CloseSound = makeSound(ScreenGui, 9118823107, 0.7)
+local function Click() pcall(function() ClickSound:Play() end) end
+
+-- ========== Intro (light) ==========
+local Intro = Instance.new("Frame", ScreenGui)
+Intro.Name = "Intro"
+Intro.Size = UDim2.new(1,0,1,0)
+Intro.BackgroundColor3 = Color3.fromRGB(0,0,0)
+Intro.ZIndex = 100
+Intro.BackgroundTransparency = 0
+
+local Logo = Instance.new("ImageLabel", Intro)
+Logo.AnchorPoint = Vector2.new(0.5,0.5)
+Logo.Position = UDim2.new(0.5,0,0.44,0)
+Logo.Size = UDim2.new(0,220,0,220)
+Logo.BackgroundTransparency = 1
+Logo.Image = "rbxassetid://106628403485337"
+Logo.ImageTransparency = 0.9
+Logo.ZIndex = 101
+
+local PopText = Instance.new("TextLabel", Intro)
+PopText.Size = UDim2.new(1,0,0,60)
+PopText.Position = UDim2.new(0,0,0.78,0)
+PopText.BackgroundTransparency = 1
+PopText.Text = ""
+PopText.Font = Enum.Font.GothamBold
+PopText.TextSize = 20
+PopText.TextColor3 = Color3.fromRGB(255,215,90)
+PopText.TextTransparency = 1
+PopText.ZIndex = 103
+
+-- simple intro timeline (non-blocking)
+task.spawn(function()
+	for i=1,18 do
+		Logo.ImageTransparency = math.clamp(Logo.ImageTransparency - 0.05, 0, 1)
+		task.wait(0.02)
+	end
+	PopText.Text = "RLX HUB"
+	for i=1,12 do PopText.TextTransparency = 1 - (i/12); task.wait(0.02) end
+	task.wait(0.2)
+	PopText.Text = "Respect • Loyalty • X-Factor ⚡"
+	for i=1,12 do PopText.TextTransparency = 1 - (i/12); task.wait(0.02) end
+	task.wait(0.45)
+	for i=1,20 do
+		Intro.BackgroundTransparency = i/20
+		Logo.ImageTransparency = math.clamp(Logo.ImageTransparency + 0.05, 0, 1)
+		PopText.TextTransparency = math.clamp(PopText.TextTransparency + 0.05, 0, 1)
+		task.wait(0.02)
+	end
+	if Intro and Intro.Parent then Intro:Destroy() end
+end)
+
+-- Show delay for toggle button
+local SHOW_DELAY = 2.6
+
+-- ========== Toggle Button ==========
+local ToggleOpen = Instance.new("TextButton", ScreenGui)
+ToggleOpen.Name = "ToggleOpen"
+ToggleOpen.Size = UDim2.new(0.16,0,0.07,0)
+ToggleOpen.Position = UDim2.new(0.02,0,0.5,0)
+ToggleOpen.AnchorPoint = Vector2.new(0,0.5)
+ToggleOpen.Text = "OPEN RLX HUB"
+ToggleOpen.BackgroundColor3 = Color3.fromRGB(215,180,55)
+ToggleOpen.TextColor3 = Color3.fromRGB(30,30,30)
+ToggleOpen.Font = Enum.Font.GothamBold
+ToggleOpen.TextSize = 14
+Instance.new("UICorner", ToggleOpen).CornerRadius = UDim.new(0,10)
+ToggleOpen.Visible = false
+task.delay(SHOW_DELAY, function() ToggleOpen.Visible = true end)
+
+-- ========== Main window ==========
+local function isSmallScreen()
+	local cam = workspace.CurrentCamera
+	if not cam then return false end
+	local vs = cam.ViewportSize
+	return vs.X <= 1000 or vs.Y <= 700
+end
+local mainW = isSmallScreen() and 0.9 or 0.65
+local mainH = isSmallScreen() and 0.78 or 0.56
+
+local Main = Instance.new("Frame", ScreenGui)
+Main.Name = "RLX_Main"
+Main.AnchorPoint = Vector2.new(0.5,0.5)
+Main.Size = UDim2.new(mainW,0,mainH,0)
+Main.Position = UDim2.new(0.5,0,0.5,0)
+Main.BackgroundColor3 = Color3.fromRGB(25,20,10)
+Main.ZIndex = 80
+Main.Visible = false
+Instance.new("UICorner", Main).CornerRadius = UDim.new(0,14)
+
+local Glow = Instance.new("UIStroke", Main)
+Glow.Thickness = 3
+Glow.Color = Color3.fromRGB(255,200,0)
+Glow.Transparency = 0.2
+Glow.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+
+-- topbar
+local Top = Instance.new("Frame", Main)
+Top.Name = "Top"
+Top.Size = UDim2.new(1,0,0.12,0)
+Top.BackgroundColor3 = Color3.fromRGB(60,45,20)
+Instance.new("UICorner", Top).CornerRadius = UDim.new(0,14)
+
+local Title = Instance.new("TextLabel", Top)
+Title.Size = UDim2.new(1,-110,1,0)
+Title.Position = UDim2.new(0,12,0,0)
+Title.BackgroundTransparency = 1
+Title.Font = Enum.Font.GothamSemibold
+Title.TextSize = 18
+Title.TextColor3 = Color3.fromRGB(255,220,100)
+Title.TextXAlignment = Enum.TextXAlignment.Left
+Title.Text = "RLX HUB — Respect Loyality X-Factor ⚡"
+
+local BtnClose = Instance.new("TextButton", Top)
+BtnClose.Size = UDim2.new(0,40,0.8,0)
+BtnClose.Position = UDim2.new(1,-50,0.1,0)
+BtnClose.Text = "X"
+BtnClose.BackgroundTransparency = 1
+BtnClose.Font = Enum.Font.GothamBold
+BtnClose.TextColor3 = Color3.fromRGB(255,100,100)
+BtnClose.TextSize = 20
+
+local BtnMin = Instance.new("TextButton", Top)
+BtnMin.Size = UDim2.new(0,40,0.8,0)
+BtnMin.Position = UDim2.new(1,-95,0.1,0)
+BtnMin.Text = "-"
+BtnMin.BackgroundTransparency = 1
+BtnMin.Font = Enum.Font.GothamBold
+BtnMin.TextColor3 = Color3.fromRGB(255,230,120)
+BtnMin.TextSize = 26
+
+-- toggle function
+local function toggleMain(vis)
+	Click()
+	if vis then pcall(function() OpenSound:Play() end) end
+	if not vis then pcall(function() CloseSound:Play() end) end
+	Main.Visible = vis
+end
+ToggleOpen.MouseButton1Click:Connect(function() toggleMain(not Main.Visible) end)
+BtnClose.MouseButton1Click:Connect(function() toggleMain(false) end)
+BtnMin.MouseButton1Click:Connect(function() toggleMain(false) end)
+
+-- draggable main (mouse+touch)
+do
+	local dragging = false
+	local dragStart = Vector2.new()
+	local startPos = Main.Position
+	local function onBegin(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+			dragging = true
+			dragStart = input.Position
+			startPos = Main.Position
+		end
+	end
+	local function onEnd(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+			dragging = false
+		end
+	end
+	local function onChange(input)
+		if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+			local delta = input.Position - dragStart
+			Main.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+		end
+	end
+	Top.InputBegan:Connect(onBegin)
+	Top.InputEnded:Connect(onEnd)
+	UIS.InputChanged:Connect(onChange)
+end
+
+-- ========== Sidebar ==========
+local Sidebar = Instance.new("Frame", Main)
+Sidebar.Size = UDim2.new(0.24,0,0.88,0)
+Sidebar.Position = UDim2.new(0,0,0.12,0)
+Sidebar.BackgroundColor3 = Color3.fromRGB(45,35,15)
+Instance.new("UICorner", Sidebar).CornerRadius = UDim.new(0,12)
+
+local function CreateTabButton(parent, txt, y)
+	local b = Instance.new("TextButton", parent)
+	b.Size = UDim2.new(0.9,0,0.11,0)
+	b.Position = UDim2.new(0.05,0,y,0)
+	b.BackgroundColor3 = Color3.fromRGB(120,85,20)
+	b.Font = Enum.Font.GothamBold
+	b.TextSize = 14
+	b.TextColor3 = Color3.fromRGB(255,230,120)
+	b.Text = txt
+	Instance.new("UICorner", b).CornerRadius = UDim.new(0,8)
+	return b
+end
+
+local TabHome = CreateTabButton(Sidebar, "HOME 🏚️", 0.03)
+local TabRules = CreateTabButton(Sidebar, "RULES 📜", 0.18)
+local TabLT2   = CreateTabButton(Sidebar, "LT2 🌲", 0.34)
+local TabFish  = CreateTabButton(Sidebar, "FISH IT 🐟", 0.49)
+local TabScripts=CreateTabButton(Sidebar, "Game Scripts 🔥", 0.64)
+local TabCredits=CreateTabButton(Sidebar, "CREDITS ✨", 0.79)
+
+local function setActive(tab)
+	for _,c in pairs(Sidebar:GetChildren()) do
+		if c:IsA("TextButton") then c.BackgroundColor3 = Color3.fromRGB(120,85,20) end
+	end
+	if tab and tab:IsA("TextButton") then tab.BackgroundColor3 = Color3.fromRGB(200,150,40) end
+end
+
+-- ========== Content & Pages (each page is ScrollingFrame) ==========
+local Content = Instance.new("Frame", Main)
+Content.Size = UDim2.new(0.74,0,0.84,0)
+Content.Position = UDim2.new(0.26,0,0.14,0)
+Content.BackgroundTransparency = 1
+
+local Pages = {}
+local function NewPage(name)
+	local p = Instance.new("ScrollingFrame", Content)
+	p.Name = name
+	p.Size = UDim2.new(1,0,1,0)
+	p.CanvasSize = UDim2.new(0,0,0,0)
+	p.ScrollBarThickness = 6
+	p.BackgroundTransparency = 1
+	p.Visible = false
+	p.AutomaticCanvasSize = Enum.AutomaticSize.Y
+
+	local layout = Instance.new("UIListLayout", p)
+	layout.Padding = UDim.new(0,8)
+	layout.SortOrder = Enum.SortOrder.LayoutOrder
+	layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+		local y = layout.AbsoluteContentSize.Y + 16
+		p.CanvasSize = UDim2.new(0,0,0,y)
+	end)
+	return p
+end
+
+Pages.Home   = NewPage("Home")
+Pages.Rules  = NewPage("Rules")
+Pages.LT2    = NewPage("LT2")
+Pages.Fish   = NewPage("Fish")
+Pages.Scripts= NewPage("Scripts")
+Pages.Credits= NewPage("Credits")
+
+local function ShowPage(name)
+	for k,v in pairs(Pages) do v.Visible = (k == name) end
+end
+ShowPage("Home"); setActive(TabHome)
+
+-- Tab connections
+TabHome.MouseButton1Click:Connect(function() Click(); ShowPage("Home"); setActive(TabHome) end)
+TabRules.MouseButton1Click:Connect(function() Click(); ShowPage("Rules"); setActive(TabRules) end)
+TabLT2.MouseButton1Click:Connect(function() Click(); ShowPage("LT2"); setActive(TabLT2) end)
+TabFish.MouseButton1Click:Connect(function() Click(); ShowPage("Fish"); setActive(TabFish) end)
+TabScripts.MouseButton1Click:Connect(function() Click(); ShowPage("Scripts"); setActive(TabScripts) end)
+TabCredits.MouseButton1Click:Connect(function() Click(); ShowPage("Credits"); setActive(TabCredits) end)
+
+-- ========== Populate: Home ==========
+do
+	local p = Pages.Home
+	local top = Instance.new("Frame", p)
+	top.Size = UDim2.new(1,-20,0,120)
+	top.BackgroundTransparency = 1
+	top.LayoutOrder = 1
+	top.Position = UDim2.new(0,10,0,10)
+
+	local avatar = Instance.new("ImageLabel", top)
+	avatar.Size = UDim2.new(0,96,0,96)
+	avatar.Position = UDim2.new(0,8,0,8)
+	avatar.BackgroundTransparency = 1
+	avatar.Image = "https://www.roblox.com/headshot-thumbnail/image?userId="..LocalPlayer.UserId.."&width=180&height=180&format=png"
+	Instance.new("UICorner", avatar).CornerRadius = UDim.new(1,0)
+
+	local info = Instance.new("Frame", top)
+	info.Size = UDim2.new(1,-124,1,0)
+	info.Position = UDim2.new(0,120,0,0)
+	info.BackgroundTransparency = 1
+
+	local nameLabel = Instance.new("TextLabel", info)
+	nameLabel.Size = UDim2.new(1,0,0,30)
+	nameLabel.BackgroundTransparency = 1
+	nameLabel.Font = Enum.Font.GothamBold
+	nameLabel.TextSize = 16
+	nameLabel.TextColor3 = Color3.fromRGB(255,255,255)
+	nameLabel.Text = "Username: "..LocalPlayer.Name
+	nameLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+	local disp = Instance.new("TextLabel", info)
+	disp.Size = UDim2.new(1,0,0,26)
+	disp.Position = UDim2.new(0,0,0,30)
+	disp.BackgroundTransparency = 1
+	disp.Font = Enum.Font.Gotham
+	disp.TextSize = 14
+	disp.TextColor3 = Color3.fromRGB(240,240,240)
+	disp.Text = "DisplayName: "..LocalPlayer.DisplayName
+	disp.TextXAlignment = Enum.TextXAlignment.Left
+
+	local welcome = Instance.new("TextLabel", p)
+	welcome.Size = UDim2.new(1,-20,0,56)
+	welcome.BackgroundTransparency = 1
+	welcome.Font = Enum.Font.Gotham
+	welcome.TextSize = 14
+	welcome.TextColor3 = Color3.fromRGB(235,230,200)
+	welcome.LayoutOrder = 2
+	welcome.TextWrapped = true
+	welcome.Text = "Selamat datang di RLX HUB V22 — Simple Premium.\nPilih tab untuk fitur."
+end
+
+-- ========== Populate: Rules ==========
+do
+	local p = Pages.Rules
+	local title = Instance.new("TextLabel", p)
+	title.Size = UDim2.new(1,-20,0,36)
+	title.BackgroundTransparency = 1
+	title.Font = Enum.Font.GothamBold
+	title.TextSize = 16
+	title.TextColor3 = Color3.fromRGB(255,215,90)
+	title.LayoutOrder = 1
+	title.Text = "📜 RLX RULES"
+
+	local body = Instance.new("TextLabel", p)
+	body.Size = UDim2.new(1,-20,0,160)
+	body.BackgroundTransparency = 1
+	body.Font = Enum.Font.Gotham
+	body.TextSize = 14
+	body.TextColor3 = Color3.fromRGB(230,230,230)
+	body.TextWrapped = true
+	body.LayoutOrder = 2
+	body.Text = [[
+• Jangan jual RLX HUB.
+• Gunakan dengan bijak.
+• Hormati player lain.
+• Laporkan error bila ada.
+• Salam Hangat — MasterRLX
+]]
+end
+
+-- ========== Populate: LT2 (scrollable buttons) ==========
+do
+	local p = Pages.LT2
+	local title = Instance.new("TextLabel", p)
+	title.Size = UDim2.new(1,-20,0,36)
+	title.BackgroundTransparency = 1
+	title.Font = Enum.Font.GothamBold
+	title.TextSize = 16
+	title.TextColor3 = Color3.fromRGB(255,215,90)
+	title.LayoutOrder = 1
+	title.Text = "LT2 — Premium Utilities"
+
+	local function addBtn(name, url)
+		local b = Instance.new("TextButton", p)
+		b.Size = UDim2.new(1,-24,0,40)
+		b.BackgroundColor3 = Color3.fromRGB(80,0,130)
+		b.Font = Enum.Font.GothamBold
+		b.TextSize = 14
+		b.TextColor3 = Color3.fromRGB(255,230,120)
+		b.Text = "  "..name
+		Instance.new("UICorner", b).CornerRadius = UDim.new(0,8)
+		b.LayoutOrder = 2
+
+		b.MouseButton1Click:Connect(function()
+			Click()
+			task.spawn(function()
+				local ok, err = safeLoad(url)
+				if not ok then
+					warn("Failed to load:", name, err)
+					local pop = Instance.new("TextLabel", ScreenGui)
+					pop.Size = UDim2.new(0.36,0,0,28)
+					pop.Position = UDim2.new(0.5,0,0.06,0)
+					pop.AnchorPoint = Vector2.new(0.5,0)
+					pop.BackgroundTransparency = 0.18
+					pop.BackgroundColor3 = Color3.fromRGB(30,30,30)
+					pop.Font = Enum.Font.GothamBold
+					pop.TextColor3 = Color3.fromRGB(255,200,100)
+					pop.Text = "Failed to load: "..name
+					Debris:AddItem(pop, 2.6)
+				end
+			end)
+		end)
+	end
+
+	addBtn("KORN 🌳", "https://raw.githubusercontent.com/DevKron/Kron_Hub/refs/heads/main/version_1.0")
+	addBtn("DARK 🌑", "https://web.archive.org/web/20240325130258/https://raw.githubusercontent.com/darkxwin/darkxsourcethinkyoutousedarkx/main/darkx")
+	addBtn("SC FLY 🚀", "https://pastebin.com/raw/MsL78SwX")
+	addBtn("Extra Loader 1", "https://example.com/loader1") -- placeholder (will show fail pop)
+end
+
+-- ========== Populate: Fish ==========
+do
+	local p = Pages.Fish
+	local title = Instance.new("TextLabel", p)
+	title.Size = UDim2.new(1,-20,0,36)
+	title.BackgroundTransparency = 1
+	title.Font = Enum.Font.GothamBold
+	title.TextSize = 16
+	title.TextColor3 = Color3.fromRGB(255,215,90)
+	title.LayoutOrder = 1
+	title.Text = "FISH IT — Complete Hubs"
+
+	local function addF(name, url)
+		local b = Instance.new("TextButton", p)
+		b.Size = UDim2.new(1,-24,0,36)
+		b.BackgroundColor3 = Color3.fromRGB(70,55,20)
+		b.Font = Enum.Font.Gotham
+		b.TextSize = 14
+		b.TextColor3 = Color3.fromRGB(255,230,120)
+		b.Text = "  "..name
+		Instance.new("UICorner", b).CornerRadius = UDim.new(0,8)
+		b.LayoutOrder = 2
+
+		b.MouseButton1Click:Connect(function()
+			Click()
+			task.spawn(function()
+				local ok, err = safeLoad(url)
+				if not ok then
+					warn("Failed to load:", name, err)
+					local pop = Instance.new("TextLabel", ScreenGui)
+					pop.Size = UDim2.new(0.36,0,0,28)
+					pop.Position = UDim2.new(0.5,0,0.06,0)
+					pop.AnchorPoint = Vector2.new(0.5,0)
+					pop.BackgroundTransparency = 0.18
+					pop.BackgroundColor3 = Color3.fromRGB(30,30,30)
+					pop.Font = Enum.Font.GothamBold
+					pop.TextColor3 = Color3.fromRGB(255,200,100)
+					pop.Text = "Failed to load: "..name
+					Debris:AddItem(pop, 2.6)
+				end
+			end)
+		end)
+	end
+
+	addF("VinzHub — FishIt", "https://raw.githubusercontent.com/Vinzyy13/VinzHub/refs/heads/main/Fish-It")
+	addF("Chloe-X — FishIt", "https://raw.githubusercontent.com/MajestySkie/Chloe-X/main/Main/ChloeX")
+	addF("SoraHub — FishIt", "https://raw.githubusercontent.com/elainaceles/SoraHub/refs/heads/main/Fishit.lua")
+end
+
+-- ========== Populate: Scripts ==========
+do
+	local p = Pages.Scripts
+	local title = Instance.new("TextLabel", p)
+	title.Size = UDim2.new(1,-20,0,36)
+	title.BackgroundTransparency = 1
+	title.Font = Enum.Font.GothamBold
+	title.TextSize = 16
+	title.TextColor3 = Color3.fromRGB(255,200,120)
+	title.LayoutOrder = 1
+	title.Text = "Game Scripts — Execute (use responsibly)"
+
+	local function addScript(name, url)
+		local b = Instance.new("TextButton", p)
+		b.Size = UDim2.new(1,-24,0,36)
+		b.BackgroundColor3 = Color3.fromRGB(95,40,10)
+		b.Font = Enum.Font.Gotham
+		b.TextSize = 14
+		b.TextColor3 = Color3.fromRGB(255,230,120)
+		b.Text = "  "..name
+		Instance.new("UICorner", b).CornerRadius = UDim.new(0,8)
+		b.LayoutOrder = 2
+
+		b.MouseButton1Click:Connect(function()
+			Click()
+			task.spawn(function()
+				local ok, err = safeLoad(url)
+				if not ok then
+					warn("Failed:", name, err)
+					local pop = Instance.new("TextLabel", ScreenGui)
+					pop.Size = UDim2.new(0.36,0,0,28)
+					pop.Position = UDim2.new(0.5,0,0.06,0)
+					pop.AnchorPoint = Vector2.new(0.5,0)
+					pop.BackgroundTransparency = 0.18
+					pop.BackgroundColor3 = Color3.fromRGB(30,30,30)
+					pop.Font = Enum.Font.GothamBold
+					pop.TextColor3 = Color3.fromRGB(255,200,100)
+					pop.Text = "Failed to load: "..name
+					Debris:AddItem(pop, 2.6)
+				end
+			end)
+		end)
+	end
+
+	addScript("Fly / Orca Snapshot", "https://raw.githubusercontent.com/richie0866/orca/master/public/snapshot.lua")
+	addScript("Very OP MM2 (VisionHub)", "https://raw.githubusercontent.com/orialdev/VisionHub/refs/heads/main/main.lua")
+	addScript("BLOXFRUIT Loader", "https://raw.githubusercontent.com/acsu123/HOHO_H/main/Loading_UI")
+	addScript("JAILBREAK AutoRobV5", "http://scripts.projectauto.xyz/AutoRobV5")
+end
+
+-- ========== Populate: Credits ==========
+do
+	local p = Pages.Credits
+	local title = Instance.new("TextLabel", p)
+	title.Size = UDim2.new(1,-20,0,36)
+	title.BackgroundTransparency = 1
+	title.Font = Enum.Font.GothamBold
+	title.TextSize = 16
+	title.TextColor3 = Color3.fromRGB(255,215,90)
+	title.LayoutOrder = 1
+	title.Text = "CREDITS"
+
+	local body = Instance.new("TextLabel", p)
+	body.Size = UDim2.new(1,-20,0,120)
+	body.BackgroundTransparency = 1
+	body.Font = Enum.Font.Gotham
+	body.TextSize = 14
+	body.TextColor3 = Color3.fromRGB(230,230,230)
+	body.TextWrapped = true
+	body.LayoutOrder = 2
+	body.Text = "RLX HUB V22 — Simple Premium\nMade by MasterRLX (UI template)\nThanks to external script authors (loaders are remote)."
+end
+
+-- Final: ensure pages visible when toggled
+Main:GetPropertyChangedSignal("Visible"):Connect(function()
+	if Main.Visible then
+		ShowPage("Home")
+		setActive(TabHome)
+	end
+end)
+
+-- Done: main file ready
+print("RLX_V22 (Simple Premium) loaded.")

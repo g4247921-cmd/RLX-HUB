@@ -433,7 +433,8 @@ do
 	addBtn("KORN 🌳", "https://raw.githubusercontent.com/DevKron/Kron_Hub/refs/heads/main/version_1.0")
 	addBtn("DARK 🌑", "https://web.archive.org/web/20240325130258/https://raw.githubusercontent.com/darkxwin/darkxsourcethinkyoutousedarkx/main/darkx")
 	addBtn("SC FLY 🚀", "https://pastebin.com/raw/MsL78SwX")
-	addBtn("Extra Loader 1", "https://example.com/loader1") -- placeholder (will show fail pop)
+	addBtn("TITLE/NAMETAG🫟",
+"https://raw.githubusercontent.com/g4247921-cmd/RLX-HUB-TITLE/main/DevRLXV1")
 end
 
 -- ========== Populate: Fish ==========
@@ -483,8 +484,9 @@ do
 	addF("VinzHub — FishIt", "https://raw.githubusercontent.com/Vinzyy13/VinzHub/refs/heads/main/Fish-It")
 	addF("Chloe-X — FishIt", "https://raw.githubusercontent.com/MajestySkie/Chloe-X/main/Main/ChloeX")
 	addF("SoraHub — FishIt", "https://raw.githubusercontent.com/elainaceles/SoraHub/refs/heads/main/Fishit.lua")
+   addF("ALL HUB — Fishit",
+"https://raw.githubusercontent.com/g4247921-cmd/RLX-HUB/main/FISH%20IT%20%E2%9B%B5")
 end
-
 -- ========== Populate: Scripts ==========
 do
 	local p = Pages.Scripts

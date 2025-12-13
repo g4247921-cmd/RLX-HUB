@@ -237,7 +237,7 @@ do
 	info.Font = Enum.Font.Gotham
 	info.TextSize = 15
 	info.TextColor3 = Color3.fromRGB(240,230,200)
-	info.Text = "Selamat datang di RLX HUB By MasterLeadRLX — Royal Gold Edition.\nGunakan tab di kiri."
+	info.Text = "Selamat datang di RLX HUB V22 — ByMasterLeadRLX🔥.\nGunakan tab di kiri."
 end
 
 ----------------------------------------------------
@@ -252,7 +252,7 @@ do
 	body.Font = Enum.Font.Gotham
 	body.TextSize = 15
 	body.TextColor3 = Color3.fromRGB(230,230,230)
-	body.Text = "* Gunakan dengan bijak.\n* Jangan spam.\n* Hormati player lain."
+	body.Text = "* Gunakan dengan bijak.\n* Jangan spam.\n* Hormati player lain\n*Salam hangat MasterLeadRLX."
 end
 
 ----------------------------------------------------
@@ -278,6 +278,9 @@ do
 	addBtn("DARK 🌑", "https://web.archive.org/web/20240325130258/https://raw.githubusercontent.com/darkxwin/darkxsourcethinkyoutousedarkx/main/darkx")
 	addBtn("SC FLY 🚀", "https://pastebin.com/raw/MsL78SwX")
 	addBtn("SystemBroken 💀", "https://raw.githubusercontent.com/H20CalibreYT/SystemBroken/main/script")
+addBtn("INVISIBLE 👽","https://raw.githubusercontent.com/g4247921-cmd/RLX-HUB/refs/heads/main/inivisble")
+addBtn("Emote/Dance","https://rawscripts.net/raw/a-literal-baseplate.-energize-gui-24798")
+addBtn("ALL DANCE/EMOTE","https://raw.githubusercontent.com/7yd7/Hub/refs/heads/Branch/GUIS/Emotes.lua")
 end
 
 ----------------------------------------------------

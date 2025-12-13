@@ -1,0 +1,301 @@
+--!strict
+
+--========================================================
+--  INVISIBILITY TOOL — ELEGANT RLX UI EDITION
+--  By MasterRLX 🔥
+--========================================================
+
+local CONFIG = {
+	TOGGLE_KEY = Enum.KeyCode.X,
+	DEFAULT_SPEED = 16,
+	BOOSTED_SPEED = 48,
+	SOUND_ID = "rbxassetid://942127495",
+	INVISIBILITY_POSITION = Vector3.new(-25.95, 84, 3537.55),
+	NOTIFICATION_DURATION = 3,
+
+	-- Premium RLX UI Colors
+	BG_GRADIENT_TOP = Color3.fromRGB(18,18,18),
+	BG_GRADIENT_BOTTOM = Color3.fromRGB(8,8,8),
+	ACCENT = Color3.fromRGB(40,40,40),
+	PRIMARY = Color3.fromRGB(0,170,255),
+	SUCCESS = Color3.fromRGB(46, 204, 113),
+	DANGER = Color3.fromRGB(231, 76, 60),
+	TEXT = Color3.fromRGB(255,255,255),
+	SUBTEXT = Color3.fromRGB(170,170,170)
+}
+
+--========================================================
+-- SERVICES
+--========================================================
+local Players = game:GetService("Players")
+local StarterGui = game:GetService("StarterGui")
+local UIS = game:GetService("UserInputService")
+
+local player = Players.LocalPlayer
+
+--========================================================
+-- STATE
+--========================================================
+local playerState = {
+	isInvisible = false,
+	isSpeedBoosted = false,
+	originalSpeed = CONFIG.DEFAULT_SPEED
+}
+
+--========================================================
+-- UTILITIES
+--========================================================
+local function notify(title,text)
+	StarterGui:SetCore("SendNotification",{
+		Title = title,
+		Text = text,
+		Duration = CONFIG.NOTIFICATION_DURATION
+	})
+end
+
+local function getHumanoid()
+	local char = player.Character
+	if not char then return nil end
+	return char:FindFirstChild("Humanoid")
+end
+
+local function getHRP()
+	local char = player.Character
+	if not char then return nil end
+	return char:FindFirstChild("HumanoidRootPart")
+end
+
+local function setTransparency(char, value)
+	for _, d in char:GetDescendants() do
+		if d:IsA("BasePart") or d:IsA("Decal") then
+			d.Transparency = value
+		end
+	end
+end
+
+--========================================================
+--  GUI CREATION (ELEGANT RLX UI)
+--========================================================
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "RLX_InvisibilityUI"
+screenGui.ResetOnSpawn = false
+screenGui.Parent = player:WaitForChild("PlayerGui")
+
+-- MAIN FRAME
+local mainFrame = Instance.new("Frame")
+mainFrame.Size = UDim2.new(0, 190, 0, 220)
+mainFrame.Position = UDim2.new(0.5,-95,0.5,-110)
+mainFrame.BackgroundColor3 = Color3.fromRGB(15,15,15)
+mainFrame.BorderSizePixel = 0
+mainFrame.Active = true
+mainFrame.Draggable = true
+mainFrame.Parent = screenGui
+
+-- Rounded corners
+local corner = Instance.new("UICorner", mainFrame)
+corner.CornerRadius = UDim.new(0, 18)
+
+-- Soft outer stroke
+local stroke = Instance.new("UIStroke", mainFrame)
+stroke.Color = CONFIG.ACCENT
+stroke.Thickness = 1.4
+stroke.Transparency = 0.25
+
+-- Gradient Background
+local gradient = Instance.new("UIGradient", mainFrame)
+gradient.Color = ColorSequence.new({
+	ColorSequenceKeypoint.new(0, CONFIG.BG_GRADIENT_TOP),
+	ColorSequenceKeypoint.new(1, CONFIG.BG_GRADIENT_BOTTOM)
+})
+gradient.Rotation = 90
+
+-- Blur Glow
+local glow = Instance.new("ImageLabel")
+glow.Parent = mainFrame
+glow.Position = UDim2.new(-0.05,0,-0.05,0)
+glow.Size = UDim2.new(1.1,0,1.1,0)
+glow.BackgroundTransparency = 1
+glow.Image = "rbxassetid://4994979483"
+glow.ImageTransparency = 0.85
+
+-- TITLE
+local title = Instance.new("TextLabel", mainFrame)
+title.Size = UDim2.new(1, -20, 0, 30)
+title.Position = UDim2.new(0,10,0,10)
+title.Text = "INVISIBILITY TOOL"
+title.TextColor3 = CONFIG.TEXT
+title.BackgroundTransparency = 1
+title.Font = Enum.Font.GothamBold
+title.TextSize = 14
+title.TextXAlignment = Enum.TextXAlignment.Left
+
+-- BUTTON TEMPLATE FUNCTION
+local function MakeButton(text, color, posY)
+	local btn = Instance.new("TextButton")
+	btn.Parent = mainFrame
+	btn.Size = UDim2.new(1,-20,0,38)
+	btn.Position = UDim2.new(0,10,0,posY)
+	btn.BackgroundColor3 = color
+	btn.TextColor3 = CONFIG.TEXT
+	btn.Text = text
+	btn.Font = Enum.Font.GothamBold
+	btn.TextScaled = true
+	btn.BorderSizePixel = 0
+
+	local c = Instance.new("UICorner", btn)
+	c.CornerRadius = UDim.new(0,10)
+
+	local s = Instance.new("UIStroke", btn)
+	s.Color = Color3.fromRGB(255,255,255)
+	s.Thickness = 0.35
+	s.Transparency = 0.7
+
+	return btn
+end
+
+local toggleButton = MakeButton("INVISIBLE", CONFIG.PRIMARY, 50)
+local speedButton = MakeButton("SPEED BOOST", CONFIG.DANGER, 95)
+
+-- STATUS FRAME
+local statusFrame = Instance.new("Frame", mainFrame)
+statusFrame.Size = UDim2.new(1,-20,0,22)
+statusFrame.Position = UDim2.new(0,10,0,145)
+statusFrame.BackgroundColor3 = CONFIG.ACCENT
+statusFrame.BorderSizePixel = 0
+local sfC = Instance.new("UICorner", statusFrame)
+sfC.CornerRadius = UDim.new(0,10)
+
+local statusLabel = Instance.new("TextLabel", statusFrame)
+statusLabel.Size = UDim2.new(1,-10,1,0)
+statusLabel.Position = UDim2.new(0,5,0,0)
+statusLabel.BackgroundTransparency = 1
+statusLabel.TextColor3 = CONFIG.SUBTEXT
+statusLabel.Font = Enum.Font.GothamBold
+statusLabel.TextSize = 10
+statusLabel.Text = "Ready"
+
+_G.statusLabel = statusLabel
+
+-- CLOSE BUTTON
+local close = Instance.new("TextButton", mainFrame)
+close.Size = UDim2.new(0,24,0,24)
+close.Position = UDim2.new(1,-30,0,8)
+close.BackgroundColor3 = CONFIG.DANGER
+close.Text = "×"
+close.TextColor3 = Color3.new(1,1,1)
+close.Font = Enum.Font.GothamBold
+close.TextSize = 16
+close.BorderSizePixel = 0
+local closeC = Instance.new("UICorner", close)
+closeC.CornerRadius = UDim.new(0,6)
+
+-- SIGNATURE
+local sig = Instance.new("TextLabel", mainFrame)
+sig.Size = UDim2.new(1,-20,0,16)
+sig.Position = UDim2.new(0,10,1,-22)
+sig.BackgroundTransparency = 1
+sig.Text = "By MasterRLX 🔥"
+sig.TextColor3 = CONFIG.SUBTEXT
+sig.Font = Enum.Font.GothamBold
+sig.TextSize = 9
+sig.TextTransparency = 0.25
+
+-- SOUND
+local sound = Instance.new("Sound", screenGui)
+sound.SoundId = CONFIG.SOUND_ID
+sound.Volume = 0.5
+
+--========================================================
+--  CORE FUNCTIONS
+--========================================================
+
+local function toggleInvisibility()
+	sound:Play()
+
+	playerState.isInvisible = not playerState.isInvisible
+	local hrp = getHRP()
+	if not hrp then return end
+
+	if playerState.isInvisible then
+		local savePos = hrp.CFrame
+
+		player.Character:MoveTo(CONFIG.INVISIBILITY_POSITION)
+		task.wait(0.15)
+
+		local seat = Instance.new("Seat", workspace)
+		seat.Transparency = 1
+		seat.CanCollide = false
+		seat.Name = "invischair"
+		seat.Position = CONFIG.INVISIBILITY_POSITION
+
+		local weld = Instance.new("Weld", seat)
+		weld.Part0 = seat
+		weld.Part1 = player.Character:FindFirstChild("UpperTorso") or player.Character:FindFirstChild("Torso")
+
+		task.wait()
+		seat.CFrame = savePos
+
+		setTransparency(player.Character, 0.5)
+
+		toggleButton.BackgroundColor3 = CONFIG.SUCCESS
+		toggleButton.Text = "VISIBLE"
+
+		statusLabel.Text = "Invisible Mode Active"
+		statusLabel.TextColor3 = CONFIG.SUCCESS
+
+		notify("Invisibility ON","You are now invisible")
+
+	else
+		local seat = workspace:FindFirstChild("invischair")
+		if seat then seat:Destroy() end
+
+		setTransparency(player.Character,0)
+
+		toggleButton.BackgroundColor3 = CONFIG.PRIMARY
+		toggleButton.Text = "INVISIBLE"
+
+		statusLabel.Text = "Visible Mode Active"
+		statusLabel.TextColor3 = CONFIG.SUBTEXT
+
+		notify("Invisibility OFF","You are now visible")
+	end
+end
+
+local function toggleSpeed()
+	sound:Play()
+
+	local hum = getHumanoid()
+	if not hum then return end
+
+	playerState.isSpeedBoosted = not playerState.isSpeedBoosted
+
+	if playerState.isSpeedBoosted then
+		hum.WalkSpeed = CONFIG.BOOSTED_SPEED
+		speedButton.BackgroundColor3 = CONFIG.SUCCESS
+		speedButton.Text = "SPEED ON"
+		notify("Speed Boost ON","High Speed Activated")
+	else
+		hum.WalkSpeed = playerState.originalSpeed
+		speedButton.BackgroundColor3 = CONFIG.DANGER
+		speedButton.Text = "SPEED BOOST"
+		notify("Speed Boost OFF","Speed Restored")
+	end
+end
+
+--========================================================
+--  EVENTS
+--========================================================
+toggleButton.MouseButton1Click:Connect(toggleInvisibility)
+speedButton.MouseButton1Click:Connect(toggleSpeed)
+close.MouseButton1Click:Connect(function()
+	screenGui.Enabled = false
+end)
+
+UIS.InputBegan:Connect(function(input,gp)
+	if gp then return end
+	if input.KeyCode == CONFIG.TOGGLE_KEY then
+		toggleInvisibility()
+	end
+end)
+
+print("RLX Elegant Invisibility Tool Loaded Successfully")

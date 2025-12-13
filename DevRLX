@@ -1,1 +1,437 @@
-loadstring(game:HttpGet("https://raw.githubusercontent.com/g4247921-cmd/RLX-HUB/main/DevRLX"))()
+--==================================================
+-- RLX HUB V22 — Respect Loyalty X-Factor ⚡ (FINAL COMPLETE)
+--==================================================
+
+local Players = game:GetService("Players")
+local TeleportService = game:GetService("TeleportService")
+local LocalPlayer = Players.LocalPlayer
+local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
+local TweenService = game:GetService("TweenService")
+local UIS = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+
+-- remove existing
+if PlayerGui:FindFirstChild("RLX_V22") then
+	pcall(function() PlayerGui.RLX_V22:Destroy() end)
+end
+
+-- helper: safe load url
+local function safeLoad(url)
+	local ok, res = pcall(function() return game:HttpGet(url) end)
+	if not ok then return false, res end
+	local fn, err = loadstring(res)
+	if not fn then return false, err end
+	local ok2, err2 = pcall(fn)
+	return ok2, err2
+end
+
+-- create ScreenGui
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "RLX_V22"
+ScreenGui.Parent = PlayerGui
+ScreenGui.ResetOnSpawn = false
+
+----------------------------------------------------
+-- CLICK SOUND
+----------------------------------------------------
+local ClickSound = Instance.new("Sound", ScreenGui)
+ClickSound.SoundId = "rbxassetid://9118823101"
+ClickSound.Volume = 1
+local function Click()
+	pcall(function() ClickSound:Play() end)
+end
+
+----------------------------------------------------
+-- INTRO GOLD
+----------------------------------------------------
+local Intro = Instance.new("Frame", ScreenGui)
+Intro.Size = UDim2.new(1,0,1,0)
+Intro.BackgroundColor3 = Color3.fromRGB(0,0,0)
+Intro.ZIndex = 50
+
+local Logo = Instance.new("ImageLabel", Intro)
+Logo.Size = UDim2.new(0,250,0,250)
+Logo.Position = UDim2.new(0.5,-125,0.5,-125)
+Logo.BackgroundTransparency = 1
+Logo.Image = "rbxassetid://106628403485337"
+Logo.ImageColor3 = Color3.fromRGB(255,215,0)
+Logo.ImageTransparency = 1
+Logo.ZIndex = 55
+
+local Stroke = Instance.new("UIStroke", Logo)
+Stroke.Thickness = 4
+Stroke.Color = Color3.fromRGB(255,215,0)
+Stroke.Transparency = 1
+
+task.spawn(function()
+	for i = 1,25 do
+		Logo.ImageTransparency = 1 - (i/25)
+		Stroke.Transparency = 1 - (i/25)
+		task.wait(0.03)
+	end
+	task.wait(1)
+	for i = 1,25 do
+		Logo.ImageTransparency = i/25
+		Stroke.Transparency = i/25
+		task.wait(0.02)
+	end
+	Intro:Destroy()
+end)
+
+----------------------------------------------------
+-- OPEN BUTTON (IMAGE)
+----------------------------------------------------
+local Toggle = Instance.new("ImageButton", ScreenGui)
+Toggle.Size = UDim2.new(0,56,0,56)
+Toggle.Position = UDim2.new(0,20,0.5,-28)
+Toggle.Image = "rbxassetid://76348301930420"
+Toggle.BackgroundTransparency = 1
+Toggle.ScaleType = Enum.ScaleType.Fit
+
+----------------------------------------------------
+-- MAIN FRAME (IMAGE BACKGROUND)
+----------------------------------------------------
+local Main = Instance.new("ImageLabel", ScreenGui)
+Main.Size = UDim2.new(0,620,0,380)
+Main.Position = UDim2.new(0.5,-310,0.5,-190)
+Main.Image = "rbxassetid://106548854544381"
+Main.ScaleType = Enum.ScaleType.Stretch
+Main.BackgroundTransparency = 1
+Main.Visible = false
+Instance.new("UICorner", Main).CornerRadius = UDim.new(0,18)
+
+local Glow = Instance.new("UIStroke", Main)
+Glow.Thickness = 3
+Glow.Color = Color3.fromRGB(255,200,0)
+Glow.Transparency = 0.2
+
+----------------------------------------------------
+-- TOP BAR
+----------------------------------------------------
+local Top = Instance.new("Frame", Main)
+Top.Size = UDim2.new(1,0,0,42)
+Top.BackgroundColor3 = Color3.fromRGB(60,45,20)
+Top.BackgroundTransparency = 0.1
+Instance.new("UICorner", Top).CornerRadius = UDim.new(0,16)
+
+local Title = Instance.new("TextLabel", Top)
+Title.Size = UDim2.new(1,-120,1,0)
+Title.Position = UDim2.new(0,12,0,0)
+Title.BackgroundTransparency = 1
+Title.Font = Enum.Font.GothamSemibold
+Title.TextSize = 16
+Title.TextColor3 = Color3.fromRGB(255,220,100)
+Title.Text = "RLX HUB — Respect Loyalty X-Factor ✨"
+Title.TextXAlignment = Enum.TextXAlignment.Left
+
+local BtnClose = Instance.new("TextButton", Top)
+BtnClose.Size = UDim2.new(0,40,0,34)
+BtnClose.Position = UDim2.new(1,-44,0,4)
+BtnClose.Text = "X"
+BtnClose.BackgroundTransparency = 1
+BtnClose.Font = Enum.Font.GothamBold
+BtnClose.TextColor3 = Color3.fromRGB(255,100,100)
+BtnClose.TextSize = 18
+BtnClose.MouseButton1Click:Connect(function() Click(); Main.Visible = false end)
+
+Toggle.MouseButton1Click:Connect(function()
+	Click()
+	Main.Visible = not Main.Visible
+end)
+
+----------------------------------------------------
+-- DRAG
+----------------------------------------------------
+do
+	local dragging, dragStart, startPos
+	Main.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 then
+			dragging = true
+			dragStart = input.Position
+			startPos = Main.Position
+		end
+	end)
+	Main.InputEnded:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 then dragging = false end
+	end)
+	UIS.InputChanged:Connect(function(input)
+		if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+			local d = input.Position - dragStart
+			Main.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + d.X, startPos.Y.Scale, startPos.Y.Offset + d.Y)
+		end
+	end)
+end
+
+----------------------------------------------------
+-- SIDEBAR
+----------------------------------------------------
+local Sidebar = Instance.new("Frame", Main)
+Sidebar.Size = UDim2.new(0,160,1,-44)
+Sidebar.Position = UDim2.new(0,0,0,44)
+Sidebar.BackgroundColor3 = Color3.fromRGB(45,35,15)
+Sidebar.BackgroundTransparency = 0.1
+Instance.new("UICorner", Sidebar).CornerRadius = UDim.new(0,14)
+
+local function NewTab(text, y)
+	local b = Instance.new("TextButton", Sidebar)
+	b.Size = UDim2.new(1,-20,0,40)
+	b.Position = UDim2.new(0,10,0,y)
+	b.BackgroundColor3 = Color3.fromRGB(120,85,20)
+	b.Font = Enum.Font.GothamBold
+	b.TextSize = 14
+	b.TextColor3 = Color3.fromRGB(255,230,120)
+	b.Text = text
+	Instance.new("UICorner", b).CornerRadius = UDim.new(0,10)
+	return b
+end
+
+local TabHome  = NewTab("HOME 🏚️", 10)
+local TabRules = NewTab("RULES 📜", 60)
+local TabLT2   = NewTab("LT2 🌲", 110)
+local TabFish  = NewTab("FISH IT 🦯", 160)
+local TabPlayer= NewTab("PLAYER ⚙️", 210)
+
+----------------------------------------------------
+-- CONTENT / PAGES
+----------------------------------------------------
+local Content = Instance.new("Frame", Main)
+Content.Size = UDim2.new(1,-180,1,-54)
+Content.Position = UDim2.new(0,170,0,45)
+Content.BackgroundTransparency = 1
+
+local Pages = {}
+local function NewPage()
+	local p = Instance.new("ScrollingFrame", Content)
+	p.Size = UDim2.new(1,0,1,0)
+	p.BackgroundTransparency = 1
+	p.ScrollBarThickness = 6
+	p.Visible = false
+	local layout = Instance.new("UIListLayout", p)
+	layout.Padding = UDim.new(0,10)
+	layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+		p.CanvasSize = UDim2.new(0,0,0, layout.AbsoluteContentSize.Y + 16)
+	end)
+	return p
+end
+
+Pages.Home   = NewPage()
+Pages.Rules  = NewPage()
+Pages.LT2    = NewPage()
+Pages.Fish   = NewPage()
+Pages.Player = NewPage()
+
+local function Show(name)
+	for k,v in pairs(Pages) do v.Visible = (k==name) end
+end
+Show("Home")
+
+----------------------------------------------------
+-- HOME
+----------------------------------------------------
+do
+	local p = Pages.Home
+	local info = Instance.new("TextLabel", p)
+	info.Size = UDim2.new(1,-20,0,80)
+	info.BackgroundTransparency = 1
+	info.TextWrapped = true
+	info.Font = Enum.Font.Gotham
+	info.TextSize = 15
+	info.TextColor3 = Color3.fromRGB(240,230,200)
+	info.Text = "Selamat datang di RLX HUB By MasterLeadRLX — Royal Gold Edition.\nGunakan tab di kiri."
+end
+
+----------------------------------------------------
+-- RULES
+----------------------------------------------------
+do
+	local p = Pages.Rules
+	local body = Instance.new("TextLabel", p)
+	body.Size = UDim2.new(1,-20,0,200)
+	body.BackgroundTransparency = 1
+	body.TextWrapped = true
+	body.Font = Enum.Font.Gotham
+	body.TextSize = 15
+	body.TextColor3 = Color3.fromRGB(230,230,230)
+	body.Text = "* Gunakan dengan bijak.\n* Jangan spam.\n* Hormati player lain."
+end
+
+----------------------------------------------------
+-- LT2
+----------------------------------------------------
+do
+	local p = Pages.LT2
+	local function addBtn(name, url)
+		local b = Instance.new("TextButton", p)
+		b.Size = UDim2.new(1,-20,0,40)
+		b.BackgroundColor3 = Color3.fromRGB(80,0,130)
+		b.Font = Enum.Font.GothamBold
+		b.TextSize = 14
+		b.TextColor3 = Color3.fromRGB(255,230,120)
+		b.Text = name
+		Instance.new("UICorner", b).CornerRadius = UDim.new(0,10)
+		b.MouseButton1Click:Connect(function()
+			Click()
+			task.spawn(function() safeLoad(url) end)
+		end)
+	end
+	addBtn("KORN 🌳", "https://raw.githubusercontent.com/DevKron/Kron_Hub/refs/heads/main/version_1.0")
+	addBtn("DARK 🌑", "https://web.archive.org/web/20240325130258/https://raw.githubusercontent.com/darkxwin/darkxsourcethinkyoutousedarkx/main/darkx")
+	addBtn("SC FLY 🚀", "https://pastebin.com/raw/MsL78SwX")
+	addBtn("SystemBroken 💀", "https://raw.githubusercontent.com/H20CalibreYT/SystemBroken/main/script")
+end
+
+----------------------------------------------------
+-- FISH IT
+----------------------------------------------------
+do
+	local p = Pages.Fish
+	local function addF(name, url)
+		local b = Instance.new("TextButton", p)
+		b.Size = UDim2.new(1,-20,0,38)
+		b.BackgroundColor3 = Color3.fromRGB(70,55,20)
+		b.Font = Enum.Font.GothamSemibold
+		b.TextSize = 14
+		b.TextColor3 = Color3.fromRGB(255,230,120)
+		b.Text = "  "..name
+		Instance.new("UICorner", b).CornerRadius = UDim.new(0,10)
+		b.MouseButton1Click:Connect(function()
+			Click()
+			task.spawn(function() safeLoad(url) end)
+		end)
+	end
+	addF("VinzHub — FishIt", "https://raw.githubusercontent.com/Vinzyy13/VinzHub/refs/heads/main/Fish-It")
+	addF("Chloe-X — FishIt", "https://raw.githubusercontent.com/MajestySkie/Chloe-X/main/Main/ChloeX")
+	addF("SoraHub — FishIt", "https://raw.githubusercontent.com/elainaceles/SoraHub/refs/heads/main/Fishit.lua")
+	addF("HendarScript — FishIt", "https://raw.githubusercontent.com/collectorhenfi-wq/Hendarscriptt/refs/heads/main/Fish%20it")
+	addF("Zokada FishIt", "https://raw.githubusercontent.com/ZOKADA/zokadascript/refs/heads/main/Fishittt.lua")
+	addF("x2zu Loader", "https://raw.githubusercontent.com/x2zu/loader/main/freeloader.lua")
+	addF("Speed Hub X", "https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua")
+	addF("Panda Dev List", "https://pandadevelopment.net/virtual/file/ecd9069dab3d2aa3")              
+end
+
+----------------------------------------------------
+-- PLAYER (UTILITIES)
+----------------------------------------------------
+do
+	local p = Pages.Player
+
+	local function Slider(title, min, max, default, callback)
+		local f = Instance.new("Frame", p)
+		f.Size = UDim2.new(1,-20,0,60)
+		f.BackgroundTransparency = 1
+
+		local t = Instance.new("TextLabel", f)
+		t.Size = UDim2.new(1,0,0,20)
+		t.BackgroundTransparency = 1
+		t.Font = Enum.Font.GothamBold
+		t.TextSize = 14
+		t.TextColor3 = Color3.fromRGB(255,230,120)
+		t.Text = title..": "..default
+
+		local bar = Instance.new("Frame", f)
+		bar.Position = UDim2.new(0,0,0,30)
+		bar.Size = UDim2.new(1,0,0,10)
+		bar.BackgroundColor3 = Color3.fromRGB(60,60,60)
+		Instance.new("UICorner", bar).CornerRadius = UDim.new(1,0)
+
+		local fill = Instance.new("Frame", bar)
+		fill.Size = UDim2.new((default-min)/(max-min),0,1,0)
+		fill.BackgroundColor3 = Color3.fromRGB(255,200,0)
+		Instance.new("UICorner", fill).CornerRadius = UDim.new(1,0)
+
+		bar.InputBegan:Connect(function(i)
+			if i.UserInputType == Enum.UserInputType.MouseButton1 then
+				local conn; conn = UIS.InputChanged:Connect(function(m)
+					if m.UserInputType == Enum.UserInputType.MouseMovement then
+						local x = math.clamp((m.Position.X - bar.AbsolutePosition.X)/bar.AbsoluteSize.X,0,1)
+						fill.Size = UDim2.new(x,0,1,0)
+						local val = math.floor(min + (max-min)*x)
+						t.Text = title..": "..val
+						callback(val)
+					end
+				end)
+				UIS.InputEnded:Once(function() if conn then conn:Disconnect() end end)
+			end
+		end)
+	end
+
+	local hum = function()
+		return LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+	end
+
+	Slider("WalkSpeed", 16, 150, 16, function(v) if hum() then hum().WalkSpeed=v end end)
+	Slider("JumpPower", 50, 200, 50, function(v) if hum() then hum().JumpPower=v end end)
+
+	local infJump=false
+	local btnInf = Instance.new("TextButton", p)
+	btnInf.Size = UDim2.new(1,-20,0,40)
+	btnInf.Text = "Infinite Jump : OFF"
+	btnInf.Font = Enum.Font.GothamBold
+	btnInf.TextColor3 = Color3.fromRGB(255,230,120)
+	btnInf.BackgroundColor3 = Color3.fromRGB(90,70,20)
+	Instance.new("UICorner", btnInf).CornerRadius = UDim.new(0,10)
+	btnInf.MouseButton1Click:Connect(function()
+		Click()
+		infJump = not infJump
+		btnInf.Text = "Infinite Jump : "..(infJump and "ON" or "OFF")
+	end)
+	UIS.JumpRequest:Connect(function()
+		if infJump and hum() then hum():ChangeState(Enum.HumanoidStateType.Jumping) end
+	end)
+
+	local noclip=false
+	local btnNC = Instance.new("TextButton", p)
+	btnNC.Size = UDim2.new(1,-20,0,40)
+	btnNC.Text = "Noclip : OFF"
+	btnNC.Font = Enum.Font.GothamBold
+	btnNC.TextColor3 = Color3.fromRGB(255,230,120)
+	btnNC.BackgroundColor3 = Color3.fromRGB(90,70,20)
+	Instance.new("UICorner", btnNC).CornerRadius = UDim.new(0,10)
+	btnNC.MouseButton1Click:Connect(function()
+		Click()
+		noclip = not noclip
+		btnNC.Text = "Noclip : "..(noclip and "ON" or "OFF")
+	end)
+	RunService.Stepped:Connect(function()
+		if noclip and LocalPlayer.Character then
+			for _,v in ipairs(LocalPlayer.Character:GetDescendants()) do
+				if v:IsA("BasePart") then v.CanCollide=false end
+			end
+		end
+	end)
+
+	local btnRe = Instance.new("TextButton", p)
+	btnRe.Size = UDim2.new(1,-20,0,40)
+	btnRe.Text = "REJOIN"
+	btnRe.Font = Enum.Font.GothamBold
+	btnRe.TextColor3 = Color3.fromRGB(255,230,120)
+	btnRe.BackgroundColor3 = Color3.fromRGB(70,90,20)
+	Instance.new("UICorner", btnRe).CornerRadius = UDim.new(0,10)
+	btnRe.MouseButton1Click:Connect(function()
+		Click()
+		TeleportService:Teleport(game.PlaceId, LocalPlayer)
+	end)
+
+	local btnCS = Instance.new("TextButton", p)
+	btnCS.Size = UDim2.new(1,-20,0,40)
+	btnCS.Text = "CHANGE SERVER"
+	btnCS.Font = Enum.Font.GothamBold
+	btnCS.TextColor3 = Color3.fromRGB(255,230,120)
+	btnCS.BackgroundColor3 = Color3.fromRGB(70,90,20)
+	Instance.new("UICorner", btnCS).CornerRadius = UDim.new(0,10)
+	btnCS.MouseButton1Click:Connect(function()
+		Click()
+		TeleportService:TeleportToPlaceInstance(game.PlaceId, game.JobId, LocalPlayer)
+	end)
+end
+
+----------------------------------------------------
+-- TAB SWITCH
+----------------------------------------------------
+TabHome.MouseButton1Click:Connect(function() Click(); Show("Home") end)
+TabRules.MouseButton1Click:Connect(function() Click(); Show("Rules") end)
+TabLT2.MouseButton1Click:Connect(function() Click(); Show("LT2") end)
+TabFish.MouseButton1Click:Connect(function() Click(); Show("Fish") end)
+TabPlayer.MouseButton1Click:Connect(function() Click(); Show("Player") end)
+
+print("RLX HUB V22 ✓ LOADED")

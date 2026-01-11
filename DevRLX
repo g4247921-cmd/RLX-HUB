@@ -94,7 +94,7 @@ Toggle.ScaleType = Enum.ScaleType.Fit
 local Main = Instance.new("ImageLabel", ScreenGui)
 Main.Size = UDim2.new(0,620,0,380)
 Main.Position = UDim2.new(0.5,-310,0.5,-190)
-Main.Image = "rbxassetid://106548854544381"
+Main.Image = "rbxassetid://104266117780453"
 Main.ScaleType = Enum.ScaleType.Stretch
 Main.BackgroundTransparency = 1
 Main.Visible = false
@@ -305,8 +305,8 @@ do
 	addF("VinzHub — FishIt", "https://raw.githubusercontent.com/Vinzyy13/VinzHub/refs/heads/main/Fish-It")
 	addF("Chloe-X — FishIt", "https://raw.githubusercontent.com/MajestySkie/Chloe-X/main/Main/ChloeX")
 	addF("SoraHub — FishIt", "https://raw.githubusercontent.com/elainaceles/SoraHub/refs/heads/main/Fishit.lua")
-	addF("HendarScript — FishIt", "https://raw.githubusercontent.com/collectorhenfi-wq/Hendarscriptt/refs/heads/main/Fish%20it")
-	addF("Zokada FishIt", "https://raw.githubusercontent.com/ZOKADA/zokadascript/refs/heads/main/Fishittt.lua")
+	addF("LynxX — FishIt", "https://raw.githubusercontent.com/4LynxX/Lynx/refs/heads/main/LynxxMain.lua")
+	addF("AutoCliker", "https://rawscripts.net/raw/Universal-Script-Auto-Clicker-47778")
 	addF("x2zu Loader", "https://raw.githubusercontent.com/x2zu/loader/main/freeloader.lua")
 	addF("Speed Hub X", "https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua")
 	addF("Panda Dev List", "https://pandadevelopment.net/virtual/file/ecd9069dab3d2aa3")              

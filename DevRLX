@@ -1,5 +1,6 @@
 --==================================================
--- RLX HUB V22 — Respect Loyalty X-Factor ⚡ (FINAL COMPLETE)
+-- RLX HUB V22 — Respect Loyalty X-Factor ⚡
+-- PREMIUM FINAL (RGB + HOVER + AUTO RESIZE)
 --==================================================
 
 local Players = game:GetService("Players")
@@ -9,13 +10,16 @@ local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
 local TweenService = game:GetService("TweenService")
 local UIS = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
+local Camera = workspace.CurrentCamera
 
 -- remove existing
 if PlayerGui:FindFirstChild("RLX_V22") then
 	pcall(function() PlayerGui.RLX_V22:Destroy() end)
 end
 
--- helper: safe load url
+----------------------------------------------------
+-- helper: safe load url (ASLI)
+----------------------------------------------------
 local function safeLoad(url)
 	local ok, res = pcall(function() return game:HttpGet(url) end)
 	if not ok then return false, res end
@@ -25,7 +29,9 @@ local function safeLoad(url)
 	return ok2, err2
 end
 
+----------------------------------------------------
 -- create ScreenGui
+----------------------------------------------------
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "RLX_V22"
 ScreenGui.Parent = PlayerGui
@@ -42,7 +48,7 @@ local function Click()
 end
 
 ----------------------------------------------------
--- INTRO GOLD
+-- INTRO GOLD (ASLI)
 ----------------------------------------------------
 local Intro = Instance.new("Frame", ScreenGui)
 Intro.Size = UDim2.new(1,0,1,0)
@@ -64,13 +70,13 @@ Stroke.Color = Color3.fromRGB(255,215,0)
 Stroke.Transparency = 1
 
 task.spawn(function()
-	for i = 1,25 do
-		Logo.ImageTransparency = 1 - (i/25)
-		Stroke.Transparency = 1 - (i/25)
+	for i=1,25 do
+		Logo.ImageTransparency = 1-(i/25)
+		Stroke.Transparency = 1-(i/25)
 		task.wait(0.03)
 	end
 	task.wait(1)
-	for i = 1,25 do
+	for i=1,25 do
 		Logo.ImageTransparency = i/25
 		Stroke.Transparency = i/25
 		task.wait(0.02)
@@ -79,17 +85,16 @@ task.spawn(function()
 end)
 
 ----------------------------------------------------
--- OPEN BUTTON (IMAGE)
+-- TOGGLE BUTTON
 ----------------------------------------------------
 local Toggle = Instance.new("ImageButton", ScreenGui)
 Toggle.Size = UDim2.new(0,56,0,56)
 Toggle.Position = UDim2.new(0,20,0.5,-28)
 Toggle.Image = "rbxassetid://76348301930420"
 Toggle.BackgroundTransparency = 1
-Toggle.ScaleType = Enum.ScaleType.Fit
 
 ----------------------------------------------------
--- MAIN FRAME (IMAGE BACKGROUND)
+-- MAIN FRAME
 ----------------------------------------------------
 local Main = Instance.new("ImageLabel", ScreenGui)
 Main.Size = UDim2.new(0,620,0,380)
@@ -102,11 +107,60 @@ Instance.new("UICorner", Main).CornerRadius = UDim.new(0,18)
 
 local Glow = Instance.new("UIStroke", Main)
 Glow.Thickness = 3
-Glow.Color = Color3.fromRGB(255,200,0)
-Glow.Transparency = 0.2
+Glow.Transparency = 0.15
 
 ----------------------------------------------------
--- TOP BAR
+-- AUTO RESIZE HP / PC (PREMIUM)
+----------------------------------------------------
+local function AutoResize()
+	local v = Camera.ViewportSize
+	if v.X < 800 then
+		Main.Size = UDim2.new(0,520,0,320)
+	else
+		Main.Size = UDim2.new(0,620,0,380)
+	end
+	Main.Position = UDim2.new(0.5,-Main.Size.X.Offset/2,0.5,-Main.Size.Y.Offset/2)
+end
+AutoResize()
+Camera:GetPropertyChangedSignal("ViewportSize"):Connect(AutoResize)
+
+----------------------------------------------------
+-- RGB RAINBOW (PREMIUM)
+----------------------------------------------------
+local RGB = Instance.new("UIGradient", Main)
+RGB.Color = ColorSequence.new{
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(255,0,0)),
+	ColorSequenceKeypoint.new(0.2, Color3.fromRGB(255,255,0)),
+	ColorSequenceKeypoint.new(0.4, Color3.fromRGB(0,255,0)),
+	ColorSequenceKeypoint.new(0.6, Color3.fromRGB(0,255,255)),
+	ColorSequenceKeypoint.new(0.8, Color3.fromRGB(0,0,255)),
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(255,0,255))
+}
+
+RunService.RenderStepped:Connect(function()
+	RGB.Rotation = (RGB.Rotation + 0.3) % 360
+	Glow.Color = Color3.fromHSV((tick()%6)/6,1,1)
+end)
+
+----------------------------------------------------
+-- HOVER EFFECT (PREMIUM)
+----------------------------------------------------
+local function Hover(btn)
+	local original = btn.Size
+	btn.MouseEnter:Connect(function()
+		TweenService:Create(btn,TweenInfo.new(0.15),{
+			Size = UDim2.new(original.X.Scale,original.X.Offset+6,original.Y.Scale,original.Y.Offset+4)
+		}):Play()
+	end)
+	btn.MouseLeave:Connect(function()
+		TweenService:Create(btn,TweenInfo.new(0.15),{
+			Size = original
+		}):Play()
+	end)
+end
+
+----------------------------------------------------
+-- TOP BAR (ASLI)
 ----------------------------------------------------
 local Top = Instance.new("Frame", Main)
 Top.Size = UDim2.new(1,0,0,42)
@@ -132,7 +186,8 @@ BtnClose.BackgroundTransparency = 1
 BtnClose.Font = Enum.Font.GothamBold
 BtnClose.TextColor3 = Color3.fromRGB(255,100,100)
 BtnClose.TextSize = 18
-BtnClose.MouseButton1Click:Connect(function() Click(); Main.Visible = false end)
+Hover(BtnClose)
+BtnClose.MouseButton1Click:Connect(function() Click(); Main.Visible=false end)
 
 Toggle.MouseButton1Click:Connect(function()
 	Click()
@@ -140,27 +195,26 @@ Toggle.MouseButton1Click:Connect(function()
 end)
 
 ----------------------------------------------------
--- DRAG
+-- DRAG (ASLI)
 ----------------------------------------------------
 do
-	local dragging, dragStart, startPos
-	Main.InputBegan:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.MouseButton1 then
-			dragging = true
-			dragStart = input.Position
-			startPos = Main.Position
+	local drag, start, pos
+	Main.InputBegan:Connect(function(i)
+		if i.UserInputType==Enum.UserInputType.MouseButton1 then
+			drag=true; start=i.Position; pos=Main.Position
 		end
 	end)
-	Main.InputEnded:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.MouseButton1 then dragging = false end
+	Main.InputEnded:Connect(function(i)
+		if i.UserInputType==Enum.UserInputType.MouseButton1 then drag=false end
 	end)
-	UIS.InputChanged:Connect(function(input)
-		if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
-			local d = input.Position - dragStart
-			Main.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + d.X, startPos.Y.Scale, startPos.Y.Offset + d.Y)
+	UIS.InputChanged:Connect(function(i)
+		if drag and i.UserInputType==Enum.UserInputType.MouseMovement then
+			local d=i.Position-start
+			Main.Position=UDim2.new(pos.X.Scale,pos.X.Offset+d.X,pos.Y.Scale,pos.Y.Offset+d.Y)
 		end
 	end)
 end
+
 
 ----------------------------------------------------
 -- SIDEBAR

@@ -333,7 +333,7 @@ do
 	addBtn("SC FLY 🚀", "https://pastebin.com/raw/MsL78SwX")
 	addBtn("SystemBroken 💀", "https://raw.githubusercontent.com/H20CalibreYT/SystemBroken/main/script")
 addBtn("INVISIBLE 👽","https://raw.githubusercontent.com/g4247921-cmd/RLX-HUB/refs/heads/main/inivisble")
-addBtn("Emote/Dance","https://rawscripts.net/raw/a-literal-baseplate.-energize-gui-24798")
+addBtn("MusikYt",('https://raw.githubusercontent.com/Dan41/Roblox-Scripts/refs/heads/main/Youtube%20Music%20Player/YoutubeMusicPlayer.lua'),true)
 addBtn("ALL DANCE/EMOTE","https://raw.githubusercontent.com/7yd7/Hub/refs/heads/Branch/GUIS/Emotes.lua")
 end
 

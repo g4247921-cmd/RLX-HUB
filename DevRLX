@@ -32,7 +32,7 @@ local function Click() ClickSound:Play() end
 
 -- TOGGLE ICON
 local Toggle = Instance.new("ImageButton", ScreenGui)
-Toggle.Image = "rbxassetid://76348301930420"; Toggle.BackgroundTransparency = 1; Toggle.Draggable = true
+Toggle.Image = "rbxassetid://90655542108284"; Toggle.BackgroundTransparency = 1; Toggle.Draggable = true
 local ToggleGrad = Instance.new("UIGradient", Toggle); ToggleGrad.Color = ColorSequence.new(Color3.fromRGB(255, 215, 0), Color3.fromRGB(255, 255, 255))
 
 -- MAIN FRAME

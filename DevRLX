@@ -1,162 +1,545 @@
---==================================================
--- RLX HUB BY ANJASZRELAXZ — WALKSPEED FIXED 💎
---==================================================
+--=============================================================================
+-- 💎 RLX HUB BY ANJASZRELAXZ — LUXURY EXECUTIVE + REALTIME STATS EDITION 💎
+--=============================================================================
 local Players = game:GetService("Players")
 local UIS = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
+local TweenService = game:GetService("TweenService")
+local TeleportService = game:GetService("TeleportService")
+local Stats = game:GetService("Stats")
+
 local LocalPlayer = Players.LocalPlayer
 local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
 local Camera = workspace.CurrentCamera
 
+-- Clean Up Duplikasi UI Lama
 if PlayerGui:FindFirstChild("RLX_ANJASZ") then PlayerGui.RLX_ANJASZ:Destroy() end
 
+-- Safe Loader Core
 local function safeLoad(url)
-    task.spawn(function()
-        local ok, res = pcall(function() return game:HttpGet(url) end)
-        if ok then local fn = loadstring(res) if fn then fn() end end
-    end)
+	task.spawn(function()
+		local ok, res = pcall(function() return game:HttpGet(url) end)
+		if ok then 
+			local fn = loadstring(res) 
+			if fn then fn() end 
+		else
+			warn("[RLX Error]: Gagal memuat script dari source external.")
+		end
+	end)
 end
 
+-- Generator Gradasi Emas Mewah (Premium Gold Aksen)
 local function ApplyTextGrad(textObj)
-    local g = Instance.new("UIGradient", textObj)
-    g.Color = ColorSequence.new({
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)), 
-        ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255, 215, 0)), 
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 255, 255))
-    })
+	local g = Instance.new("UIGradient")
+	g.Color = ColorSequence.new({
+		ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)), 
+		ColorSequenceKeypoint.new(0.5, Color3.fromRGB(212, 175, 55)), -- Metallic Gold
+		ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 255, 255))
+	})
+	g.Parent = textObj
 end
 
-local ScreenGui = Instance.new("ScreenGui", PlayerGui); ScreenGui.Name = "RLX_ANJASZ"; ScreenGui.ResetOnSpawn = false
-local ClickSound = Instance.new("Sound", ScreenGui); ClickSound.SoundId = "rbxassetid://9118823101"
+-- Init ScreenGui & Sound Effect
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "RLX_ANJASZ"
+ScreenGui.ResetOnSpawn = false
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+ScreenGui.Parent = PlayerGui
+
+local ClickSound = Instance.new("Sound")
+ClickSound.SoundId = "rbxassetid://9118823101"
+ClickSound.Volume = 0.5
+ClickSound.Parent = ScreenGui
+
 local function Click() ClickSound:Play() end
 
--- TOGGLE ICON
-local Toggle = Instance.new("ImageButton", ScreenGui)
-Toggle.Image = "rbxassetid://90655542108284"; Toggle.BackgroundTransparency = 1; Toggle.Draggable = true
-local ToggleGrad = Instance.new("UIGradient", Toggle); ToggleGrad.Color = ColorSequence.new(Color3.fromRGB(255, 215, 0), Color3.fromRGB(255, 255, 255))
+-- =============================================================================
+-- [1] TOGGLE COMPONENT (ICON) - WITH DRAG SYSTEM
+-- =============================================================================
+local Toggle = Instance.new("ImageButton")
+Toggle.Name = "RLX_ToggleIcon"
+Toggle.Image = "rbxassetid://90655542108284"
+Toggle.BackgroundTransparency = 1
+Toggle.Size = UDim2.new(0, 55, 0, 55)
+Toggle.Position = UDim2.new(0, 20, 0.5, -27)
+Toggle.Parent = ScreenGui
 
--- MAIN FRAME
-local Main = Instance.new("ImageLabel", ScreenGui)
-Main.Image = "rbxassetid://104266117780453"; Main.BackgroundTransparency = 1; Main.Visible = false
-Instance.new("UICorner", Main).CornerRadius = UDim.new(0, 20)
-local MainStroke = Instance.new("UIStroke", Main); MainStroke.Thickness = 3; MainStroke.Color = Color3.fromRGB(255, 215, 0)
+local ToggleGrad = Instance.new("UIGradient")
+ToggleGrad.Color = ColorSequence.new(Color3.fromRGB(212, 175, 55), Color3.fromRGB(255, 255, 255))
+ToggleGrad.Parent = Toggle
 
-local TopBar = Instance.new("TextLabel", Main)
-TopBar.Size = UDim2.new(1, 0, 0, 40); TopBar.BackgroundTransparency = 1; TopBar.Text = "  RLX HUB BY ANJASZRELAXZ"
-TopBar.TextColor3 = Color3.new(1,1,1); TopBar.Font = Enum.Font.GothamBold; TopBar.TextSize = 15; TopBar.TextXAlignment = "Left"
+-- Drag System Khusus Icon (Mobile Friendly)
+local iconDragging = false
+local iconDragStart, iconStartPos
+
+Toggle.InputBegan:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+		iconDragging = true
+		iconDragStart = input.Position
+		iconStartPos = Toggle.Position
+	end
+end)
+
+UIS.InputChanged:Connect(function(input)
+	if iconDragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+		local delta = input.Position - iconDragStart
+		Toggle.Position = UDim2.new(iconStartPos.X.Scale, iconStartPos.X.Offset + delta.X, iconStartPos.Y.Scale, iconStartPos.Y.Offset + delta.Y)
+	end
+end)
+
+UIS.InputEnded:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+		iconDragging = false
+	end
+end)
+
+-- =============================================================================
+-- [2] MAIN FRAME INTERACTION (LUXURIOUS DESIGN)
+-- =============================================================================
+local Main = Instance.new("Frame")
+Main.Name = "MainHubFrame"
+Main.BackgroundColor3 = Color3.fromRGB(15, 15, 18) -- Dark Charcoal Premium
+Main.BorderSizePixel = 0
+Main.Visible = false
+Main.Parent = ScreenGui
+
+local MainCorner = Instance.new("UICorner")
+MainCorner.CornerRadius = UDim.new(0, 10)
+MainCorner.Parent = Main
+
+local MainStroke = Instance.new("UIStroke")
+MainStroke.Thickness = 1.5
+MainStroke.Color = Color3.fromRGB(212, 175, 55) -- Gold Border
+MainStroke.Parent = Main
+
+-- Top Bar System
+local TopBar = Instance.new("TextLabel")
+TopBar.Size = UDim2.new(1, 0, 0, 40)
+TopBar.BackgroundTransparency = 1
+TopBar.Text = "   RLX HUB BY ANJASZRELAXZ"
+TopBar.TextColor3 = Color3.fromRGB(255, 255, 255)
+TopBar.Font = Enum.Font.GothamBold
+TopBar.TextSize = 13
+TopBar.TextXAlignment = Enum.TextXAlignment.Left
+TopBar.Parent = Main
 ApplyTextGrad(TopBar)
 
-local function UpdateLayout()
-    if Camera.ViewportSize.X < 800 then 
-        Main.Size = UDim2.new(0, 480, 0, 280); Toggle.Size = UDim2.new(0, 45, 0, 45)
-    else 
-        Main.Size = UDim2.new(0, 650, 0, 400); Toggle.Size = UDim2.new(0, 65, 0, 65)
-    end
-    Main.Position = UDim2.new(0.5, -Main.AbsoluteSize.X/2, 0.5, -Main.AbsoluteSize.Y/2)
-end
-UpdateLayout(); Camera:GetPropertyChangedSignal("ViewportSize"):Connect(UpdateLayout)
-Toggle.MouseButton1Click:Connect(function() Click(); Main.Visible = not Main.Visible end)
+local CloseBtn = Instance.new("TextButton")
+CloseBtn.Size = UDim2.new(0, 30, 0, 30)
+CloseBtn.Position = UDim2.new(1, -35, 0, 5)
+CloseBtn.Text = "✕"
+CloseBtn.TextColor3 = Color3.fromRGB(180, 180, 190)
+CloseBtn.TextSize = 14
+CloseBtn.Font = Enum.Font.GothamBold
+CloseBtn.BackgroundTransparency = 1
+CloseBtn.Parent = TopBar
 
--- SIDEBAR & PAGES
-local Sidebar = Instance.new("Frame", Main); Sidebar.Size = UDim2.new(0, 150, 1, -50); Sidebar.Position = UDim2.new(0, 10, 0, 40); Sidebar.BackgroundTransparency = 0.9; Sidebar.BackgroundColor3 = Color3.new(0,0,0); Instance.new("UICorner", Sidebar).CornerRadius = UDim.new(0, 15)
-local Container = Instance.new("Frame", Main); Container.Size = UDim2.new(1, -180, 1, -50); Container.Position = UDim2.new(0, 170, 0, 40); Container.BackgroundTransparency = 1
+-- =============================================================================
+-- [REALTIME STATS COMPONENT - FPS & PING]
+-- =============================================================================
+local StatsFrame = Instance.new("Frame")
+StatsFrame.Name = "StatsDisplayFrame"
+StatsFrame.Size = UDim2.new(0, 180, 0, 20)
+StatsFrame.Position = UDim2.new(1, -190, 1, -25) -- Pojok kanan bawah frame utama
+StatsFrame.BackgroundTransparency = 1
+StatsFrame.Parent = Main
+
+local StatsLabel = Instance.new("TextLabel")
+StatsLabel.Size = UDim2.new(1, 0, 1, 0)
+StatsLabel.BackgroundTransparency = 1
+StatsLabel.RichText = true
+StatsLabel.Text = "FPS: FETCHING... | PING: FETCHING..."
+StatsLabel.TextColor3 = Color3.fromRGB(180, 180, 185)
+StatsLabel.Font = Enum.Font.Code
+StatsLabel.TextSize = 10
+StatsLabel.TextXAlignment = Enum.TextXAlignment.Right
+StatsLabel.Parent = StatsFrame
+
+-- Engine Penghitung FPS & Ping Otomatis
+local fpsCount = 0
+local lastFpsUpdate = os.clock()
+
+RunService.RenderStepped:Connect(function()
+	fpsCount = fpsCount + 1
+	local now = os.clock()
+	if now - lastFpsUpdate >= 1 then
+		local currentFps = math.floor(fpsCount / (now - lastFpsUpdate))
+		
+		-- Mengambil data ping murni dari Network Performance Stats
+		local currentPing = math.floor(Stats.Network.ServerStatsItem["Data Ping"]:GetValue())
+		
+		StatsLabel.Text = "⚡ <b>FPS:</b> " .. currentFps .. " | 📡 <b>PING:</b> " .. currentPing .. " ms"
+		
+		-- Reset counter
+		fpsCount = 0
+		lastFpsUpdate = now
+	end
+end)
+
+-- Responsive Viewport Engine
+local function UpdateLayout()
+	if Camera.ViewportSize.X < 800 then 
+		Main.Size = UDim2.new(0, 480, 0, 280)
+		Toggle.Size = UDim2.new(0, 45, 0, 45)
+	else 
+		Main.Size = UDim2.new(0, 600, 0, 360)
+		Toggle.Size = UDim2.new(0, 55, 0, 55)
+	end
+	Main.Position = UDim2.new(0.5, -Main.AbsoluteSize.X/2, 0.5, -Main.AbsoluteSize.Y/2)
+end
+UpdateLayout()
+Camera:GetPropertyChangedSignal("ViewportSize"):Connect(UpdateLayout)
+
+Toggle.MouseButton1Click:Connect(function() Click(); Main.Visible = not Main.Visible end)
+CloseBtn.MouseButton1Click:Connect(function() Click(); Main.Visible = false end)
+
+-- =============================================================================
+-- [3] CONTAINERS & PAGE BUILDER
+-- =============================================================================
+local Sidebar = Instance.new("Frame")
+Sidebar.Size = UDim2.new(0, 130, 1, -55)
+Sidebar.Position = UDim2.new(0, 12, 0, 42)
+Sidebar.BackgroundColor3 = Color3.fromRGB(10, 10, 12)
+Sidebar.BorderSizePixel = 0
+Sidebar.Parent = Main
+
+local SideCorner = Instance.new("UICorner")
+SideCorner.CornerRadius = UDim.new(0, 6)
+SideCorner.Parent = Sidebar
+
+local SideLayout = Instance.new("UIListLayout")
+SideLayout.Padding = UDim.new(0, 5)
+SideLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+SideLayout.Parent = Sidebar
+
+local SidePadding = Instance.new("UIPadding")
+SidePadding.PaddingTop = UDim.new(0, 8)
+SidePadding.Parent = Sidebar
+
+local Container = Instance.new("Frame")
+Container.Size = UDim2.new(1, -164, 1, -55)
+Container.Position = UDim2.new(0, 152, 0, 42)
+Container.BackgroundTransparency = 1
+Container.Parent = Main
 
 local Pages = {}
 local function CreatePage(name)
-    local p = Instance.new("ScrollingFrame", Container); p.Size = UDim2.new(1, 0, 1, 0); p.BackgroundTransparency = 1; p.Visible = false; p.ScrollBarThickness = 2
-    Instance.new("UIListLayout", p).Padding = UDim.new(0, 10); Pages[name] = p; return p
+	local p = Instance.new("ScrollingFrame")
+	p.Name = name .. "Page"
+	p.Size = UDim2.new(1, 0, 1, -25) -- Menyisakan space di bawah untuk Stats display
+	p.BackgroundTransparency = 1
+	p.Visible = false
+	p.ScrollBarThickness = 2
+	p.ScrollBarImageColor3 = Color3.fromRGB(212, 175, 55)
+	p.Parent = Container
+
+	local layout = Instance.new("UIListLayout")
+	layout.Padding = UDim.new(0, 8)
+	layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+	layout.Parent = p
+
+	layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+		p.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y + 15)
+	end)
+
+	Pages[name] = p
+	return p
 end
 
-local function CreateTab(text, name, y)
-    local btn = Instance.new("TextButton", Sidebar); btn.Size = UDim2.new(1, -10, 0, 40); btn.Position = UDim2.new(0, 5, 0, y); btn.BackgroundColor3 = Color3.fromRGB(60, 60, 60); btn.Text = text; btn.TextColor3 = Color3.new(1, 1, 1); btn.Font = Enum.Font.GothamBold; btn.TextSize = 12
-    Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 8)
-    Instance.new("UIGradient", btn).Color = ColorSequence.new(Color3.fromRGB(255,215,0), Color3.fromRGB(120,90,0))
-    btn.MouseButton1Click:Connect(function() Click(); for k, v in pairs(Pages) do v.Visible = (k == name) end end)
+local function CreateTab(text, name)
+	local btn = Instance.new("TextButton")
+	btn.Size = UDim2.new(0.9, 0, 0, 34)
+	btn.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
+	btn.RichText = true
+	btn.Text = "<b>" .. text .. "</b>"
+	btn.TextColor3 = Color3.fromRGB(160, 160, 170)
+	btn.Font = Enum.Font.GothamBold
+	btn.TextSize = 10
+	btn.BorderSizePixel = 0
+	btn.Parent = Sidebar
+
+	local bCorner = Instance.new("UICorner")
+	bCorner.CornerRadius = UDim.new(0, 5)
+	bCorner.Parent = btn
+
+	btn.MouseButton1Click:Connect(function()
+		Click()
+		for k, v in pairs(Pages) do v.Visible = (k == name) end
+		for _, b in pairs(Sidebar:GetChildren()) do
+			if b:IsA("TextButton") then b.TextColor3 = Color3.fromRGB(160, 160, 170) end
+		end
+		btn.TextColor3 = Color3.fromRGB(212, 175, 55)
+	end)
 end
 
-local HomePg = CreatePage("Home"); local RulesPg = CreatePage("Rules"); local MainScripPg = CreatePage("MainScrip"); local PlayerPg = CreatePage("Player")
+-- Build Pages Matrix
+local HomePg = CreatePage("Home")
+local RulesPg = CreatePage("Rules")
+local MainScripPg = CreatePage("MainScrip")
+local PlayerPg = CreatePage("Player")
 
--- 1. HOME
-local Prof = Instance.new("Frame", HomePg); Prof.Size = UDim2.new(1, -10, 0, 120); Prof.BackgroundColor3 = Color3.fromRGB(40,40,40); Instance.new("UICorner", Prof)
-local Ava = Instance.new("ImageLabel", Prof); Ava.Size = UDim2.new(0, 70, 0, 70); Ava.Position = UDim2.new(0, 15, 0.5, -35); Ava.Image = Players:GetUserThumbnailAsync(LocalPlayer.UserId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size420x420); Instance.new("UICorner", Ava).CornerRadius = UDim.new(1,0)
-local UserT = Instance.new("TextLabel", Prof); UserT.Size = UDim2.new(1, -100, 1, 0); UserT.Position = UDim2.new(0, 100, 0, 0); UserT.Text = "Hello,\n" .. LocalPlayer.Name; UserT.TextColor3 = Color3.new(1,1,1); UserT.Font = Enum.Font.GothamBold; UserT.TextSize = 20; UserT.BackgroundTransparency = 1; UserT.TextXAlignment = "Left"; ApplyTextGrad(UserT)
+-- =============================================================================
+-- [4] TAB CONTENT CREATION
+-- =============================================================================
 
--- 2. RULES
+-- 1. HOME LAYOUT
+local Prof = Instance.new("Frame")
+Prof.Size = UDim2.new(0.95, 0, 0, 90)
+Prof.BackgroundColor3 = Color3.fromRGB(22, 22, 26)
+Prof.BorderSizePixel = 0
+Prof.Parent = HomePg
+
+Instance.new("UICorner", Prof).CornerRadius = UDim.new(0, 6)
+
+local Ava = Instance.new("ImageLabel")
+Ava.Size = UDim2.new(0, 60, 0, 60)
+Ava.Position = UDim2.new(0, 15, 0.5, -30)
+Ava.Image = Players:GetUserThumbnailAsync(LocalPlayer.UserId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size420x420)
+Ava.BackgroundTransparency = 1
+Ava.Parent = Prof
+Instance.new("UICorner", Ava).CornerRadius = UDim.new(1, 0)
+
+local UserT = Instance.new("TextLabel")
+UserT.Size = UDim2.new(1, -95, 1, 0)
+UserT.Position = UDim2.new(0, 90, 0, 0)
+UserT.RichText = true
+UserT.Text = "Welcome <i>Executive</i>,\n<b><font color='rgb(212,175,55)'>" .. LocalPlayer.Name .. "</font></b>"
+UserT.TextColor3 = Color3.fromRGB(255, 255, 255)
+UserT.Font = Enum.Font.GothamBold
+UserT.TextSize = 14
+UserT.BackgroundTransparency = 1
+UserT.TextXAlignment = Enum.TextXAlignment.Left
+UserT.Parent = Prof
+ApplyTextGrad(UserT)
+
+-- 2. RULES LAYOUT
 local function AddRule(txt) 
-    local l = Instance.new("TextLabel", RulesPg); l.Size = UDim2.new(1,-10,0,30); l.Text = "• "..txt; l.TextColor3 = Color3.new(1,1,1); l.Font = Enum.Font.GothamBold; l.TextSize = 16; l.BackgroundTransparency = 1; l.TextXAlignment = "Left"; ApplyTextGrad(l)
+	local l = Instance.new("TextLabel")
+	l.Size = UDim2.new(0.95, 0, 0, 30)
+	l.RichText = true
+	l.Text = " •  <b>" .. txt .. "</b>"
+	l.TextColor3 = Color3.fromRGB(240, 240, 245)
+	l.Font = Enum.Font.GothamMedium
+	l.TextSize = 12
+	l.BackgroundTransparency = 1
+	l.TextXAlignment = Enum.TextXAlignment.Left
+	l.Parent = RulesPg
+	ApplyTextGrad(l)
 end
-AddRule("Scrip jgn di jual"); AddRule("Respect All Member"); AddRule("Stay Loyal RLX HUB"); AddRule("Salam hangat -Devloper by anjaszrelaxz");
+AddRule("Script jangan diperjualbelikan!")
+AddRule("Respect All Members.")
+AddRule("Stay Loyal with RLX HUB.")
+AddRule("Warm regards - Developer by AnjaszRelaxz.")
 
--- 3. MainScrip
+-- 3. MAINSCRIP LAYOUT
 local function AddBtn(page, text, url)
-    local b = Instance.new("TextButton", page); b.Size = UDim2.new(1,-10,0,38); b.BackgroundColor3 = Color3.fromRGB(50,50,50); b.Text = text; b.TextColor3 = Color3.new(1,1,1); b.Font = Enum.Font.GothamBold; Instance.new("UICorner", b); ApplyTextGrad(b)
-    b.MouseButton1Click:Connect(function() Click(); safeLoad(url) end)
+	local b = Instance.new("TextButton")
+	b.Size = UDim2.new(0.95, 0, 0, 38)
+	b.BackgroundColor3 = Color3.fromRGB(22, 22, 26)
+	b.RichText = true
+	b.Text = "<b>" .. text .. "</b>"
+	b.TextColor3 = Color3.fromRGB(255, 255, 255)
+	b.Font = Enum.Font.GothamBold
+	b.TextSize = 11
+	b.BorderSizePixel = 0
+	b.Parent = page
+	
+	local bc = Instance.new("UICorner")
+	bc.CornerRadius = UDim.new(0, 6)
+	bc.Parent = b
+	
+	ApplyTextGrad(b)
+	b.MouseButton1Click:Connect(function() Click(); safeLoad(url) end)
 end
+
 AddBtn(MainScripPg, "KORN HUB (LT2) 🌳", "https://raw.githubusercontent.com/DevKron/Kron_Hub/refs/heads/main/version_1.0")
+AddBtn(MainScripPg, "INVISIBLE 👽", "https://raw.githubusercontent.com/g4247921-cmd/RLX-HUB/refs/heads/main/inivisble")
 AddBtn(MainScripPg, "DARK HUB (LT2) 🌑", "https://raw.githubusercontent.com/darkxwin/darkxsourcethinkyoutousedarkx/main/darkx")
 AddBtn(MainScripPg, "CAR FLY 🚗", "https://rawscripts.net/raw/Universal-Script-Car-fly-mobile-33376")
 AddBtn(MainScripPg, "TELEPORT PLAYER 📍", "https://raw.githubusercontent.com/g4247921-cmd/MasterRLX-/refs/heads/main/TeleportPlayer")
-AddBtn(MainScripPg, "MUSIK YT PLAYER 🎵", "https://raw.githubusercontent.com/g4247921-cmd/RLX-HUB/refs/heads/main/MusicPlayer")
+AddBtn(MainScripPg, "MUSIK YT PLAYER 🎵", "https://raw.githubusercontent.com/Dan41/Roblox-Scripts/refs/heads/main/Youtube%20Music%20Player/YoutubeMusicPlayer.lua")
 AddBtn(MainScripPg, "SC FLY 🚀", "https://pastebin.com/raw/MsL78SwX")
 AddBtn(MainScripPg, "ALL DANCE/EMOTE 💃", "https://raw.githubusercontent.com/7yd7/Hub/refs/heads/Branch/GUIS/Emotes.lua")
 
--- 4. PLAYER (FIXED WALKSPEED & JUMP)
+-- =============================================================================
+-- [5] PLAYER MECHANICS CORE (STABLE WALKSPEED & JUMPPOWER FIXED)
+-- =============================================================================
 local _G_WS = 16
 local _G_JP = 50
+local _G_UseJP = true
 
+-- Sinkronisasi Sempurna Menggunakan RenderStepped & Mencegah Reset Saat Mati
 RunService.RenderStepped:Connect(function()
-    pcall(function()
-        if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
-            if LocalPlayer.Character.Humanoid.WalkSpeed ~= _G_WS then
-                LocalPlayer.Character.Humanoid.WalkSpeed = _G_WS
-            end
-            if LocalPlayer.Character.Humanoid.JumpPower ~= _G_JP then
-                LocalPlayer.Character.Humanoid.JumpPower = _G_JP
-                LocalPlayer.Character.Humanoid.UseJumpPower = true
-            end
-        end
-    end)
+	pcall(function()
+		local character = LocalPlayer.Character
+		if character then
+			local humanoid = character:FindFirstChildOfClass("Humanoid")
+			if humanoid and humanoid.Health > 0 then
+				if humanoid.WalkSpeed ~= _G_WS then
+					humanoid.WalkSpeed = _G_WS
+				end
+				if _G_UseJP then
+					if humanoid.JumpPower ~= _G_JP then
+						humanoid.UseJumpPower = true
+						humanoid.JumpPower = _G_JP
+					end
+				end
+			end
+		end
+	end)
 end)
 
+-- Slider Engine Pro
 local function CreateSlider(name, min, max, initial, callback)
-    local f = Instance.new("Frame", PlayerPg); f.Size = UDim2.new(1,-10,0,55); f.BackgroundTransparency = 1
-    local l = Instance.new("TextLabel", f); l.Size = UDim2.new(1,0,0,20); l.Text = name.." : "..initial; l.TextColor3 = Color3.new(1,1,1); l.BackgroundTransparency = 1; l.Font = Enum.Font.GothamBold; ApplyTextGrad(l)
-    local bar = Instance.new("Frame", f); bar.Size = UDim2.new(1,0,0,12); bar.Position = UDim2.new(0,0,0,25); bar.BackgroundColor3 = Color3.fromRGB(40,40,40); Instance.new("UICorner", bar)
-    local fill = Instance.new("Frame", bar); fill.Size = UDim2.new((initial-min)/(max-min),0,1,0); fill.BackgroundColor3 = Color3.fromRGB(255,215,0); Instance.new("UICorner", fill)
-    
-    local function Update(input)
-        local r = math.clamp((input.Position.X - bar.AbsolutePosition.X)/bar.AbsoluteSize.X, 0, 1)
-        local val = math.floor(min + (r * (max-min)))
-        fill.Size = UDim2.new(r,0,1,0)
-        l.Text = name.." : "..val
-        callback(val)
-    end
-    
-    local dragging = false
-    bar.InputBegan:Connect(function(i) if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then dragging = true; Update(i) end end)
-    UIS.InputChanged:Connect(function(i) if dragging and (i.UserInputType == Enum.UserInputType.MouseMovement or i.UserInputType == Enum.UserInputType.Touch) then Update(i) end end)
-    UIS.InputEnded:Connect(function(i) if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then dragging = false end end)
+	local f = Instance.new("Frame")
+	f.Size = UDim2.new(0.95, 0, 0, 50)
+	f.BackgroundTransparency = 1
+	f.Parent = PlayerPg
+
+	local l = Instance.new("TextLabel")
+	l.Size = UDim2.new(1, 0, 0, 18)
+	l.RichText = true
+	l.Text = "<b>" .. name .. " : <font color='rgb(212,175,55)'>" .. initial .. "</font></b>"
+	l.TextColor3 = Color3.fromRGB(240, 240, 245)
+	l.BackgroundTransparency = 1
+	l.Font = Enum.Font.GothamBold
+	l.TextSize = 11
+	l.TextXAlignment = Enum.TextXAlignment.Left
+	l.Parent = f
+	ApplyTextGrad(l)
+
+	local bar = Instance.new("Frame")
+	bar.Size = UDim2.new(1, 0, 0, 8)
+	bar.Position = UDim2.new(0, 0, 0, 24)
+	bar.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
+	bar.BorderSizePixel = 0
+	bar.Parent = f
+	Instance.new("UICorner", bar).CornerRadius = UDim.new(0, 4)
+
+	local fill = Instance.new("Frame")
+	fill.Size = UDim2.new((initial - min) / (max - min), 0, 1, 0)
+	fill.BackgroundColor3 = Color3.fromRGB(212, 175, 55)
+	fill.BorderSizePixel = 0
+	fill.Parent = bar
+	Instance.new("UICorner", fill).CornerRadius = UDim.new(0, 4)
+
+	local function Update(input)
+		local r = math.clamp((input.Position.X - bar.AbsolutePosition.X) / bar.AbsoluteSize.X, 0, 1)
+		local val = math.floor(min + (r * (max - min)))
+		fill.Size = UDim2.new(r, 0, 1, 0)
+		l.Text = "<b>" .. name .. " : <font color='rgb(212,175,55)'>" .. val .. "</font></b>"
+		callback(val)
+	end
+
+	local dragging = false
+	bar.InputBegan:Connect(function(i)
+		if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then 
+			dragging = true; Update(i) 
+		end 
+	end)
+	UIS.InputChanged:Connect(function(i)
+		if dragging and (i.UserInputType == Enum.UserInputType.MouseMovement or i.UserInputType == Enum.UserInputType.Touch) then 
+			Update(i) 
+		end 
+	end)
+	UIS.InputEnded:Connect(function(i)
+		if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then 
+			dragging = false 
+		end 
+	end)
 end
 
 CreateSlider("WalkSpeed", 16, 250, 16, function(v) _G_WS = v end)
 CreateSlider("JumpPower", 50, 350, 50, function(v) _G_JP = v end)
 
+-- Utilitas Player Ekstra
 local function SimpleBtn(page, text, func)
-    local b = Instance.new("TextButton", page); b.Size = UDim2.new(1,-10,0,40); b.BackgroundColor3 = Color3.fromRGB(40,40,40); b.Text = text; b.TextColor3 = Color3.new(1,1,1); b.Font = Enum.Font.GothamBold; Instance.new("UICorner", b); ApplyTextGrad(b)
-    b.MouseButton1Click:Connect(function() Click(); func(b) end)
+	local b = Instance.new("TextButton")
+	b.Size = UDim2.new(0.95, 0, 0, 36)
+	b.BackgroundColor3 = Color3.fromRGB(22, 22, 26)
+	b.RichText = true
+	b.Text = "<b>" .. text .. "</b>"
+	b.TextColor3 = Color3.fromRGB(255, 255, 255)
+	b.Font = Enum.Font.GothamBold
+	b.TextSize = 11
+	b.BorderSizePixel = 0
+	b.Parent = page
+	
+	local c = Instance.new("UICorner")
+	c.CornerRadius = UDim.new(0, 6)
+	c.Parent = b
+	
+	ApplyTextGrad(b)
+	b.MouseButton1Click:Connect(function() Click(); func(b) end)
 end
 
+-- Engine Noclip
 local Noclip = false
-RunService.Stepped:Connect(function() if Noclip and LocalPlayer.Character then for _, v in pairs(LocalPlayer.Character:GetDescendants()) do if v:IsA("BasePart") then v.CanCollide = false end end end end)
-SimpleBtn(PlayerPg, "NOCLIP: OFF", function(b) Noclip = not Noclip; b.Text = "NOCLIP: "..(Noclip and "ON" or "OFF") end)
-SimpleBtn(PlayerPg, "REFRESH AVATAR (/re)", function() 
-    local pos = LocalPlayer.Character.HumanoidRootPart.CFrame
-    LocalPlayer.Character:BreakJoints(); LocalPlayer.CharacterAdded:Wait(); task.wait(0.2); LocalPlayer.Character.HumanoidRootPart.CFrame = pos
+RunService.Stepped:Connect(function()
+	if Noclip and LocalPlayer.Character then
+		for _, v in pairs(LocalPlayer.Character:GetDescendants()) do
+			if v:IsA("BasePart") then v.CanCollide = false end
+		end
+	end
 end)
-SimpleBtn(PlayerPg, "REJOIN SERVER", function() game:GetService("TeleportService"):Teleport(game.PlaceId, LocalPlayer) end)
-SimpleBtn(PlayerPg, "INFINITE YIELD", function() safeLoad("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source") end)
 
--- INIT
-CreateTab("HOME 🏠", "Home", 0); CreateTab("RULES 📜", "Rules", 45); CreateTab("MAINSCRIP ⚡", "MainScrip", 90); CreateTab("PLAYER ⚙️", "Player", 135)
-Pages.Home.Visible = true; print("RLX HUB WS-FIX LOADED ✓")
+SimpleBtn(PlayerPg, "NOCLIP: <font color='rgb(255,75,75)'>OFF</font>", function(b) 
+	Noclip = not Noclip
+	b.Text = "<b>NOCLIP: " .. (Noclip and "<font color='rgb(75,255,75)'>ON</font>" or "<font color='rgb(255,75,75)'>OFF</font>") .. "</b>"
+end)
 
+SimpleBtn(PlayerPg, "REFRESH AVATAR (/re)", function() 
+	local character = LocalPlayer.Character
+	if character and character:FindFirstChild("HumanoidRootPart") then
+		local pos = character.HumanoidRootPart.CFrame
+		character:BreakJoints()
+		LocalPlayer.CharacterAdded:Wait()
+		task.wait(0.25)
+		if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+			LocalPlayer.Character.HumanoidRootPart.CFrame = pos
+		end
+	end
+end)
+
+SimpleBtn(PlayerPg, "REJOIN SERVER", function() 
+	TeleportService:Teleport(game.PlaceId, LocalPlayer) 
+end)
+
+SimpleBtn(PlayerPg, "INFINITE YIELD", function() 
+	safeLoad("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source") 
+end)
+
+-- =============================================================================
+-- [6] DRAG CORE SYSTEM (DRAGGABLE MAIN FRAME TANPA BUG)
+-- =============================================================================
+local dragToggle, dragStart, startPos
+local function updateInput(input)
+	local delta = input.Position - dragStart
+	Main.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+end
+
+TopBar.InputBegan:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+		dragToggle = true
+		dragStart = input.Position
+		startPos = Main.Position
+		input.Changed:Connect(function()
+			if input.UserInputState == Enum.UserInputState.End then dragToggle = false end
+		end)
+	end
+end)
+
+UIS.InputChanged:Connect(function(input)
+	if dragToggle and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+		updateInput(input)
+	end
+end)
+
+-- Initialize TABS & Start UI
+CreateTab("HOME 🏠", "Home")
+CreateTab("RULES 📜", "Rules")
+CreateTab("MAINSCRIP ⚡", "MainScrip")
+CreateTab("PLAYER ⚙️", "Player")
+
+Pages.Home.Visible = true
+print("RLX HUB LUXURY + REALTIME MONITORING OPERATIONAL ✓")

@@ -1,545 +1,226 @@
---=============================================================================
--- 💎 RLX HUB BY ANJASZRELAXZ — LUXURY EXECUTIVE + REALTIME STATS EDITION 💎
---=============================================================================
-local Players = game:GetService("Players")
-local UIS = game:GetService("UserInputService")
-local RunService = game:GetService("RunService")
-local TweenService = game:GetService("TweenService")
-local TeleportService = game:GetService("TeleportService")
-local Stats = game:GetService("Stats")
+local P,U,R,T,S,H=game:GetService("Players"),game:GetService("UserInputService"),game:GetService("RunService"),game:GetService("TeleportService"),game:GetService("Stats"),game:GetService("HttpService")
+local L,C=P.LocalPlayer,workspace.CurrentCamera local pG=L:WaitForChild("PlayerGui")
+if pG:FindFirstChild("RLX_ANJASZ")then pG.RLX_ANJASZ:Destroy()end
 
-local LocalPlayer = Players.LocalPlayer
-local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
-local Camera = workspace.CurrentCamera
-
--- Clean Up Duplikasi UI Lama
-if PlayerGui:FindFirstChild("RLX_ANJASZ") then PlayerGui.RLX_ANJASZ:Destroy() end
-
--- Safe Loader Core
-local function safeLoad(url)
-	task.spawn(function()
-		local ok, res = pcall(function() return game:HttpGet(url) end)
-		if ok then 
-			local fn = loadstring(res) 
-			if fn then fn() end 
-		else
-			warn("[RLX Error]: Gagal memuat script dari source external.")
-		end
-	end)
+local function sL(u)
+    task.spawn(function()
+        local o,r=pcall(function()return game:HttpGet(u)end)
+        if o then local f=loadstring(r)if f then f()end end
+    end)
+end
+local function aG(o)
+    local g=Instance.new("UIGradient")g.Color=ColorSequence.new({ColorSequenceKeypoint.new(0,Color3.fromRGB(255,255,255)),ColorSequenceKeypoint.new(0.5,Color3.fromRGB(212,175,55)),ColorSequenceKeypoint.new(1,Color3.fromRGB(255,255,255))})g.Parent=o 
 end
 
--- Generator Gradasi Emas Mewah (Premium Gold Aksen)
-local function ApplyTextGrad(textObj)
-	local g = Instance.new("UIGradient")
-	g.Color = ColorSequence.new({
-		ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)), 
-		ColorSequenceKeypoint.new(0.5, Color3.fromRGB(212, 175, 55)), -- Metallic Gold
-		ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 255, 255))
-	})
-	g.Parent = textObj
+local SG=Instance.new("ScreenGui")SG.Name="RLX_ANJASZ";SG.ResetOnSpawn=false;SG.ZIndexBehavior=Enum.ZIndexBehavior.Sibling;SG.Parent=pG
+local cS=Instance.new("Sound")cS.SoundId="rbxassetid://9118823101";cS.Volume=0.5;cS.Parent=SG local function Ck()cS:Play()end
+
+task.spawn(function()
+    local v=game:GetService("VirtualUser")
+    L.Idled:Connect(function()v:Button2Down(Vector2.new(0,0),C.CFrame)task.wait(1)v:Button2Up(Vector2.new(0,0),C.CFrame)end)
+end)
+
+local Tg=Instance.new("ImageButton")Tg.Name="RLX_ToggleIcon";Tg.Image="rbxassetid://90655542108284";Tg.BackgroundTransparency=1;Tg.Size=UDim2.new(0,55,0,55);Tg.Position=UDim2.new(0,20,0.5,-27);Tg.Parent=SG
+local TgG=Instance.new("UIGradient")TgG.Color=ColorSequence.new(Color3.fromRGB(212,175,55),Color3.fromRGB(255,255,255));TgG.Parent=Tg
+
+local iDg,iDS,iSP
+Tg.InputBegan:Connect(function(i)if i.UserInputType==Enum.UserInputType.MouseButton1 or i.UserInputType==Enum.UserInputType.Touch then iDg=true;iDS=i.Position;iSP=Tg.Position end end)
+U.InputChanged:Connect(function(i)if iDg and(i.UserInputType==Enum.UserInputType.MouseMovement or i.UserInputType==Enum.UserInputType.Touch)then local d=i.Position-iDS;Tg.Position=UDim2.new(iSP.X.Scale,iSP.X.Offset+d.X,iSP.Y.Scale,iSP.Y.Offset+d.Y)end end)
+U.InputEnded:Connect(function(i)if i.UserInputType==Enum.UserInputType.MouseButton1 or i.UserInputType==Enum.UserInputType.Touch then iDg=false end end)
+
+local M=Instance.new("Frame")M.Name="MainHubFrame";M.BackgroundColor3=Color3.fromRGB(15,15,18);M.BorderSizePixel=0;M.Visible=false;M.Parent=SG Instance.new("UICorner",M).CornerRadius=UDim.new(0,10)
+local MS=Instance.new("UIStroke")MS.Thickness=1.5;MS.Color=Color3.fromRGB(212,175,55);MS.Parent=M
+local TB=Instance.new("TextLabel")TB.Size=UDim2.new(1,0,0,40);TB.BackgroundTransparency=1;TB.Text="   RLX HUB BY ANJASZRELAXZ";TB.TextColor3=Color3.fromRGB(255,255,255);TB.Font=Enum.Font.GothamBold;TB.TextSize=13;TB.TextXAlignment=Enum.TextXAlignment.Left;TB.Parent=M;aG(TB)
+local CB=Instance.new("TextButton")CB.Size=UDim2.new(0,30,0,30);CB.Position=UDim2.new(1,-35,0,5);CB.Text="✕";CB.TextColor3=Color3.fromRGB(180,180,190);CB.TextSize=14;CB.Font=Enum.Font.GothamBold;CB.BackgroundTransparency=1;CB.Parent=TB
+
+local sF=Instance.new("Frame")sF.Size=UDim2.new(0,180,0,20);sF.Position=UDim2.new(1,-190,1,-25);sF.BackgroundTransparency=1;sF.Parent=M
+local sLbl=Instance.new("TextLabel")sLbl.Size=UDim2.new(1,0,1,0);sLbl.BackgroundTransparency=1;sLbl.RichText=true;sLbl.Text="FPS: ... | PING: ...";sLbl.TextColor3=Color3.fromRGB(180,180,185);sLbl.Font=Enum.Font.Code;sLbl.TextSize=10;sLbl.TextXAlignment=Enum.TextXAlignment.Right;sLbl.Parent=sF
+
+local fC,lFU=0,os.clock()
+R.RenderStepped:Connect(function()
+    fC=fC+1;local n=os.clock()
+    if n-lFU>=1 then 
+        local cFps=math.floor(fC/(n-lFU))local cPng=math.floor(SG.Network.ServerStatsItem["Data Ping"]:GetValue())
+        sLbl.Text="⚡ <b>FPS:</b> "..cFps.." | 📡 <b>PING:</b> "..cPng.." ms";fC=0;lFU=n 
+    end
+end)
+
+local function uL()
+    if C.ViewportSize.X<800 then M.Size=UDim2.new(0,480,0,280);Tg.Size=UDim2.new(0,45,0,45)else M.Size=UDim2.new(0,600,0,360);Tg.Size=UDim2.new(0,55,0,55)end
+    M.Position=UDim2.new(0.5,-M.AbsoluteSize.X/2,0.5,-M.AbsoluteSize.Y/2)
+end uL();C:GetPropertyChangedSignal("ViewportSize"):Connect(uL)
+
+Tg.MouseButton1Click:Connect(function()Ck();M.Visible=not M.Visible end)
+CB.MouseButton1Click:Connect(function()Ck();M.Visible=false end)
+
+local Sb=Instance.new("Frame")Sb.Size=UDim2.new(0,130,1,-55);Sb.Position=UDim2.new(0,12,0,42);Sb.BackgroundColor3=Color3.fromRGB(10,10,12);Sb.BorderSizePixel=0;Sb.Parent=M Instance.new("UICorner",Sb).CornerRadius=UDim.new(0,6)
+local sLy=Instance.new("UIListLayout")sLy.Padding=UDim.new(0,5);sLy.HorizontalAlignment=Enum.HorizontalAlignment.Center;sLy.Parent=Sb 
+local sPd=Instance.new("UIPadding")sPd.PaddingTop=UDim.new(0,8);sPd.Parent=Sb
+local Ct=Instance.new("Frame")Ct.Size=UDim2.new(1,-164,1,-55);Ct.Position=UDim2.new(0,152,0,42);Ct.BackgroundTransparency=1;Ct.Parent=M
+
+local Pgs={}
+local function cPg(n)
+    local p=Instance.new("ScrollingFrame")p.Name=n.."Page";p.Size=UDim2.new(1,0,1,-25);p.BackgroundTransparency=1;p.Visible=false;p.ScrollBarThickness=2;p.ScrollBarImageColor3=Color3.fromRGB(212,175,55);p.Parent=Ct 
+    local ly=Instance.new("UIListLayout")ly.Padding=UDim.new(0,8);ly.HorizontalAlignment=Enum.HorizontalAlignment.Center;ly.Parent=p 
+    ly:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()p.CanvasSize=UDim2.new(0,0,0,ly.AbsoluteContentSize.Y+15)end)
+    Pgs[n]=p;return p 
 end
 
--- Init ScreenGui & Sound Effect
-local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "RLX_ANJASZ"
-ScreenGui.ResetOnSpawn = false
-ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-ScreenGui.Parent = PlayerGui
-
-local ClickSound = Instance.new("Sound")
-ClickSound.SoundId = "rbxassetid://9118823101"
-ClickSound.Volume = 0.5
-ClickSound.Parent = ScreenGui
-
-local function Click() ClickSound:Play() end
-
--- =============================================================================
--- [1] TOGGLE COMPONENT (ICON) - WITH DRAG SYSTEM
--- =============================================================================
-local Toggle = Instance.new("ImageButton")
-Toggle.Name = "RLX_ToggleIcon"
-Toggle.Image = "rbxassetid://90655542108284"
-Toggle.BackgroundTransparency = 1
-Toggle.Size = UDim2.new(0, 55, 0, 55)
-Toggle.Position = UDim2.new(0, 20, 0.5, -27)
-Toggle.Parent = ScreenGui
-
-local ToggleGrad = Instance.new("UIGradient")
-ToggleGrad.Color = ColorSequence.new(Color3.fromRGB(212, 175, 55), Color3.fromRGB(255, 255, 255))
-ToggleGrad.Parent = Toggle
-
--- Drag System Khusus Icon (Mobile Friendly)
-local iconDragging = false
-local iconDragStart, iconStartPos
-
-Toggle.InputBegan:Connect(function(input)
-	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-		iconDragging = true
-		iconDragStart = input.Position
-		iconStartPos = Toggle.Position
-	end
-end)
-
-UIS.InputChanged:Connect(function(input)
-	if iconDragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
-		local delta = input.Position - iconDragStart
-		Toggle.Position = UDim2.new(iconStartPos.X.Scale, iconStartPos.X.Offset + delta.X, iconStartPos.Y.Scale, iconStartPos.Y.Offset + delta.Y)
-	end
-end)
-
-UIS.InputEnded:Connect(function(input)
-	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-		iconDragging = false
-	end
-end)
-
--- =============================================================================
--- [2] MAIN FRAME INTERACTION (LUXURIOUS DESIGN)
--- =============================================================================
-local Main = Instance.new("Frame")
-Main.Name = "MainHubFrame"
-Main.BackgroundColor3 = Color3.fromRGB(15, 15, 18) -- Dark Charcoal Premium
-Main.BorderSizePixel = 0
-Main.Visible = false
-Main.Parent = ScreenGui
-
-local MainCorner = Instance.new("UICorner")
-MainCorner.CornerRadius = UDim.new(0, 10)
-MainCorner.Parent = Main
-
-local MainStroke = Instance.new("UIStroke")
-MainStroke.Thickness = 1.5
-MainStroke.Color = Color3.fromRGB(212, 175, 55) -- Gold Border
-MainStroke.Parent = Main
-
--- Top Bar System
-local TopBar = Instance.new("TextLabel")
-TopBar.Size = UDim2.new(1, 0, 0, 40)
-TopBar.BackgroundTransparency = 1
-TopBar.Text = "   RLX HUB BY ANJASZRELAXZ"
-TopBar.TextColor3 = Color3.fromRGB(255, 255, 255)
-TopBar.Font = Enum.Font.GothamBold
-TopBar.TextSize = 13
-TopBar.TextXAlignment = Enum.TextXAlignment.Left
-TopBar.Parent = Main
-ApplyTextGrad(TopBar)
-
-local CloseBtn = Instance.new("TextButton")
-CloseBtn.Size = UDim2.new(0, 30, 0, 30)
-CloseBtn.Position = UDim2.new(1, -35, 0, 5)
-CloseBtn.Text = "✕"
-CloseBtn.TextColor3 = Color3.fromRGB(180, 180, 190)
-CloseBtn.TextSize = 14
-CloseBtn.Font = Enum.Font.GothamBold
-CloseBtn.BackgroundTransparency = 1
-CloseBtn.Parent = TopBar
-
--- =============================================================================
--- [REALTIME STATS COMPONENT - FPS & PING]
--- =============================================================================
-local StatsFrame = Instance.new("Frame")
-StatsFrame.Name = "StatsDisplayFrame"
-StatsFrame.Size = UDim2.new(0, 180, 0, 20)
-StatsFrame.Position = UDim2.new(1, -190, 1, -25) -- Pojok kanan bawah frame utama
-StatsFrame.BackgroundTransparency = 1
-StatsFrame.Parent = Main
-
-local StatsLabel = Instance.new("TextLabel")
-StatsLabel.Size = UDim2.new(1, 0, 1, 0)
-StatsLabel.BackgroundTransparency = 1
-StatsLabel.RichText = true
-StatsLabel.Text = "FPS: FETCHING... | PING: FETCHING..."
-StatsLabel.TextColor3 = Color3.fromRGB(180, 180, 185)
-StatsLabel.Font = Enum.Font.Code
-StatsLabel.TextSize = 10
-StatsLabel.TextXAlignment = Enum.TextXAlignment.Right
-StatsLabel.Parent = StatsFrame
-
--- Engine Penghitung FPS & Ping Otomatis
-local fpsCount = 0
-local lastFpsUpdate = os.clock()
-
-RunService.RenderStepped:Connect(function()
-	fpsCount = fpsCount + 1
-	local now = os.clock()
-	if now - lastFpsUpdate >= 1 then
-		local currentFps = math.floor(fpsCount / (now - lastFpsUpdate))
-		
-		-- Mengambil data ping murni dari Network Performance Stats
-		local currentPing = math.floor(Stats.Network.ServerStatsItem["Data Ping"]:GetValue())
-		
-		StatsLabel.Text = "⚡ <b>FPS:</b> " .. currentFps .. " | 📡 <b>PING:</b> " .. currentPing .. " ms"
-		
-		-- Reset counter
-		fpsCount = 0
-		lastFpsUpdate = now
-	end
-end)
-
--- Responsive Viewport Engine
-local function UpdateLayout()
-	if Camera.ViewportSize.X < 800 then 
-		Main.Size = UDim2.new(0, 480, 0, 280)
-		Toggle.Size = UDim2.new(0, 45, 0, 45)
-	else 
-		Main.Size = UDim2.new(0, 600, 0, 360)
-		Toggle.Size = UDim2.new(0, 55, 0, 55)
-	end
-	Main.Position = UDim2.new(0.5, -Main.AbsoluteSize.X/2, 0.5, -Main.AbsoluteSize.Y/2)
-end
-UpdateLayout()
-Camera:GetPropertyChangedSignal("ViewportSize"):Connect(UpdateLayout)
-
-Toggle.MouseButton1Click:Connect(function() Click(); Main.Visible = not Main.Visible end)
-CloseBtn.MouseButton1Click:Connect(function() Click(); Main.Visible = false end)
-
--- =============================================================================
--- [3] CONTAINERS & PAGE BUILDER
--- =============================================================================
-local Sidebar = Instance.new("Frame")
-Sidebar.Size = UDim2.new(0, 130, 1, -55)
-Sidebar.Position = UDim2.new(0, 12, 0, 42)
-Sidebar.BackgroundColor3 = Color3.fromRGB(10, 10, 12)
-Sidebar.BorderSizePixel = 0
-Sidebar.Parent = Main
-
-local SideCorner = Instance.new("UICorner")
-SideCorner.CornerRadius = UDim.new(0, 6)
-SideCorner.Parent = Sidebar
-
-local SideLayout = Instance.new("UIListLayout")
-SideLayout.Padding = UDim.new(0, 5)
-SideLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-SideLayout.Parent = Sidebar
-
-local SidePadding = Instance.new("UIPadding")
-SidePadding.PaddingTop = UDim.new(0, 8)
-SidePadding.Parent = Sidebar
-
-local Container = Instance.new("Frame")
-Container.Size = UDim2.new(1, -164, 1, -55)
-Container.Position = UDim2.new(0, 152, 0, 42)
-Container.BackgroundTransparency = 1
-Container.Parent = Main
-
-local Pages = {}
-local function CreatePage(name)
-	local p = Instance.new("ScrollingFrame")
-	p.Name = name .. "Page"
-	p.Size = UDim2.new(1, 0, 1, -25) -- Menyisakan space di bawah untuk Stats display
-	p.BackgroundTransparency = 1
-	p.Visible = false
-	p.ScrollBarThickness = 2
-	p.ScrollBarImageColor3 = Color3.fromRGB(212, 175, 55)
-	p.Parent = Container
-
-	local layout = Instance.new("UIListLayout")
-	layout.Padding = UDim.new(0, 8)
-	layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-	layout.Parent = p
-
-	layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-		p.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y + 15)
-	end)
-
-	Pages[name] = p
-	return p
+local function cTb(t,n)
+    local b=Instance.new("TextButton")b.Size=UDim2.new(0.9,0,0,34);b.BackgroundColor3=Color3.fromRGB(20,20,25);b.RichText=true;b.Text="<b>"..t.."</b>";b.TextColor3=Color3.fromRGB(160,160,170);b.Font=Enum.Font.GothamBold;b.TextSize=10;b.BorderSizePixel=0;b.Parent=Sb;Instance.new("UICorner",b).CornerRadius=UDim.new(0,5)
+    b.MouseButton1Click:Connect(function()
+        Ck();for k,v in pairs(Pgs)do v.Visible=(k==n)end 
+        for _,x in pairs(Sb:GetChildren())do if x:IsA("TextButton")then x.TextColor3=Color3.fromRGB(160,160,170)end end
+        b.TextColor3=Color3.fromRGB(212,175,55)
+    end)
 end
 
-local function CreateTab(text, name)
-	local btn = Instance.new("TextButton")
-	btn.Size = UDim2.new(0.9, 0, 0, 34)
-	btn.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
-	btn.RichText = true
-	btn.Text = "<b>" .. text .. "</b>"
-	btn.TextColor3 = Color3.fromRGB(160, 160, 170)
-	btn.Font = Enum.Font.GothamBold
-	btn.TextSize = 10
-	btn.BorderSizePixel = 0
-	btn.Parent = Sidebar
+local hP,rP,mP,pP=cPg("Home"),cPg("Rules"),cPg("MainScrip"),cPg("Player")
 
-	local bCorner = Instance.new("UICorner")
-	bCorner.CornerRadius = UDim.new(0, 5)
-	bCorner.Parent = btn
+local Pr=Instance.new("Frame")Pr.Size=UDim2.new(0.95,0,0,90);Pr.BackgroundColor3=Color3.fromRGB(22,22,26);Pr.Parent=hP;Instance.new("UICorner",Pr).CornerRadius=UDim.new(0,6)
+local Av=Instance.new("ImageLabel")Av.Size=UDim2.new(0,60,0,60);Av.Position=UDim2.new(0,15,0.5,-30);Av.Image=P:GetUserThumbnailAsync(L.UserId,Enum.ThumbnailType.HeadShot,Enum.ThumbnailSize.Size420x420);Av.BackgroundTransparency=1;Av.Parent=Pr;Instance.new("UICorner",Av).CornerRadius=UDim.new(1,0)
+local uT=Instance.new("TextLabel")uT.Size=UDim2.new(1,-95,1,0);uT.Position=UDim2.new(0,90,0,0);uT.RichText=true;uT.Text="Welcome <i>Executive</i>,\n<b><font color='rgb(212,175,55)'>"..L.Name.."</font></b>";uT.TextColor3=Color3.fromRGB(255,255,255);uT.Font=Enum.Font.GothamBold;uT.TextSize=14;uT.BackgroundTransparency=1;uT.TextXAlignment=Enum.TextXAlignment.Left;uT.Parent=Pr;aG(uT)
 
-	btn.MouseButton1Click:Connect(function()
-		Click()
-		for k, v in pairs(Pages) do v.Visible = (k == name) end
-		for _, b in pairs(Sidebar:GetChildren()) do
-			if b:IsA("TextButton") then b.TextColor3 = Color3.fromRGB(160, 160, 170) end
-		end
-		btn.TextColor3 = Color3.fromRGB(212, 175, 55)
-	end)
+local dB=Instance.new("TextButton")dB.Size=UDim2.new(0.95,0,0,38);dB.BackgroundColor3=Color3.fromRGB(88,101,242);dB.Text="✨ COPY DISCORD LINK";dB.Font=Enum.Font.GothamBold;dB.TextColor3=Color3.fromRGB(255,255,255);dB.TextSize=11;dB.Parent=hP;Instance.new("UICorner",dB).CornerRadius=UDim.new(0,6)
+dB.MouseButton1Click:Connect(function()
+    Ck()if setclipboard then setclipboard("https://discord.gg/cWcbAskEt")uT.Text="Welcome <i>Executive</i>,\n<b><font color='rgb(75,255,75)'>LINK COPIED!</font></b>"task.wait(2)uT.Text="Welcome <i>Executive</i>,\n<b><font color='rgb(212,175,55)'>"..L.Name.."</font></b>"end 
+end)
+
+local function aR(t)
+    local l=Instance.new("TextLabel")l.Size=UDim2.new(0.95,0,0,30);l.RichText=true;l.Text=" •  <b>"..t.."</b>";l.TextColor3=Color3.fromRGB(240,240,245);l.Font=Enum.Font.GothamMedium;l.TextSize=12;l.BackgroundTransparency=1;l.TextXAlignment=Enum.TextXAlignment.Left;l.Parent=rP;aG(l)
+end aR("Script jangan diperjualbelikan!")aR("Respect All Members.")aR("Stay Loyal with RLX HUB.")aR("Warm regards - Developer by AnjaszRelaxz.")
+
+local sC=Instance.new("Frame")sC.Size=UDim2.new(0.95,0,0,40);sC.BackgroundTransparency=1;sC.Parent=mP 
+local sB=Instance.new("TextBox")sB.Size=UDim2.new(1,0,1,0);sB.BackgroundColor3=Color3.fromRGB(10,10,12);sB.PlaceholderText="🔍 Cari script di sini...";sB.Text="";sB.Font=Enum.Font.Gotham;sB.TextSize=11;sB.TextColor3=Color3.fromRGB(255,255,255);sB.PlaceholderColor3=Color3.fromRGB(120,120,130);sB.Parent=sC;Instance.new("UICorner",sB).CornerRadius=UDim.new(0,6)
+local sSt=Instance.new("UIStroke",sB)sSt.Color=Color3.fromRGB(212,175,55);sSt.Thickness=1
+
+local sBts={}
+local function aBt(pg,t,u)
+    local b=Instance.new("TextButton")b.Size=UDim2.new(0.95,0,0,38);b.BackgroundColor3=Color3.fromRGB(22,22,26);b.RichText=true;b.Text="<b>"..t.."</b>";b.TextColor3=Color3.fromRGB(255,255,255);b.Font=Enum.Font.GothamBold;b.TextSize=11;b.BorderSizePixel=0;b.Parent=pg;Instance.new("UICorner",b).CornerRadius=UDim.new(0,6)aG(b)
+    b.MouseButton1Click:Connect(function()Ck();sL(u)end)table.insert(sBts,{Instance=b,SearchName=string.lower(t)})
 end
 
--- Build Pages Matrix
-local HomePg = CreatePage("Home")
-local RulesPg = CreatePage("Rules")
-local MainScripPg = CreatePage("MainScrip")
-local PlayerPg = CreatePage("Player")
+sB:GetPropertyChangedSignal("Text"):Connect(function()
+    local sT=string.lower(sB.Text)
+    for _,d in pairs(sBts) do d.Instance.Visible=(sT==""or string.find(d.SearchName,sT))and true or false end 
+end)
 
--- =============================================================================
--- [4] TAB CONTENT CREATION
--- =============================================================================
+aBt(mP,"KORN HUB (LT2) 🌳","https://raw.githubusercontent.com/DevKron/Kron_Hub/refs/heads/main/version_1.0")
+aBt(mP,"INVISIBLE 👽","https://raw.githubusercontent.com/g4247921-cmd/RLX-HUB/refs/heads/main/inivisble")
+aBt(mP,"DARK HUB (LT2) 🌑","https://raw.githubusercontent.com/darkxwin/darkxsourcethinkyoutousedarkx/main/darkx")
+aBt(mP,"CAR FLY 🚗","https://rawscripts.net/raw/Universal-Script-Car-fly-mobile-33376")
+aBt(mP,"TELEPORT PLAYER 📍","https://raw.githubusercontent.com/g4247921-cmd/MasterRLX-/refs/heads/main/TeleportPlayer")
+aBt(mP,"MUSIK YT PLAYER 🎵","https://raw.githubusercontent.com/Dan41/Roblox-Scripts/refs/heads/main/Youtube%20Music%20Player/YoutubeMusicPlayer.lua")
+aBt(mP,"SC FLY 🚀","https://pastebin.com/raw/MsL78SwX")
+aBt(mP,"ALL DANCE/EMOTE 💃","https://raw.githubusercontent.com/7yd7/Hub/refs/heads/Branch/GUIS/Emotes.lua")
 
--- 1. HOME LAYOUT
-local Prof = Instance.new("Frame")
-Prof.Size = UDim2.new(0.95, 0, 0, 90)
-Prof.BackgroundColor3 = Color3.fromRGB(22, 22, 26)
-Prof.BorderSizePixel = 0
-Prof.Parent = HomePg
+local _WS,_JP,_uJP=16,50,true 
+R.RenderStepped:Connect(function()
+    pcall(function()
+        local c=L.Character 
+        if c then 
+            local h=c:FindFirstChildOfClass("Humanoid")
+            if h and h.Health>0 then 
+                if h.WalkSpeed~=_WS then h.WalkSpeed=_WS end 
+                if _uJP and h.JumpPower~=_JP then h.UseJumpPower=true;h.JumpPower=_JP end 
+            end 
+        end 
+    end)
+end)
 
-Instance.new("UICorner", Prof).CornerRadius = UDim.new(0, 6)
-
-local Ava = Instance.new("ImageLabel")
-Ava.Size = UDim2.new(0, 60, 0, 60)
-Ava.Position = UDim2.new(0, 15, 0.5, -30)
-Ava.Image = Players:GetUserThumbnailAsync(LocalPlayer.UserId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size420x420)
-Ava.BackgroundTransparency = 1
-Ava.Parent = Prof
-Instance.new("UICorner", Ava).CornerRadius = UDim.new(1, 0)
-
-local UserT = Instance.new("TextLabel")
-UserT.Size = UDim2.new(1, -95, 1, 0)
-UserT.Position = UDim2.new(0, 90, 0, 0)
-UserT.RichText = true
-UserT.Text = "Welcome <i>Executive</i>,\n<b><font color='rgb(212,175,55)'>" .. LocalPlayer.Name .. "</font></b>"
-UserT.TextColor3 = Color3.fromRGB(255, 255, 255)
-UserT.Font = Enum.Font.GothamBold
-UserT.TextSize = 14
-UserT.BackgroundTransparency = 1
-UserT.TextXAlignment = Enum.TextXAlignment.Left
-UserT.Parent = Prof
-ApplyTextGrad(UserT)
-
--- 2. RULES LAYOUT
-local function AddRule(txt) 
-	local l = Instance.new("TextLabel")
-	l.Size = UDim2.new(0.95, 0, 0, 30)
-	l.RichText = true
-	l.Text = " •  <b>" .. txt .. "</b>"
-	l.TextColor3 = Color3.fromRGB(240, 240, 245)
-	l.Font = Enum.Font.GothamMedium
-	l.TextSize = 12
-	l.BackgroundTransparency = 1
-	l.TextXAlignment = Enum.TextXAlignment.Left
-	l.Parent = RulesPg
-	ApplyTextGrad(l)
+local function cSl(n,mi,ma,it,cb)
+    local f=Instance.new("Frame")f.Size=UDim2.new(0.95,0,0,50);f.BackgroundTransparency=1;f.Parent=pP 
+    local l=Instance.new("TextLabel")l.Size=UDim2.new(1,0,0,18);l.RichText=true;l.Text="<b>"..n.." : <font color='rgb(212,175,55)'>"..it.."</font></b>";l.TextColor3=Color3.fromRGB(240,240,245);l.BackgroundTransparency=1;l.Font=Enum.Font.GothamBold;l.TextSize=11;l.TextXAlignment=Enum.TextXAlignment.Left;l.Parent=f;aG(l)
+    local br=Instance.new("Frame")br.Size=UDim2.new(1,0,0,8);br.Position=UDim2.new(0,0,0,24);br.BackgroundColor3=Color3.fromRGB(30,30,35);br.Parent=f;Instance.new("UICorner",br).CornerRadius=UDim.new(0,4)
+    local fl=Instance.new("Frame")fl.Size=UDim2.new((it-mi)/(ma-mi),0,1,0);fl.BackgroundColor3=Color3.fromRGB(212,175,55);fl.Parent=br;Instance.new("UICorner",fl).CornerRadius=UDim.new(0,4)
+    local function Up(i)
+        local r=math.clamp((i.Position.X-br.AbsolutePosition.X)/br.AbsoluteSize.X,0,1)local v=math.floor(mi+(r*(ma-mi)))fl.Size=UDim2.new(r,0,1,0)
+        l.Text="<b>"..n.." : <font color='rgb(212,175,55)'>"..v.."</font></b>"cb(v)
+    end 
+    local dg=false
+    br.InputBegan:Connect(function(i)if i.UserInputType==Enum.UserInputType.MouseButton1 or i.UserInputType==Enum.UserInputType.Touch then dg=true;Up(i)end end)
+    U.InputChanged:Connect(function(i)if dg and(i.UserInputType==Enum.UserInputType.MouseMovement or i.UserInputType==Enum.UserInputType.Touch)then Up(i)end end)
+    U.InputEnded:Connect(function(i)if i.UserInputType==Enum.UserInputType.MouseButton1 or i.UserInputType==Enum.UserInputType.Touch then dg=false end end)
 end
-AddRule("Script jangan diperjualbelikan!")
-AddRule("Respect All Members.")
-AddRule("Stay Loyal with RLX HUB.")
-AddRule("Warm regards - Developer by AnjaszRelaxz.")
+cSl("WalkSpeed",16,250,16,function(v)_WS=v end)cSl("JumpPower",50,350,50,function(v)_JP=v end)
 
--- 3. MAINSCRIP LAYOUT
-local function AddBtn(page, text, url)
-	local b = Instance.new("TextButton")
-	b.Size = UDim2.new(0.95, 0, 0, 38)
-	b.BackgroundColor3 = Color3.fromRGB(22, 22, 26)
-	b.RichText = true
-	b.Text = "<b>" .. text .. "</b>"
-	b.TextColor3 = Color3.fromRGB(255, 255, 255)
-	b.Font = Enum.Font.GothamBold
-	b.TextSize = 11
-	b.BorderSizePixel = 0
-	b.Parent = page
-	
-	local bc = Instance.new("UICorner")
-	bc.CornerRadius = UDim.new(0, 6)
-	bc.Parent = b
-	
-	ApplyTextGrad(b)
-	b.MouseButton1Click:Connect(function() Click(); safeLoad(url) end)
+local function sBt(pg,t,fc)
+    local b=Instance.new("TextButton")b.Size=UDim2.new(0.95,0,0,36);b.BackgroundColor3=Color3.fromRGB(22,22,26);b.RichText=true;b.Text="<b>"..t.."</b>";b.TextColor3=Color3.fromRGB(255,255,255);b.Font=Enum.Font.GothamBold;b.TextSize=11;b.Parent=pg;Instance.new("UICorner",b).CornerRadius=UDim.new(0,6)aG(b)
+    b.MouseButton1Click:Connect(function()Ck();fc(b)end)
 end
 
-AddBtn(MainScripPg, "KORN HUB (LT2) 🌳", "https://raw.githubusercontent.com/DevKron/Kron_Hub/refs/heads/main/version_1.0")
-AddBtn(MainScripPg, "INVISIBLE 👽", "https://raw.githubusercontent.com/g4247921-cmd/RLX-HUB/refs/heads/main/inivisble")
-AddBtn(MainScripPg, "DARK HUB (LT2) 🌑", "https://raw.githubusercontent.com/darkxwin/darkxsourcethinkyoutousedarkx/main/darkx")
-AddBtn(MainScripPg, "CAR FLY 🚗", "https://rawscripts.net/raw/Universal-Script-Car-fly-mobile-33376")
-AddBtn(MainScripPg, "TELEPORT PLAYER 📍", "https://raw.githubusercontent.com/g4247921-cmd/MasterRLX-/refs/heads/main/TeleportPlayer")
-AddBtn(MainScripPg, "MUSIK YT PLAYER 🎵", "https://raw.githubusercontent.com/Dan41/Roblox-Scripts/refs/heads/main/Youtube%20Music%20Player/YoutubeMusicPlayer.lua")
-AddBtn(MainScripPg, "SC FLY 🚀", "https://pastebin.com/raw/MsL78SwX")
-AddBtn(MainScripPg, "ALL DANCE/EMOTE 💃", "https://raw.githubusercontent.com/7yd7/Hub/refs/heads/Branch/GUIS/Emotes.lua")
-
--- =============================================================================
--- [5] PLAYER MECHANICS CORE (STABLE WALKSPEED & JUMPPOWER FIXED)
--- =============================================================================
-local _G_WS = 16
-local _G_JP = 50
-local _G_UseJP = true
-
--- Sinkronisasi Sempurna Menggunakan RenderStepped & Mencegah Reset Saat Mati
-RunService.RenderStepped:Connect(function()
-	pcall(function()
-		local character = LocalPlayer.Character
-		if character then
-			local humanoid = character:FindFirstChildOfClass("Humanoid")
-			if humanoid and humanoid.Health > 0 then
-				if humanoid.WalkSpeed ~= _G_WS then
-					humanoid.WalkSpeed = _G_WS
-				end
-				if _G_UseJP then
-					if humanoid.JumpPower ~= _G_JP then
-						humanoid.UseJumpPower = true
-						humanoid.JumpPower = _G_JP
-					end
-				end
-			end
-		end
-	end)
+local Nc=false 
+R.Stepped:Connect(function()
+    if Nc and L.Character then 
+        for _,v in pairs(L.Character:GetDescendants())do if v:IsA("BasePart")then v.CanCollide=false end end 
+    end 
+end)
+sBt(pP,"NOCLIP: <font color='rgb(255,75,75)'>OFF</font>",function(b)
+    Nc=not Nc;b.Text="<b>NOCLIP: "..(Nc and "<font color='rgb(75,255,75)'>ON</font>" or "<font color='rgb(255,75,75)'>OFF</font>").."</b>"
 end)
 
--- Slider Engine Pro
-local function CreateSlider(name, min, max, initial, callback)
-	local f = Instance.new("Frame")
-	f.Size = UDim2.new(0.95, 0, 0, 50)
-	f.BackgroundTransparency = 1
-	f.Parent = PlayerPg
-
-	local l = Instance.new("TextLabel")
-	l.Size = UDim2.new(1, 0, 0, 18)
-	l.RichText = true
-	l.Text = "<b>" .. name .. " : <font color='rgb(212,175,55)'>" .. initial .. "</font></b>"
-	l.TextColor3 = Color3.fromRGB(240, 240, 245)
-	l.BackgroundTransparency = 1
-	l.Font = Enum.Font.GothamBold
-	l.TextSize = 11
-	l.TextXAlignment = Enum.TextXAlignment.Left
-	l.Parent = f
-	ApplyTextGrad(l)
-
-	local bar = Instance.new("Frame")
-	bar.Size = UDim2.new(1, 0, 0, 8)
-	bar.Position = UDim2.new(0, 0, 0, 24)
-	bar.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
-	bar.BorderSizePixel = 0
-	bar.Parent = f
-	Instance.new("UICorner", bar).CornerRadius = UDim.new(0, 4)
-
-	local fill = Instance.new("Frame")
-	fill.Size = UDim2.new((initial - min) / (max - min), 0, 1, 0)
-	fill.BackgroundColor3 = Color3.fromRGB(212, 175, 55)
-	fill.BorderSizePixel = 0
-	fill.Parent = bar
-	Instance.new("UICorner", fill).CornerRadius = UDim.new(0, 4)
-
-	local function Update(input)
-		local r = math.clamp((input.Position.X - bar.AbsolutePosition.X) / bar.AbsoluteSize.X, 0, 1)
-		local val = math.floor(min + (r * (max - min)))
-		fill.Size = UDim2.new(r, 0, 1, 0)
-		l.Text = "<b>" .. name .. " : <font color='rgb(212,175,55)'>" .. val .. "</font></b>"
-		callback(val)
-	end
-
-	local dragging = false
-	bar.InputBegan:Connect(function(i)
-		if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then 
-			dragging = true; Update(i) 
-		end 
-	end)
-	UIS.InputChanged:Connect(function(i)
-		if dragging and (i.UserInputType == Enum.UserInputType.MouseMovement or i.UserInputType == Enum.UserInputType.Touch) then 
-			Update(i) 
-		end 
-	end)
-	UIS.InputEnded:Connect(function(i)
-		if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then 
-			dragging = false 
-		end 
-	end)
+local eA=false 
+local function aEp()
+    for _,p in pairs(P:GetPlayers())do 
+        if p~=L and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then 
+            if eA and not p.Character.HumanoidRootPart:FindFirstChild("RLX_ESP") then 
+                local bg=Instance.new("BillboardGui")bg.Name="RLX_ESP";bg.AlwaysOnTop=true;bg.Size=UDim2.new(0,100,0,30);bg.ExtentsOffset=Vector3.new(0,3,0);bg.Parent=p.Character.HumanoidRootPart 
+                local lb=Instance.new("TextLabel")lb.Size=UDim2.new(1,0,1,0);lb.BackgroundTransparency=1;lb.Text=p.Name;lb.TextColor3=Color3.fromRGB(212,175,55);lb.Font=Enum.Font.GothamBold;lb.TextSize=10;lb.Parent=bg 
+            elseif not eA and p.Character.HumanoidRootPart:FindFirstChild("RLX_ESP") then 
+                p.Character.HumanoidRootPart.RLX_ESP:Destroy()
+            end 
+        end 
+    end 
 end
-
-CreateSlider("WalkSpeed", 16, 250, 16, function(v) _G_WS = v end)
-CreateSlider("JumpPower", 50, 350, 50, function(v) _G_JP = v end)
-
--- Utilitas Player Ekstra
-local function SimpleBtn(page, text, func)
-	local b = Instance.new("TextButton")
-	b.Size = UDim2.new(0.95, 0, 0, 36)
-	b.BackgroundColor3 = Color3.fromRGB(22, 22, 26)
-	b.RichText = true
-	b.Text = "<b>" .. text .. "</b>"
-	b.TextColor3 = Color3.fromRGB(255, 255, 255)
-	b.Font = Enum.Font.GothamBold
-	b.TextSize = 11
-	b.BorderSizePixel = 0
-	b.Parent = page
-	
-	local c = Instance.new("UICorner")
-	c.CornerRadius = UDim.new(0, 6)
-	c.Parent = b
-	
-	ApplyTextGrad(b)
-	b.MouseButton1Click:Connect(function() Click(); func(b) end)
-end
-
--- Engine Noclip
-local Noclip = false
-RunService.Stepped:Connect(function()
-	if Noclip and LocalPlayer.Character then
-		for _, v in pairs(LocalPlayer.Character:GetDescendants()) do
-			if v:IsA("BasePart") then v.CanCollide = false end
-		end
-	end
+sBt(pP,"UNIVERSAL ESP: <font color='rgb(255,75,75)'>OFF</font>",function(b)
+    eA=not eA;b.Text="<b>UNIVERSAL ESP: "..(eA and "<font color='rgb(75,255,75)'>ON</font>" or "<font color='rgb(255,75,75)'>OFF</font>").."</b>";aEp()
 end)
 
-SimpleBtn(PlayerPg, "NOCLIP: <font color='rgb(255,75,75)'>OFF</font>", function(b) 
-	Noclip = not Noclip
-	b.Text = "<b>NOCLIP: " .. (Noclip and "<font color='rgb(75,255,75)'>ON</font>" or "<font color='rgb(255,75,75)'>OFF</font>") .. "</b>"
+local hA=false 
+task.spawn(function()
+    while task.wait(1) do 
+        if hA then 
+            for _,p in pairs(P:GetPlayers())do 
+                if p~=L and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then 
+                    p.Character.HumanoidRootPart.Size=Vector3.new(15,15,15);p.Character.HumanoidRootPart.Transparency=0.7;p.Character.HumanoidRootPart.BrickColor=BrickColor.new("Bright gold");p.Character.HumanoidRootPart.CanCollide=false 
+                end 
+            end 
+        end 
+    end 
+end)
+sBt(pP,"HITBOX EXPANDER: <font color='rgb(255,75,75)'>OFF</font>",function(b)
+    hA=not hA;b.Text="<b>HITBOX EXPANDER: "..(hA and "<font color='rgb(75,255,75)'>ON</font>" or "<font color='rgb(255,75,75)'>OFF</font>").."</b>"
+    if not hA then 
+        for _,p in pairs(P:GetPlayers())do if p~=L and p.Character and p.Character:FindFirstChild("HumanoidRootPart")then p.Character.HumanoidRootPart.Size=Vector3.new(2,2,1);p.Character.HumanoidRootPart.Transparency=1 end end 
+    end 
 end)
 
-SimpleBtn(PlayerPg, "REFRESH AVATAR (/re)", function() 
-	local character = LocalPlayer.Character
-	if character and character:FindFirstChild("HumanoidRootPart") then
-		local pos = character.HumanoidRootPart.CFrame
-		character:BreakJoints()
-		LocalPlayer.CharacterAdded:Wait()
-		task.wait(0.25)
-		if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
-			LocalPlayer.Character.HumanoidRootPart.CFrame = pos
-		end
-	end
+sBt(pP,"SERVER HOP",function()
+    local x=H:JSONDecode(game:HttpGet("https://games.roblox.com/v1/games/"..game.PlaceId.."/servers/Public?sortOrder=Asc&limit=100"))
+    for _,s in pairs(x.data)do if s.playing<s.maxPlayers and s.id~=game.JobId then T:TeleportToPlaceInstance(game.PlaceId,s.id,L)break end end 
 end)
 
-SimpleBtn(PlayerPg, "REJOIN SERVER", function() 
-	TeleportService:Teleport(game.PlaceId, LocalPlayer) 
+sBt(pP,"REFRESH AVATAR (/re)",function()
+    local c=L.Character 
+    if c and c:FindFirstChild("HumanoidRootPart") then 
+        local pos=c.HumanoidRootPart.CFrame;c:BreakJoints();L.CharacterAdded:Wait();task.wait(0.25)
+        if L.Character and L.Character:FindFirstChild("HumanoidRootPart") then L.Character.HumanoidRootPart.CFrame=pos end 
+    end 
 end)
 
-SimpleBtn(PlayerPg, "INFINITE YIELD", function() 
-	safeLoad("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source") 
+sBt(pP,"REJOIN SERVER",function()T:Teleport(game.PlaceId,L)end)
+sBt(pP,"INFINITE YIELD",function()sL("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source")end)
+
+local dT,dS,sP 
+local function uI(i)
+    local d=i.Position-dS;M.Position=UDim2.new(sP.X.Scale,sP.X.Offset+d.X,sP.Y.Scale,sP.Y.Offset+d.Y)
+end 
+TB.InputBegan:Connect(function(i)
+    if i.UserInputType==Enum.UserInputType.MouseButton1 or i.UserInputType==Enum.UserInputType.Touch then 
+        dT=true;dS=i.Position;sP=M.Position;i.Changed:Connect(function()if i.UserInputState==Enum.UserInputState.End then dT=false end end)
+    end 
 end)
+U.InputChanged:Connect(function(i)if dT and(i.UserInputType==Enum.UserInputType.MouseMovement or i.UserInputType==Enum.UserInputType.Touch)then uI(i)end end)
 
--- =============================================================================
--- [6] DRAG CORE SYSTEM (DRAGGABLE MAIN FRAME TANPA BUG)
--- =============================================================================
-local dragToggle, dragStart, startPos
-local function updateInput(input)
-	local delta = input.Position - dragStart
-	Main.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-end
-
-TopBar.InputBegan:Connect(function(input)
-	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-		dragToggle = true
-		dragStart = input.Position
-		startPos = Main.Position
-		input.Changed:Connect(function()
-			if input.UserInputState == Enum.UserInputState.End then dragToggle = false end
-		end)
-	end
-end)
-
-UIS.InputChanged:Connect(function(input)
-	if dragToggle and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
-		updateInput(input)
-	end
-end)
-
--- Initialize TABS & Start UI
-CreateTab("HOME 🏠", "Home")
-CreateTab("RULES 📜", "Rules")
-CreateTab("MAINSCRIP ⚡", "MainScrip")
-CreateTab("PLAYER ⚙️", "Player")
-
-Pages.Home.Visible = true
-print("RLX HUB LUXURY + REALTIME MONITORING OPERATIONAL ✓")
+cTb("HOME 🏠","Home");cTb("RULES 📜","Rules");cTb("MAINSCRIP ⚡","MainScrip");cTb("PLAYER ⚙️","Player")
+Pgs.Home.Visible=true print("RLX OPERATIONAL ✓")

@@ -2,6 +2,10 @@ local P,U,R,T,S,H=game:GetService("Players"),game:GetService("UserInputService")
 local L,C=P.LocalPlayer,workspace.CurrentCamera local pG=L:WaitForChild("PlayerGui")
 if pG:FindFirstChild("RLX_ANJASZ")then pG.RLX_ANJASZ:Destroy()end
 
+local fn="RLX_Config.json"local cFg={X=0,Y=0.5,XO=20,YO=-27}
+pcall(function()if readfile and isfile and isfile(fn)then cFg=H:JSONDecode(readfile(fn))end end)
+local function sCfg()pcall(function()if writefile then writefile(fn,H:JSONEncode(cFg))end end)end
+
 local function sL(u)
     task.spawn(function()
         local o,r=pcall(function()return game:HttpGet(u)end)
@@ -20,12 +24,18 @@ task.spawn(function()
     L.Idled:Connect(function()v:Button2Down(Vector2.new(0,0),C.CFrame)task.wait(1)v:Button2Up(Vector2.new(0,0),C.CFrame)end)
 end)
 
-local Tg=Instance.new("ImageButton")Tg.Name="RLX_ToggleIcon";Tg.Image="rbxassetid://90655542108284";Tg.BackgroundTransparency=1;Tg.Size=UDim2.new(0,55,0,55);Tg.Position=UDim2.new(0,20,0.5,-27);Tg.Parent=SG
+local Tg=Instance.new("ImageButton")Tg.Name="RLX_ToggleIcon";Tg.Image="rbxassetid://90655542108284";Tg.BackgroundTransparency=1;Tg.Size=UDim2.new(0,55,0,55)
+Tg.Position=UDim2.new(cFg.X,cFg.XO,cFg.Y,cFg.YO);Tg.Parent=SG
 local TgG=Instance.new("UIGradient")TgG.Color=ColorSequence.new(Color3.fromRGB(212,175,55),Color3.fromRGB(255,255,255));TgG.Parent=Tg
 
 local iDg,iDS,iSP
 Tg.InputBegan:Connect(function(i)if i.UserInputType==Enum.UserInputType.MouseButton1 or i.UserInputType==Enum.UserInputType.Touch then iDg=true;iDS=i.Position;iSP=Tg.Position end end)
-U.InputChanged:Connect(function(i)if iDg and(i.UserInputType==Enum.UserInputType.MouseMovement or i.UserInputType==Enum.UserInputType.Touch)then local d=i.Position-iDS;Tg.Position=UDim2.new(iSP.X.Scale,iSP.X.Offset+d.X,iSP.Y.Scale,iSP.Y.Offset+d.Y)end end)
+U.InputChanged:Connect(function(i)
+    if iDg and(i.UserInputType==Enum.UserInputType.MouseMovement or i.UserInputType==Enum.UserInputType.Touch)then 
+        local d=i.Position-iDS local nP=UDim2.new(iSP.X.Scale,iSP.X.Offset+d.X,iSP.Y.Scale,iSP.Y.Offset+d.Y)Tg.Position=nP
+        cFg.X,cFg.XO,cFg.Y,cFg.YO=nP.X.Scale,nP.X.Offset,nP.Y.Scale,nP.Y.Offset sCfg()
+    end 
+end)
 U.InputEnded:Connect(function(i)if i.UserInputType==Enum.UserInputType.MouseButton1 or i.UserInputType==Enum.UserInputType.Touch then iDg=false end end)
 
 local M=Instance.new("Frame")M.Name="MainHubFrame";M.BackgroundColor3=Color3.fromRGB(15,15,18);M.BorderSizePixel=0;M.Visible=false;M.Parent=SG Instance.new("UICorner",M).CornerRadius=UDim.new(0,10)
@@ -34,13 +44,15 @@ local TB=Instance.new("TextLabel")TB.Size=UDim2.new(1,0,0,40);TB.BackgroundTrans
 local CB=Instance.new("TextButton")CB.Size=UDim2.new(0,30,0,30);CB.Position=UDim2.new(1,-35,0,5);CB.Text="✕";CB.TextColor3=Color3.fromRGB(180,180,190);CB.TextSize=14;CB.Font=Enum.Font.GothamBold;CB.BackgroundTransparency=1;CB.Parent=TB
 
 local sF=Instance.new("Frame")sF.Size=UDim2.new(0,180,0,20);sF.Position=UDim2.new(1,-190,1,-25);sF.BackgroundTransparency=1;sF.Parent=M
-local sLbl=Instance.new("TextLabel")sLbl.Size=UDim2.new(1,0,1,0);sLbl.BackgroundTransparency=1;sLbl.RichText=true;sLbl.Text="FPS: ... | PING: ...";sLbl.TextColor3=Color3.fromRGB(180,180,185);sLbl.Font=Enum.Font.Code;sLbl.TextSize=10;sLbl.TextXAlignment=Enum.TextXAlignment.Right;sLbl.Parent=sF
+local sLbl=Instance.new("TextLabel")sLbl.Size=UDim2.new(1,0,1,0);sLbl.BackgroundTransparency=1;sLbl.RichText=true;sLbl.Text="⚡ <b>FPS:</b> -- | 📡 <b>PING:</b> -- ms";sLbl.TextColor3=Color3.fromRGB(180,180,185);sLbl.Font=Enum.Font.Code;sLbl.TextSize=10;sLbl.TextXAlignment=Enum.TextXAlignment.Right;sLbl.Parent=sF
 
 local fC,lFU=0,os.clock()
 R.RenderStepped:Connect(function()
-    fC=fC+1;local n=os.clock()
+    fC=fC+1 local n=os.clock()
     if n-lFU>=1 then 
-        local cFps=math.floor(fC/(n-lFU))local cPng=math.floor(SG.Network.ServerStatsItem["Data Ping"]:GetValue())
+        local cFps=math.floor(fC/(n-lFU))
+        local cPng=0 local s,e=pcall(function()return math.floor(S.Network.ServerStatsItem["Data Ping"]:GetValue())end)
+        if s then cPng=e else cPng=math.floor(L:GetNetworkPing()*1000)end
         sLbl.Text="⚡ <b>FPS:</b> "..cFps.." | 📡 <b>PING:</b> "..cPng.." ms";fC=0;lFU=n 
     end
 end)
@@ -224,3 +236,4 @@ U.InputChanged:Connect(function(i)if dT and(i.UserInputType==Enum.UserInputType.
 
 cTb("HOME 🏠","Home");cTb("RULES 📜","Rules");cTb("MAINSCRIP ⚡","MainScrip");cTb("PLAYER ⚙️","Player")
 Pgs.Home.Visible=true print("RLX OPERATIONAL ✓")
+

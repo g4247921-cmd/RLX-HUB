@@ -1,325 +1,60 @@
-local P,U,R,T,S,H=game:GetService("Players"),game:GetService("UserInputService"),game:GetService("RunService"),game:GetService("TeleportService"),game:GetService("Stats"),game:GetService("HttpService")
-local L,C=P.LocalPlayer,workspace.CurrentCamera;local pG=L:WaitForChild("PlayerGui")
-if pG:FindFirstChild("RLX_ANJASZ") then pG.RLX_ANJASZ:Destroy() end
-local function sL(u) task.spawn(function() local o,r=pcall(function() return game:HttpGet(u) end) if o and loadstring(r) then loadstring(r)() end end) end
-local function aG(o) local g=Instance.new("UIGradient") g.Color=ColorSequence.new({ColorSequenceKeypoint.new(0,Color3.fromRGB(255,255,255)),ColorSequenceKeypoint.new(0.5,Color3.fromRGB(212,175,55)),ColorSequenceKeypoint.new(1,Color3.fromRGB(255,255,255))}) g.Parent=o end
-local SG=Instance.new("ScreenGui",pG);SG.Name="RLX_ANJASZ";SG.ResetOnSpawn=false
-local cS=Instance.new("Sound",SG);cS.SoundId="rbxassetid://local P, U, R, T, S, H, Ltg = game:GetService("Players"), game:GetService("UserInputService"), game:GetService("RunService"), game:GetService("TeleportService"), game:GetService("Stats"), game:GetService("HttpService"), game:GetService("Lighting")
-local L, C = P.LocalPlayer, workspace.CurrentCamera; local pG = L:WaitForChild("PlayerGui")
-if pG:FindFirstChild("RLX_ANJASZ") then pG.RLX_ANJASZ:Destroy() end
-
-local function sL(u) task.spawn(function() local o, r = pcall(function() return game:HttpGet(u) end) if o and loadstring(r) then loadstring(r)() end end) end
-local function aG(o) local g = Instance.new("UIGradient") g.Color = ColorSequence.new({ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)), ColorSequenceKeypoint.new(0.5, Color3.fromRGB(212, 175, 55)), ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 255, 255))}) g.Parent = o end
-
-local SG = Instance.new("ScreenGui", pG); SG.Name = "RLX_ANJASZ"; SG.ResetOnSpawn = false
-local cS = Instance.new("Sound", SG); cS.SoundId = "rbxassetid://9118823101"; cS.Volume = 0.5
-local function Ck() cS:Play() end
+local P,U,R,T,S,H,Ltg=game:GetService("Players"),game:GetService("UserInputService"),game:GetService("RunService"),game:GetService("TeleportService"),game:GetService("Stats"),game:GetService("HttpService"),game:GetService("Lighting")
+local L,C=P.LocalPlayer,workspace.CurrentCamera;local pG=L:WaitForChild("PlayerGui")if pG:FindFirstChild("RLX_ANJASZ") then pG.RLX_ANJASZ:Destroy() end
+local function sL(u)task.spawn(pcall,function()local r=game:HttpGet(u)if loadstring(r) then loadstring(r)() endend)end
+local function aG(o)local g=Instance.new("UIGradient",o)g.Color=ColorSequence.new({ColorSequenceKeypoint.new(0,Color3.new(1,1,1)),ColorSequenceKeypoint.new(0.5,Color3.fromRGB(212,175,55)),ColorSequenceKeypoint.new(1,Color3.new(1,1,1))})end
+local SG=Instance.new("ScreenGui",pG)SG.Name="RLX_ANJASZ";SG.ResetOnSpawn=false;local cS=Instance.new("Sound",SG)cS.SoundId="rbxassetid://9118823101";cS.Volume=0.5
+local function Ck()cS:Play()end;local NotifyContainer=Instance.new("Frame",SG)NotifyContainer.Name="NotifyContainer";NotifyContainer.Size=UDim2.new(0,190,1,-20);NotifyContainer.Position=UDim2.new(1,-200,0,10);NotifyContainer.BackgroundTransparency=1
+local function ShowNotif(title,msg)task.spawn(function()local b=Instance.new("Frame",NotifyContainer)b.Size=UDim2.new(1,0,0,45);b.BackgroundColor3=Color3.fromRGB(15,15,18);b.Position=UDim2.new(1.5,0,0,#NotifyContainer:GetChildren()*50-50);b.ClipsDescendants=true;Instance.new("UICorner",b).CornerRadius=UDim.new(0,5)local s=Instance.new("UIStroke",b)s.Thickness=1;s.Color=Color3.fromRGB(212,175,55)local tL=Instance.new("TextLabel",b)tL.Size=UDim2.new(1,-16,0,18);tL.Position=UDim2.new(0,8,0,4);tL.RichText=true;tL.Text="✨ <b>"..string.upper(title).."</b>";tL.TextColor3=Color3.fromRGB(212,175,55);tL.Font=Enum.Font.GothamBold;tL.TextSize=10;tL.BackgroundTransparency=1;tL.TextXAlignment=Enum.TextXAlignment.Left;local mL=Instance.new("TextLabel",b)mL.Size=UDim2.new(1,-16,0,18);mL.Position=UDim2.new(0,8,0,22);mL.RichText=true;mL.Text=msg;mL.TextColor3=Color3.fromRGB(220,220,225);mL.Font=Enum.Font.Gotham;mL.TextSize=9;mL.BackgroundTransparency=1;mL.TextXAlignment=Enum.TextXAlignment.Left;b:TweenPosition(UDim2.new(0,0,0,b.Position.Y.Offset),nil,nil,0.4,true)task.wait(3)b:TweenPosition(UDim2.new(1.5,0,0,b.Position.Y.Offset),nil,nil,0.4,true)task.wait(0.4)b:Destroy()end)end
+local M=Instance.new("Frame",SG)M.Name="MainHubFrame";M.BackgroundColor3=Color3.fromRGB(15,15,18);M.Visible=false;Instance.new("UICorner",M).CornerRadius=UDim.new(0,10)local MS=Instance.new("UIStroke",M)MS.Thickness=1.5;MS.Color=Color3.fromRGB(212,175,55)
+local Tg=Instance.new("TextButton",SG)Tg.Name="RLX_ToggleText";Tg.Text="<b>RLX HUB 🕊️</b>";Tg.RichText=true;Tg.TextColor3=Color3.new(1,1,1);Tg.Font=Enum.Font.GothamBold;Tg.TextSize=14;Tg.BackgroundTransparency=1;Tg.Size=UDim2.new(0,120,0,30);Tg.AnchorPoint=Vector2.new(.5,0);Tg.Position=UDim2.new(.5,0,0,10);aG(Tg)
+local TB=Instance.new("TextLabel",M)TB.Size=UDim2.new(1,0,0,40);TB.BackgroundTransparency=1;TB.Text="   RLX HUB BY ANJASZRELAXZ";TB.TextColor3=Color3.new(1,1,1);TB.Font=Enum.Font.GothamBold;TB.TextSize=13;TB.TextXAlignment=Enum.TextXAlignment.Left;aG(TB)
+local CB=Instance.new("TextButton",TB)CB.Size=UDim2.new(0,30,0,30);CB.Position=UDim2.new(1,-35,0,5);CB.Text="✕";CB.TextColor3=Color3.fromRGB(180,180,190);CB.TextSize=14;CB.Font=Enum.Font.GothamBold;CB.BackgroundTransparency=1
+local sF=Instance.new("Frame",M)sF.Size=UDim2.new(0,180,0,20);sF.Position=UDim2.new(1,-190,1,-25);sF.BackgroundTransparency=1;local sLbl=Instance.new("TextLabel",sF)sLbl.Size=UDim2.new(1,0,1,0);sLbl.BackgroundTransparency=1;sLbl.RichText=true;sLbl.Text="⚡ <b>FPS:</b> -- | 📡 <b>PING:</b> -- ms";sLbl.TextColor3=Color3.fromRGB(180,180,185);sLbl.Font=Enum.Font.Code;sLbl.TextSize=10;sLbl.TextXAlignment=Enum.TextXAlignment.Right
+local fC,lFU=0,os.clock()R.RenderStepped:Connect(function()fC=fC+1 local n=os.clock()if n-lFU>=1 then local cFps=math.floor(fC/(n-lFU))local cPng=0 local s,e=pcall(function()return math.floor(S.Network.ServerStatsItem["Data Ping"]:GetValue())end)cPng=s and e or math.floor(L:GetNetworkPing()*1000)sLbl.Text="⚡ <b>FPS:</b> "..cFps.." | 📡 <b>PING:</b> "..cPng.." ms";fC=0;lFU=n end end)
+local function uLP()Tg.Position=UDim2.new(M.Position.X.Scale,M.Position.X.Offset,M.Position.Y.Scale,M.Position.Y.Offset-(M.Size.Y.Offset/2)-30)end
+local function uL()M.Size=C.ViewportSize.X<800 and UDim2.new(0,480,0,280) or UDim2.new(0,600,0,360)M.AnchorPoint=Vector2.new(.5,.5);M.Position=UDim2.new(.5,0,.5,0)uLP()end uL();C:GetPropertyChangedSignal("ViewportSize"):Connect(uL);M:GetPropertyChangedSignal("Position"):Connect(uLP)
+Tg.MouseButton1Click:Connect(function()Ck();M.Visible=not M.Visible end)CB.MouseButton1Click:Connect(function()Ck();M.Visible=false end)
+local Sb=Instance.new("Frame",M)Sb.Size=UDim2.new(0,130,1,-55);Sb.Position=UDim2.new(0,12,0,42);Sb.BackgroundColor3=Color3.fromRGB(10,10,12);Sb.BorderSizePixel=0;Instance.new("UICorner",Sb).CornerRadius=UDim.new(0,6)local sLy=Instance.new("UIListLayout",Sb)sLy.Padding=UDim.new(0,5);sLy.HorizontalAlignment=Enum.HorizontalAlignment.Center;local sPd=Instance.new("UIPadding",Sb)sPd.PaddingTop=UDim.new(0,8)local Ct=Instance.new("Frame",M)Ct.Size=UDim2.new(1,-164,1,-55);Ct.Position=UDim2.new(0,152,0,42);Ct.BackgroundTransparency=1
+local Pgs={}local function cPg(n)local p=Instance.new("ScrollingFrame",Ct)p.Name=n.."Page";p.Size=UDim2.new(1,0,1,0);p.BackgroundTransparency=1;p.Visible=false;p.ScrollBarThickness=2;p.ScrollBarImageColor3=Color3.fromRGB(212,175,55)local ly=Instance.new("UIListLayout",p)ly.Padding=UDim.new(0,8);ly.HorizontalAlignment=Enum.HorizontalAlignment.Center;ly:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()p.CanvasSize=UDim2.new(0,0,0,ly.AbsoluteContentSize.Y+15)end)Pgs[n]=p;return p end
+local function cTb(t,n)local b=Instance.new("TextButton",Sb)b.Size=UDim2.new(0.9,0,0,34);b.BackgroundColor3=Color3.fromRGB(20,20,25);b.RichText=true;b.Text="<b>"..t.."</b>";b.TextColor3=Color3.fromRGB(160,160,170);b.Font=Enum.Font.GothamBold;b.TextSize=10;b.BorderSizePixel=0;Instance.new("UICorner",b).CornerRadius=UDim.new(0,5)b.MouseButton1Click:Connect(function()Ck()for k,v in pairs(Pgs)do v.Visible=(k==n)end for _,x in pairs(Sb:GetChildren())do if x:IsA("TextButton")then x.TextColor3=Color3.fromRGB(160,160,170)end end b.TextColor3=Color3.fromRGB(212,175,55)end)return b end
+local hP,rP,mP,pP,lP=cPg("Home"),cPg("Rules"),cPg("MainScrip"),cPg("Player"),cPg("Lighting")cTb("HOME 🏠","Home");cTb("RULES 📜","Rules");cTb("SCRIPTS ⚙️","MainScrip");cTb("PLAYER 👤","Player");cTb("LIGHTING 💡","Lighting")
+local Pr=Instance.new("Frame",hP)Pr.Size=UDim2.new(0.95,0,0,115);Pr.BackgroundColor3=Color3.fromRGB(20,20,25);Instance.new("UICorner",Pr).CornerRadius=UDim.new(0,8)local pSt=Instance.new("UIStroke",Pr)pSt.Thickness=1;pSt.Color=Color3.fromRGB(35,35,45)local Av=Instance.new("ImageLabel",Pr)Av.Size=UDim2.new(0,65,0,65);Av.Position=UDim2.new(0,15,0.5,-32);Av.BackgroundTransparency=1;Instance.new("UICorner",Av).CornerRadius=UDim.new(1,0)pcall(function()Av.Image=P:GetUserThumbnailAsync(L.UserId,Enum.ThumbnailType.HeadShot,Enum.ThumbnailSize.Size420x420)end)
+local uT=Instance.new("TextLabel",Pr)uT.Size=UDim2.new(1,-100,0,40);uT.Position=UDim2.new(0,95,0,12);uT.RichText=true;uT.Text="Welcome <i>Executive</i>,\n<b><font color='rgb(212,175,55)'>"..L.Name.."</font></b>";uT.TextColor3=Color3.new(1,1,1);uT.Font=Enum.Font.GothamBold;uT.TextSize=13;uT.BackgroundTransparency=1;uT.TextXAlignment=Enum.TextXAlignment.Left;local Div=Instance.new("Frame",Pr)Div.Size=UDim2.new(1,-110,0,1);Div.Position=UDim2.new(0,95,0,56);Div.BackgroundColor3=Color3.fromRGB(45,45,55);Div.BorderSizePixel=0;local liveTime=Instance.new("TextLabel",Pr)liveTime.Size=UDim2.new(1,-100,0,35);liveTime.Position=UDim2.new(0,95,0,62);liveTime.RichText=true;liveTime.Text="🕒 <b>TIME:</b> --:--:--";liveTime.TextColor3=Color3.fromRGB(212,175,55);liveTime.Font=Enum.Font.Code;liveTime.TextSize=12;liveTime.BackgroundTransparency=1;liveTime.TextXAlignment=Enum.TextXAlignment.Left
+task.spawn(function()while task.wait(0.5)do pcall(function()local LT=os.date("*t")liveTime.Text=string.format("🕒 <b>LOCAL TIME:</b> %02d:%02d:%02d",LT.hour,LT.min,LT.sec)end)end end)
+local sInfo=Instance.new("Frame",hP)sInfo.Size=UDim2.new(0.95,0,0,75);sInfo.BackgroundColor3=Color3.fromRGB(20,20,25);Instance.new("UICorner",sInfo).CornerRadius=UDim.new(0,8)local siSt=Instance.new("UIStroke",sInfo)siSt.Thickness=1;siSt.Color=Color3.fromRGB(35,35,45)local siLbl=Instance.new("TextLabel",sInfo)siLbl.Size=UDim2.new(1,-20,1,0);siLbl.Position=UDim2.new(0,12,0,0);siLbl.BackgroundTransparency=1;siLbl.RichText=true;siLbl.Text="🎮 <b>PLACE ID:</b> "..game.PlaceId.."\n📍 <b>JOB ID:</b> <font color='rgb(180,180,190)'>Click to copy</font>\n👥 <b>PLAYERS:</b> "..#P:GetPlayers().." / "..P.MaxPlayers;siLbl.TextColor3 = Color3.fromRGB(240,240,245);siLbl.Font=Enum.Font.GothamMedium;siLbl.TextSize=11;siLbl.TextXAlignment=Enum.TextXAlignment.Left;local siBtn=Instance.new("TextButton",sInfo)siBtn.Size=UDim2.new(1,0,1,0);siBtn.BackgroundTransparency=1;siBtn.Text=""
+siBtn.MouseButton1Click:Connect(function()Ck()if setclipboard then setclipboard(game.JobId)ShowNotif("Copy Info","Job ID Copied!")end end)
+local dT=Instance.new("TextButton",hP)dT.Size=UDim2.new(0.95,0,0,38);dT.BackgroundColor3=Color3.fromRGB(88,101,242);dT.Text="✨ COPY DISCORD LINK";dT.Font=Enum.Font.GothamBold;dT.TextColor3=Color3.new(1,1,1);dT.TextSize=11;Instance.new("UICorner",dT).CornerRadius=UDim.new(0,6)
+dT.MouseButton1Click:Connect(function()Ck()if setclipboard then setclipboard("https://discord.gg/cWcbAskEt")ShowNotif("Copy Info","Discord Link Copied!")end end)
+local function aR(t)local l=Instance.new("TextLabel",rP)l.Size=UDim2.new(0.95,0,0,30);l.RichText=true;l.Text=" •  <b>"..t.."</b>";l.TextColor3=Color3.fromRGB(240,240,245);l.Font=Enum.Font.GothamMedium;l.TextSize=12;l.BackgroundTransparency=1;l.TextXAlignment=Enum.TextXAlignment.Left;aG(l)end aR("Script jangan diperjualbelikan!");aR("Respect All Members.");aR("Stay Loyal with RLX HUB.");aR("Warm regards - Developer by AnjaszRelaxz.")
+local sC=Instance.new("Frame",mP)sC.Size=UDim2.new(0.95,0,0,40);sC.BackgroundTransparency=1;local sB=Instance.new("TextBox",sC)sB.Size=UDim2.new(1,0,1,0);sB.BackgroundColor3=Color3.fromRGB(10,10,12);sB.PlaceholderText="🔍 Cari script di sini...";sB.Text="";sB.Font=Enum.Font.Gotham;sB.TextSize=11;sB.TextColor3=Color3.new(1,1,1);sB.PlaceholderColor3=Color3.fromRGB(120,120,130);Instance.new("UICorner",sB).CornerRadius=UDim.new(0,6)local sSt=Instance.new("UIStroke",sB)sSt.Color=Color3.fromRGB(212,175,55);sSt.Thickness=1;local sBts={}
+local function aBt(pg,t,u)local b=Instance.new("TextButton",pg)b.Size=UDim2.new(0.95,0,0,38);b.BackgroundColor3=Color3.fromRGB(22,22,26);b.RichText=true;b.Text="<b>"..t.."</b>";b.TextColor3=Color3.new(1,1,1);b.Font=Enum.Font.GothamBold;b.TextSize=11;b.BorderSizePixel=0;Instance.new("UICorner",b).CornerRadius=UDim.new(0,6);aG(b)b.MouseButton1Click:Connect(function()Ck()local cN=string.sub(string.gsub(t," %b{}",""),1,14)ShowNotif("Executing",cN.." Loaded!")sL(u)end)table.insert(sBts,{Instance=b,SearchName=string.lower(t)})end
+sB:GetPropertyChangedSignal("Text"):Connect(function()local sT=string.lower(sB.Text)for _,d in pairs(sBts)do d.Instance.Visible=(sT=="" or string.find(d.SearchName,sT))and true or false end end)
+aBt(mP,"KORN HUB (LT2) 🌳","https://raw.githubusercontent.com/DevKron/Kron_Hub/refs/heads/main/version_1.0")aBt(mP,"INVISIBLE 👽","https://raw.githubusercontent.com/g4247921-cmd/RLX-HUB/refs/heads/main/inivisble")aBt(mP,"DARK HUB (LT2) 🌑","https://raw.githubusercontent.com/darkxwin/darkxsourcethinkyoutousedarkx/main/darkx")aBt(mP,"CAR FLY 🚗","https://rawscripts.net/raw/Universal-Script-Car-fly-mobile-33376")aBt(mP,"TELEPORT PLAYER 📍","https://raw.githubusercontent.com/g4247921-cmd/MasterRLX-/refs/heads/main/TeleportPlayer")aBt(mP,"MUSIK YT PLAYER 🎵","https://raw.githubusercontent.com/Dan41/Roblox-Scripts/refs/heads/main/Youtube%20Music%20Player/YoutubeMusicPlayer.lua")aBt(mP,"SC FLY 🚀","https://pastebin.com/raw/MsL78SwX")aBt(mP,"ALL DANCE/EMOTE 💃","https://raw.githubusercontent.com/7yd7/Hub/refs/heads/Branch/GUIS/Emotes.lua")
+local _WS,_JP=16,50;local Nc,aFling,hA,espA=false,false,false,false
+local function uHum()local c=L.Character if c then local h=c:FindFirstChildOfClass("Humanoid")if h and h.Health>0 then h.WalkSpeed=_WS;h.UseJumpPower=true;h.JumpPower=_JP end end end L.CharacterAdded:Connect(function(c)c:WaitForChild("Humanoid")task.wait(0.3)uHum()end)
+local function resetPhysics(hrp)hrp.Velocity,hrp.RotVelocity,hrp.AssemblyLinearVelocity,hrp.AssemblyAngularVelocity=Vector3.new(),Vector3.new(),Vector3.new(),Vector3.new()end
+R.Heartbeat:Connect(function()pcall(function()if L.Character and aFling then local hrp=L.Character:FindFirstChild("HumanoidRootPart")if hrp then resetPhysics(hrp)if hrp.AssemblyLinearVelocity.Magnitude>75 or hrp.AssemblyAngularVelocity.Magnitude>75 then hrp.Anchored=true;resetPhysics(hrp);task.wait(0.1);hrp.Anchored=false end end end end)end)
+R.RenderStepped:Connect(function()pcall(function()local c=L.Character if c then local h=c:FindFirstChildOfClass("Humanoid")if h and h.Health>0 then if h.WalkSpeed~=_WS then h.WalkSpeed=_WS end if h.JumpPower~=_JP then h.UseJumpPower=true;h.JumpPower=_JP end end if Nc or aFling then for _,v in pairs(c:GetDescendants())do if v:IsA("BasePart")then v.CanCollide=false end end end end end)end)
+task.spawn(function()while task.wait(0.2)do pcall(function()for _,p in pairs(P:GetPlayers())do if p~=L and p.Character then local hrp=p.Character:FindFirstChild("HumanoidRootPart")if hrp then if hA then hrp.Size=Vector3.new(15,15,15);hrp.Transparency=0.7;hrp.BrickColor=BrickColor.new("Bright gold");hrp.CanCollide=false else hrp.Size=Vector3.new(2,2,1);hrp.Transparency=1 end end end end end)end end)
+local cache={}local function removeESP(p)if cache[p] then pcall(function()if cache[p].H then cache[p].H:Destroy() end if cache[p].L then cache[p].L.Visible=false;cache[p].L:Remove() end end)cache[p]=nil end end P.PlayerRemoving:Connect(removeESP)
+local function mESP()for _,p in pairs(P:GetPlayers())do if p~=L then if espA then if not cache[p] and p.Character then local h=Instance.new("Highlight",p.Character)h.Name="RLX_Cham";h.FillColor=Color3.fromRGB(212,175,55);h.FillTransparency=0.5;h.OutlineColor=Color3.new(1,1,1);h.OutlineTransparency=0;h.DepthMode=Enum.HighlightDepthMode.AlwaysOnTop;local l=(Drawing and Drawing.new and Drawing.new("Line"))if l then l.Thickness=1;l.Color=Color3.fromRGB(212,175,55)end cache[p]={H=h,L=l}end else removeESP(p)end end end end
+R.RenderStepped:Connect(function()if not espA then return end for p,v in pairs(cache) do pcall(function()if p.Character and p.Character:FindFirstChild("HumanoidRootPart") and p.Character:FindFirstChildOfClass("Humanoid") and p.Character.Humanoid.Health>0 then local hrp=p.Character.HumanoidRootPart;local pos,onScreen=C:WorldToViewportPoint(hrp.Position)if onScreen then if v.L then v.L.From=Vector2.new(C.ViewportSize.X/2,C.ViewportSize.Y);v.L.To=Vector2.new(pos.X,pos.Y);v.L.Visible=true end if not p.Character:FindFirstChild("RLX_Cham") and v.H then v.H.Parent=p.Character end else if v.L then v.L.Visible=false end end else if v.L then v.L.Visible=false end end end)end end)
+local function cSl(n,mi,ma,it,cb)local f=Instance.new("Frame",pP)f.Size=UDim2.new(0.95,0,0,50);f.BackgroundTransparency=1;local l=Instance.new("TextLabel",f)l.Size=UDim2.new(1,0,0,18);l.RichText=true;l.Text="<b>"..n.." : <font color='rgb(212,175,55)'>"..it.."</font></b>";l.TextColor3=Color3.fromRGB(240,240,245);l.BackgroundTransparency=1;l.Font=Enum.Font.GothamBold;l.TextSize=11;l.TextXAlignment=Enum.TextXAlignment.Left;aG(l)local br=Instance.new("Frame",f)br.Size=UDim2.new(1,0,0,8);br.Position=UDim2.new(0,0,0,24);br.BackgroundColor3=Color3.fromRGB(30,30,35);Instance.new("UICorner",br).CornerRadius=UDim.new(0,4)local fl=Instance.new("Frame",br)fl.Size=UDim2.new((it-mi)/(ma-mi),0,1,0);fl.BackgroundColor3=Color3.fromRGB(212,175,55);Instance.new("UICorner",fl).CornerRadius=UDim.new(0,4)local function Up(i)local r=math.clamp((i.Position.X-br.AbsolutePosition.X)/br.AbsoluteSize.X,0,1)local v=math.floor(mi+(r*(ma-mi)))fl.Size=UDim2.new(r,0,1,0)l.Text="<b>"..n.." : <font color='rgb(212,175,55)'>"..v.."</font></b>"cb(v)end local dg=false br.InputBegan:Connect(function(i)if i.UserInputType==Enum.UserInputType.MouseButton1 or i.UserInputType==Enum.UserInputType.Touch then dg=true;Up(i)end end)U.InputChanged:Connect(function(i)if dg and (i.UserInputType==Enum.UserInputType.MouseMovement or i.UserInputType==Enum.UserInputType.Touch)then Up(i)end end)U.InputEnded:Connect(function(i)if i.UserInputType==Enum.UserInputType.MouseButton1 or i.UserInputType==Enum.UserInputType.Touch then dg=false end end)end
+cSl("WalkSpeed",16,250,16,function(v)_WS=v uHum()end)cSl("JumpPower",50,350,50,function(v)_JP=v uHum()end)
 
 -- ====================================================================
--- 🔔 COMPACT & ELEGANT SMALL TOAST NOTIFICATION
+-- 🔄 100% COMPACT TOGGLE GENERATOR FOR PLAYER & LIGHTING (COMPLETED & MINIFIED)
 -- ====================================================================
-local NotifyContainer = Instance.new("Frame", SG)
-NotifyContainer.Name = "NotifyContainer"
-NotifyContainer.Size = UDim2.new(0, 190, 1, -20)
-NotifyContainer.Position = UDim2.new(1, -200, 0, 10)
-NotifyContainer.BackgroundTransparency = 1
-
-local function ShowNotif(title, message)
-	task.spawn(function()
-		local NotifBox = Instance.new("Frame", NotifyContainer)
-		NotifBox.Size = UDim2.new(1, 0, 0, 45)
-		NotifBox.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
-		NotifBox.Position = UDim2.new(1.5, 0, 0, #NotifyContainer:GetChildren() * 50 - 50)
-		NotifBox.ClipsDescendants = true
-		Instance.new("UICorner", NotifBox).CornerRadius = UDim.new(0, 5)
-		
-		local nStroke = Instance.new("UIStroke", NotifBox)
-		nStroke.Thickness = 1
-		nStroke.Color = Color3.fromRGB(212, 175, 55)
-		
-		local nTitle = Instance.new("TextLabel", NotifBox)
-		nTitle.Size = UDim2.new(1, -16, 0, 18)
-		nTitle.Position = UDim2.new(0, 8, 0, 4)
-		nTitle.RichText = true
-		nTitle.Text = "✨ <b>" .. string.upper(title) .. "</b>"
-		nTitle.TextColor3 = Color3.fromRGB(212, 175, 55)
-		nTitle.Font = Enum.Font.GothamBold
-		nTitle.TextSize = 10
-		nTitle.BackgroundTransparency = 1
-		nTitle.TextXAlignment = Enum.TextXAlignment.Left
-		
-		local nMsg = Instance.new("TextLabel", NotifBox)
-		nMsg.Size = UDim2.new(1, -16, 0, 18)
-		nMsg.Position = UDim2.new(0, 8, 0, 22)
-		nMsg.RichText = true
-		nMsg.Text = message
-		nMsg.TextColor3 = Color3.fromRGB(220, 220, 225)
-		nMsg.Font = Enum.Font.Gotham
-		nMsg.TextSize = 9
-		nMsg.BackgroundTransparency = 1
-		nMsg.TextXAlignment = Enum.TextXAlignment.Left
-		
-		NotifBox:TweenPosition(UDim2.new(0, 0, 0, NotifBox.Position.Y.Offset), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, 0.4, true)
-		task.wait(3)
-		NotifBox:TweenPosition(UDim2.new(1.5, 0, 0, NotifBox.Position.Y.Offset), Enum.EasingDirection.In, Enum.EasingStyle.Quart, 0.4, true)
-		task.wait(0.4)
-		NotifBox:Destroy()
-	end)
+local function cTg(pg,text,startState,cb)
+	local f=Instance.new("Frame",pg);f.Size=UDim2.new(.95,0,0,38);f.BackgroundTransparency=1
+	local l=Instance.new("TextLabel",f);l.Size=UDim2.new(.7,0,1,0);l.BackgroundTransparency=1;l.RichText=true;l.Text="<b>"..text.."</b>";l.TextColor3=Color3.fromRGB(230,230,235);l.Font=Enum.Font.GothamMedium;l.TextSize=11;l.TextXAlignment=Enum.TextXAlignment.Left
+	local b=Instance.new("TextButton",f);b.Size=UDim2.new(0,45,0,22);b.Position=UDim2.new(1,-50,.5,-11);b.Font=Enum.Font.GothamBold;b.TextSize=10;b.TextColor3=Color3.new(1,1,1);Instance.new("UICorner",b).CornerRadius=UDim.new(0,4)
+	local s=startState;local function uTg()b.Text=s and "ON" or "OFF";b.BackgroundColor3=s and Color3.fromRGB(46,204,113) or Color3.fromRGB(231,76,60) end;uTg()
+	b.MouseButton1Click:Connect(function()Ck();s=not s;uTg();cb(s)end)
 end
 
-local M = Instance.new("Frame", SG); M.Name = "MainHubFrame"; M.BackgroundColor3 = Color3.fromRGB(15, 15, 18); M.BorderSizePixel = 0; M.Visible = false; Instance.new("UICorner", M).CornerRadius = UDim.new(0, 10)
-local MS = Instance.new("UIStroke", M); MS.Thickness = 1.5; MS.Color = Color3.fromRGB(212, 175, 55)
-
-local Tg = Instance.new("TextButton", SG); Tg.Name = "RLX_ToggleText"; Tg.Text = "<b>RLX HUB 🕊️</b>"; Tg.RichText = true; Tg.TextColor3 = Color3.fromRGB(255, 255, 255); Tg.Font = Enum.Font.GothamBold; Tg.TextSize = 14; Tg.BackgroundTransparency = 1; Tg.Size = UDim2.new(0, 120, 0, 30); Tg.AnchorPoint = Vector2.new(0.5, 0); Tg.Position = UDim2.new(0.5, 0, 0, 10); Tg.Visible = true; aG(Tg)
-local TB = Instance.new("TextLabel", M); TB.Size = UDim2.new(1, 0, 0, 40); TB.BackgroundTransparency = 1; TB.Text = "   RLX HUB BY ANJASZRELAXZ"; TB.TextColor3 = Color3.fromRGB(255, 255, 255); TB.Font = Enum.Font.GothamBold; TB.TextSize = 13; TB.TextXAlignment = Enum.TextXAlignment.Left; aG(TB)
-local CB = Instance.new("TextButton", TB); CB.Size = UDim2.new(0, 30, 0, 30); CB.Position = UDim2.new(1, -35, 0, 5); CB.Text = "✕"; CB.TextColor3 = Color3.fromRGB(180, 180, 190); CB.TextSize = 14; CB.Font = Enum.Font.GothamBold; CB.BackgroundTransparency = 1
-
-local sF = Instance.new("Frame", M); sF.Size = UDim2.new(0, 180, 0, 20); sF.Position = UDim2.new(1, -190, 1, -25); sF.BackgroundTransparency = 1
-local sLbl = Instance.new("TextLabel", sF); sLbl.Size = UDim2.new(1, 0, 1, 0); sLbl.BackgroundTransparency = 1; sLbl.RichText = true; sLbl.Text = "⚡ <b>FPS:</b> -- | 📡 <b>PING:</b> -- ms"; sLbl.TextColor3 = Color3.fromRGB(180, 180, 185); sLbl.Font = Enum.Font.Code; sLbl.TextSize = 10; sLbl.TextXAlignment = Enum.TextXAlignment.Right
-
-local fC, lFU = 0, os.clock()
-R.RenderStepped:Connect(function() fC = fC + 1 local n = os.clock() if n - lFU >= 1 then local cFps = math.floor(fC / (n - lFU)) local cPng = 0 local s, e = pcall(function() return math.floor(S.Network.ServerStatsItem["Data Ping"]:GetValue()) end) cPng = s and e or math.floor(L:GetNetworkPing() * 1000) sLbl.Text = "⚡ <b>FPS:</b> " .. cFps .. " | 📡 <b>PING:</b> " .. cPng .. " ms"; fC = 0; lFU = n end end)
-
-local function uLP() Tg.Position = UDim2.new(M.Position.X.Scale, M.Position.X.Offset, M.Position.Y.Scale, M.Position.Y.Offset - (M.Size.Y.Offset / 2) - 30) end
-local function uL() M.Size = C.ViewportSize.X < 800 and UDim2.new(0, 480, 0, 280) or UDim2.new(0, 600, 0, 360) M.AnchorPoint = Vector2.new(0.5, 0.5); M.Position = UDim2.new(0.5, 0, 0.5, 0) uLP() end
-uL(); C:GetPropertyChangedSignal("ViewportSize"):Connect(uL); M:GetPropertyChangedSignal("Position"):Connect(uLP)
-Tg.MouseButton1Click:Connect(function() Ck(); M.Visible = not M.Visible end) CB.MouseButton1Click:Connect(function() Ck(); M.Visible = false end)
-
-local Sb = Instance.new("Frame", M); Sb.Size = UDim2.new(0, 130, 1, -55); Sb.Position = UDim2.new(0, 12, 0, 42); Sb.BackgroundColor3 = Color3.fromRGB(10, 10, 12); Sb.BorderSizePixel = 0; Instance.new("UICorner", Sb).CornerRadius = UDim.new(0, 6)
-local sLy = Instance.new("UIListLayout", Sb); sLy.Padding = UDim.new(0, 5); sLy.HorizontalAlignment = Enum.HorizontalAlignment.Center
-local sPd = Instance.new("UIPadding", Sb); sPd.PaddingTop = UDim.new(0, 8)
-local Ct = Instance.new("Frame", M); Ct.Size = UDim2.new(1, -164, 1, -55); Ct.Position = UDim2.new(0, 152, 0, 42); Ct.BackgroundTransparency = 1
-
-local Pgs = {}
-local function cPg(n) local p = Instance.new("ScrollingFrame", Ct); p.Name = n .. "Page"; p.Size = UDim2.new(1, 0, 1, 0); p.BackgroundTransparency = 1; p.Visible = false; p.ScrollBarThickness = 2; p.ScrollBarImageColor3 = Color3.fromRGB(212, 175, 55) local ly = Instance.new("UIListLayout", p) ly.Padding = UDim.new(0, 8); ly.HorizontalAlignment = Enum.HorizontalAlignment.Center ly:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function() p.CanvasSize = UDim2.new(0, 0, 0, ly.AbsoluteContentSize.Y + 15) end) Pgs[n] = p; return p end
-local function cTb(t, n) local b = Instance.new("TextButton", Sb); b.Size = UDim2.new(0.9, 0, 0, 34); b.BackgroundColor3 = Color3.fromRGB(20, 20, 25); b.RichText = true; b.Text = "<b>" .. t .. "</b>"; b.TextColor3 = Color3.fromRGB(160, 160, 170); b.Font = Enum.Font.GothamBold; b.TextSize = 10; b.BorderSizePixel = 0; Instance.new("UICorner", b).CornerRadius = UDim.new(0, 5) b.MouseButton1Click:Connect(function() Ck(); for k, v in pairs(Pgs) do v.Visible = (k == n) end for _, x in pairs(Sb:GetChildren()) do if x:IsA("TextButton") then x.TextColor3 = Color3.fromRGB(160, 160, 170) end end b.TextColor3 = Color3.fromRGB(212, 175, 55) end) return b end
-
-local hP, rP, mP, pP, lP = cPg("Home"), cPg("Rules"), cPg("MainScrip"), cPg("Player"), cPg("Lighting")
-
--- ====================================================================
--- 👤 LUXURY HOME PROFILE
--- ====================================================================
-local Pr = Instance.new("Frame", hP); Pr.Size = UDim2.new(0.95, 0, 0, 115); Pr.BackgroundColor3 = Color3.fromRGB(20, 20, 25); Instance.new("UICorner", Pr).CornerRadius = UDim.new(0, 8)
-local pSt = Instance.new("UIStroke", Pr); pSt.Thickness = 1; pSt.Color = Color3.fromRGB(35, 35, 45)
-
-local Av = Instance.new("ImageLabel", Pr); Av.Size = UDim2.new(0, 65, 0, 65); Av.Position = UDim2.new(0, 15, 0.5, -32); Av.BackgroundTransparency = 1; Instance.new("UICorner", Av).CornerRadius = UDim.new(1, 0)
-pcall(function() Av.Image = P:GetUserThumbnailAsync(L.UserId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size420x420) end)
-
-local uT = Instance.new("TextLabel", Pr); uT.Size = UDim2.new(1, -100, 0, 40); uT.Position = UDim2.new(0, 95, 0, 12); uT.RichText = true; uT.Text = "Welcome <i>Executive</i>,\n<b><font color='rgb(212,175,55)'>" .. L.Name .. "</font></b>"; uT.TextColor3 = Color3.fromRGB(255, 255, 255); uT.Font = Enum.Font.GothamBold; uT.TextSize = 13; uT.BackgroundTransparency = 1; uT.TextXAlignment = Enum.TextXAlignment.Left
-
-local Div = Instance.new("Frame", Pr); Div.Size = UDim2.new(1, -110, 0, 1); Div.Position = UDim2.new(0, 95, 0, 56); Div.BackgroundColor3 = Color3.fromRGB(45, 45, 55); Div.BorderSizePixel = 0
-local liveTime = Instance.new("TextLabel", Pr); liveTime.Size = UDim2.new(1, -100, 0, 35); liveTime.Position = UDim2.new(0, 95, 0, 62); liveTime.RichText = true; liveTime.Text = "🕒 <b>TIME:</b> --:--:--"; liveTime.TextColor3 = Color3.fromRGB(212, 175, 55); liveTime.Font = Enum.Font.Code; liveTime.TextSize = 12; liveTime.BackgroundTransparency = 1; liveTime.TextXAlignment = Enum.TextXAlignment.Left
-
-task.spawn(function() while task.wait(0.5) do pcall(function() local LT = os.date("*t") liveTime.Text = string.format("🕒 <b>LOCAL TIME:</b> %02d:%02d:%02d", LT.hour, LT.min, LT.sec) end) end end)
-
-local sInfo = Instance.new("Frame", hP); sInfo.Size = UDim2.new(0.95, 0, 0, 75); sInfo.BackgroundColor3 = Color3.fromRGB(20, 20, 25); Instance.new("UICorner", sInfo).CornerRadius = UDim.new(0, 8)
-local siSt = Instance.new("UIStroke", sInfo); siSt.Thickness = 1; siSt.Color = Color3.fromRGB(35, 35, 45)
-local siLbl = Instance.new("TextLabel", sInfo); siLbl.Size = UDim2.new(1, -20, 1, 0); siLbl.Position = UDim2.new(0, 12, 0, 0); siLbl.BackgroundTransparency = 1; siLbl.RichText = true
-siLbl.Text = "🎮 <b>PLACE ID:</b> " .. game.PlaceId .. "\n📍 <b>JOB ID:</b> <font color='rgb(180,180,190)'>Click to copy</font>\n👥 <b>PLAYERS:</b> " .. #P:GetPlayers() .. " / " .. P.MaxPlayers
-siLbl.TextColor3 = Color3.fromRGB(240, 240, 245); siLbl.Font = Enum.Font.GothamMedium; siLbl.TextSize = 11; siLbl.TextXAlignment = Enum.TextXAlignment.Left
-
-local siBtn = Instance.new("TextButton", sInfo); siBtn.Size = UDim2.new(1, 0, 1, 0); siBtn.BackgroundTransparency = 1; siBtn.Text = ""
-siBtn.MouseButton1Click:Connect(function() Ck() if setclipboard then setclipboard(game.JobId) ShowNotif("Copy Info", "Job ID Copied!") end end)
-
-local dT = Instance.new("TextButton", hP); dT.Size = UDim2.new(0.95, 0, 0, 38); dT.BackgroundColor3 = Color3.fromRGB(88, 101, 242); dT.Text = "✨ COPY DISCORD LINK"; dT.Font = Enum.Font.GothamBold; dT.TextColor3 = Color3.fromRGB(255, 255, 255); dT.TextSize = 11; Instance.new("UICorner", dT).CornerRadius = UDim.new(0, 6)
-dT.MouseButton1Click:Connect(function() Ck() if setclipboard then setclipboard("https://discord.gg/cWcbAskEt") ShowNotif("Copy Info", "Discord Link Copied!") end end)
-
-local function aR(t) local l = Instance.new("TextLabel", rP); l.Size = UDim2.new(0.95, 0, 0, 30); l.RichText = true; l.Text = " •  <b>" .. t .. "</b>"; l.TextColor3 = Color3.fromRGB(240, 240, 245); l.Font = Enum.Font.GothamMedium; l.TextSize = 12; l.BackgroundTransparency = 1; l.TextXAlignment = Enum.TextXAlignment.Left; aG(l) end
-aR("Script jangan diperjualbelikan!"); aR("Respect All Members."); aR("Stay Loyal with RLX HUB."); aR("Warm regards - Developer by AnjaszRelaxz.")
-
-local sC = Instance.new("Frame", mP); sC.Size = UDim2.new(0.95, 0, 0, 40); sC.BackgroundTransparency = 1
-local sB = Instance.new("TextBox", sC); sB.Size = UDim2.new(1, 0, 1, 0); sB.BackgroundColor3 = Color3.fromRGB(10, 10, 12); sB.PlaceholderText = "🔍 Cari script di sini..."; sB.Text = ""; sB.Font = Enum.Font.Gotham; sB.TextSize = 11; sB.TextColor3 = Color3.fromRGB(255, 255, 255); sB.PlaceholderColor3 = Color3.fromRGB(120, 120, 130); Instance.new("UICorner", sB).CornerRadius = UDim.new(0, 6)
-local sSt = Instance.new("UIStroke", sB); sSt.Color = Color3.fromRGB(212, 175, 55); sSt.Thickness = 1
-local sBts = {}
-
-local function aBt(pg, t, u) local b = Instance.new("TextButton", pg); b.Size = UDim2.new(0.95, 0, 0, 38); b.BackgroundColor3 = Color3.fromRGB(22, 22, 26); b.RichText = true; b.Text = "<b>" .. t .. "</b>"; b.TextColor3 = Color3.fromRGB(255, 255, 255); b.Font = Enum.Font.GothamBold; b.TextSize = 11; b.BorderSizePixel = 0; Instance.new("UICorner", b).CornerRadius = UDim.new(0, 6); aG(b) 
-	b.MouseButton1Click:Connect(function() Ck(); local cleanName = string.gsub(t, " %b{}", ""); cleanName = string.sub(cleanName, 1, 14) ShowNotif("Executing", cleanName .. " Loaded!") sL(u) end) 
-	table.insert(sBts, {Instance = b, SearchName = string.lower(t)}) 
-end
-sB:GetPropertyChangedSignal("Text"):Connect(function() local sT = string.lower(sB.Text) for _, d in pairs(sBts) do d.Instance.Visible = (sT == "" or string.find(d.SearchName, sT)) and true or false end end)
-
-aBt(mP, "KORN HUB (LT2) 🌳", "https://raw.githubusercontent.com/DevKron/Kron_Hub/refs/heads/main/version_1.0")
-aBt(mP, "INVISIBLE 👽", "https://raw.githubusercontent.com/g4247921-cmd/RLX-HUB/refs/heads/main/inivisble")
-aBt(mP, "DARK HUB (LT2) 🌑", "https://raw.githubusercontent.com/darkxwin/darkxsourcethinkyoutousedarkx/main/darkx")
-aBt(mP, "CAR FLY 🚗", "https://rawscripts.net/raw/Universal-Script-Car-fly-mobile-33376")
-aBt(mP, "TELEPORT PLAYER 📍", "https://raw.githubusercontent.com/g4247921-cmd/MasterRLX-/refs/heads/main/TeleportPlayer")
-aBt(mP, "MUSIK YT PLAYER 🎵", "https://raw.githubusercontent.com/Dan41/Roblox-Scripts/refs/heads/main/Youtube%20Music%20Player/YoutubeMusicPlayer.lua")
-aBt(mP, "SC FLY 🚀", "https://pastebin.com/raw/MsL78SwX")
-aBt(mP, "ALL DANCE/EMOTE 💃", "https://raw.githubusercontent.com/7yd7/Hub/refs/heads/Branch/GUIS/Emotes.lua")
-
--- ====================================================================
--- ⚡ ULTRA RIGID ANTI-FLING & MOVEMENT CORE
--- ====================================================================
-local _WS, _JP = 16, 50 local Nc, aFling, hA, espA = false, false, false, false
-local function uHum() local c = L.Character if c then local h = c:FindFirstChildOfClass("Humanoid") if h and h.Health > 0 then h.WalkSpeed = _WS h.UseJumpPower = true h.JumpPower = _JP end end end
-L.CharacterAdded:Connect(function(c) c:WaitForChild("Humanoid") task.wait(0.3) uHum() end)
-
-local function resetPhysics(hrp)
-	hrp.Velocity = Vector3.new(0, 0, 0)
-	hrp.RotVelocity = Vector3.new(0, 0, 0)
-	hrp.AssemblyLinearVelocity = Vector3.new(0, 0, 0)
-	hrp.AssemblyAngularVelocity = Vector3.new(0, 0, 0)
-end
-
-R.Heartbeat:Connect(function()
-	pcall(function()
-		if L.Character and aFling then
-			local hrp = L.Character:FindFirstChild("HumanoidRootPart")
-			if hrp then
-				resetPhysics(hrp)
-				if hrp.AssemblyLinearVelocity.Magnitude > 75 or hrp.AssemblyAngularVelocity.Magnitude > 75 then
-					hrp.Anchored = true
-					resetPhysics(hrp)
-					task.wait(0.1)
-					hrp.Anchored = false
-				end
-			end
-		end
-	end)
-end)
-
-R.RenderStepped:Connect(function() 
-	pcall(function() 
-		local c = L.Character 
-		if c then 
-			local h = c:FindFirstChildOfClass("Humanoid") 
-			if h and h.Health > 0 then 
-				if h.WalkSpeed ~= _WS then h.WalkSpeed = _WS end 
-				if h.JumpPower ~= _JP then h.UseJumpPower = true; h.JumpPower = _JP end 
-			end 
-			if Nc or aFling then 
-				for _, v in pairs(c:GetDescendants()) do if v:IsA("BasePart") then v.CanCollide = false end end 
-			end 
-		end 
-	end) 
-end)
-
-task.spawn(function() while task.wait(0.2) do pcall(function() for _, p in pairs(P:GetPlayers()) do if p ~= L and p.Character then local hrp = p.Character:FindFirstChild("HumanoidRootPart") if hrp then if hA then hrp.Size = Vector3.new(15, 15, 15); hrp.Transparency = 0.7; hrp.BrickColor = BrickColor.new("Bright gold"); hrp.CanCollide = false else hrp.Size = Vector3.new(2, 2, 1); hrp.Transparency = 1 end end end end end) end end)
-local cache = {}
-local function removeESP(p) if cache[p] then pcall(function() if cache[p].H then cache[p].H:Destroy() end if cache[p].L then cache[p].L.Visible = false; cache[p].L:Remove() end end) cache[p] = nil end end
-local function mESP() for _, p in pairs(P:GetPlayers()) do if p ~= L then if espA then if not cache[p] and p.Character then local h = Instance.new("Highlight") h.Name = "RLX_Cham"; h.FillColor = Color3.fromRGB(212, 175, 55); h.FillTransparency = 0.5; h.OutlineColor = Color3.fromRGB(255, 255, 255); h.OutlineTransparency = 0; h.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop; h.Parent = p.Character local l = (Drawing and Drawing.new and Drawing.new("Line")) if l then l.Thickness = 1; l.Color = Color3.fromRGB(212, 175, 55) end cache[p] = {H = h, L = l} end else removeESP(p) end end end end
-P.PlayerRemoving:Connect(removeESP)
-R.RenderStepped:Connect(function() if not espA then return end for p, v in pairs(cache) do pcall(function() if p.Character and p.Character:FindFirstChild("HumanoidRootPart") and p.Character:FindFirstChildOfClass("Humanoid") and p.Character.Humanoid.Health > 0 then local hrp = p.Character.HumanoidRootPart local pos, onScreen = C:WorldToViewportPoint(hrp.Position) if onScreen then if v.L then v.L.From = Vector2.new(C.ViewportSize.X / 2, C.ViewportSize.Y); v.L.To = Vector2.new(pos.X, pos.Y); v.L.Visible = true end if not p.Character:FindFirstChild("RLX_Cham") and v.H then v.H.Parent = p.Character end else if v.L then v.L.Visible = false end end else if v.L then v.L.Visible = false end end end) end end)
-
-local function cSl(n, mi, ma, it, cb) local f = Instance.new("Frame", pP); f.Size = UDim2.new(0.95, 0, 0, 50); f.BackgroundTransparency = 1 local l = Instance.new("TextLabel", f); l.Size = UDim2.new(1, 0, 0, 18); l.RichText = true; l.Text = "<b>" .. n .. " : <font color='rgb(212,175,55)'>" .. it .. "</font></b>"; l.TextColor3 = Color3.fromRGB(240, 240, 245); l.BackgroundTransparency = 1; l.Font = Enum.Font.GothamBold; l.TextSize = 11; l.TextXAlignment = Enum.TextXAlignment.Left; aG(l) local br = Instance.new("Frame", f); br.Size = UDim2.new(1, 0, 0, 8); br.Position = UDim2.new(0, 0, 0, 24); br.BackgroundColor3 = Color3.fromRGB(30, 30, 35); Instance.new("UICorner", br).CornerRadius = UDim.new(0, 4) local fl = Instance.new("Frame", br); fl.Size = UDim2.new((it - mi) / (ma - mi), 0, 1, 0); fl.BackgroundColor3 = Color3.fromRGB(212, 175, 55); Instance.new("UICorner", fl).CornerRadius = UDim.new(0, 4) local function Up(i) local r = math.clamp((i.Position.X - br.AbsolutePosition.X) / br.AbsoluteSize.X, 0, 1) local v = math.floor(mi + (r * (ma - mi))) fl.Size = UDim2.new(r, 0, 1, 0) l.Text = "<b>" .. n .. " : <font color='rgb(212,175,55)'>" .. v .. "</font></b>" cb(v) end local dg = false br.InputBegan:Connect(function(i) if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then dg = true; Up(i) end end) U.InputChanged:Connect(function(i) if dg and (i.UserInputType == Enum.UserInputType.MouseMovement or i.UserInputType == Enum.UserInputType.Touch) then Up(i) end end) U.InputEnded:Connect(function(i) if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then dg = false end end) end
-cSl("WalkSpeed", 16, 250, 16, function(v) _WS = v uHum() end) cSl("JumpPower", 50, 350, 50, function(v) _JP = v uHum() end)
-
-local function sBt(pg, t, fc) local b = Instance.new("TextButton", pg); b.Size = UDim2.new(0.95, 0, 0, 36); b.BackgroundColor3 = Color3.fromRGB(22, 22, 26); b.RichText = true; b.Text = "<b>" .. t .. "</b>"; b.TextColor3 = Color3.fromRGB(255, 255, 255); b.Font = Enum.Font.GothamBold; b.TextSize = 11; Instance.new("UICorner", b).CornerRadius = UDim.new(0, 6); aG(b) b.MouseButton1Click:Connect(function() Ck(); fc(b) end) end
-sBt(pP, "NOCLIP: <font color='rgb(255,75,75)'>OFF</font>", function(b) Nc = not Nc b.Text = "<b>NOCLIP: " .. (Nc and "<font color='rgb(75,255,75)'>ON</font>" or "<font color='rgb(255,75,75)'>OFF</font>") .. "</b>" ShowNotif("Toggle", "Noclip Changed") end)
-sBt(pP, "ANTI FLING: <font color='rgb(255,75,75)'>OFF</font>", function(b) aFling = not aFling b.Text = "<b>ANTI FLING: " .. (aFling and "<font color='rgb(75,255,75)'>ON</font>" or "<font color='rgb(255,75,75)'>OFF</font>") .. "</b>" ShowNotif("Toggle", "AntiFling Rigidity Updated") end)
-sBt(pP, "GACOR ESP (CHAMS/LINE): <font color='rgb(255,75,75)'>OFF</font>", function(b) espA = not espA b.Text = "<b>GACOR ESP: " .. (espA and "<font color='rgb(75,255,75)'>ON</font>" or "<font color='rgb(255,75,75)'>OFF</font>") .. "</b>" mESP() ShowNotif("Toggle", "ESP Status Updated") end)
-sBt(pP, "HITBOX EXPANDER: <font color='rgb(255,75,75)'>OFF</font>", function(b) hA = not hA b.Text = "<b>HITBOX EXPANDER: " .. (hA and "<font color='rgb(75,255,75)'>ON</font>" or "<font color='rgb(255,75,75)'>OFF</font>") .. "</b>" ShowNotif("Toggle", "Hitbox Modded") end)
-sBt(pP, "SERVER HOP", function() ShowNotif("System", "Hopping Server..."); local x = H:JSONDecode(game:HttpGet("https://games.roblox.com/v1/games/" .. game.PlaceId .. "/servers/Public?sortOrder=Asc&limit=100")) for _, s in pairs(x.data) do if s.playing < s.maxPlayers and s.id ~= game.JobId then T:TeleportToPlaceInstance(game.PlaceId, s.id, L) break end end end)
-sBt(pP, "REFRESH AVATAR (/re)", function() ShowNotif("System", "Refreshing..."); local c = L.Character if c and c:FindFirstChild("HumanoidRootPart") then local pos = c.HumanoidRootPart.CFrame; c:BreakJoints(); L.CharacterAdded:Wait(); task.wait(0.25) if L.Character and L.Character:FindFirstChild("HumanoidRootPart") then L.Character.HumanoidRootPart.CFrame = pos end end end)
-sBt(pP, "REJOIN SERVER", function() ShowNotif("System", "Rejoining...") T:Teleport(game.PlaceId, L) end) 
-sBt(pP, "INFINITE YIELD", function() ShowNotif("Executing", "Inf Yield Loaded") sL("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source") end)
-
--- ====================================================================
--- 🌟 FIX BUG: ANTI-OVERRIDE CUSTOM LIGHTING CONTROLLER
--- ====================================================================
-local targetTime = nil
-local timeConnection = nil
-
-local function lockTime(clockTime)
-	targetTime = clockTime
-	Ltg.ClockTime = clockTime
-	
-	-- Hapus koneksi lama jika ada agar tidak menumpuk
-	if timeConnection then timeConnection:Disconnect() end
-	
-	-- Kunci paksa: Jika script game server mengubah ClockTime, langsung balikin ke targetTime kita!
-	timeConnection = Ltg:GetPropertyChangedSignal("ClockTime"):Connect(function()
-		if targetTime and Ltg.ClockTime ~= targetTime then
-			Ltg.ClockTime = targetTime
-		end
-	end)
-end
-
-sBt(lP, "☀️ PAGI (MORNING) - 08:00", function() lockTime(8) ShowNotif("Lighting", "Time Locked to Morning") end)
-sBt(lP, "🌤️ SIANG (NOON) - 12:00", function() lockTime(12) ShowNotif("Lighting", "Time Locked to Noon") end)
-sBt(lP, "🌅 SORE (SUNSET) - 17.3", function() lockTime(17.3) ShowNotif("Lighting", "Time Locked to Sunset") end)
-sBt(lP, "🌌 MALAM (NIGHT) - 00:00", function() lockTime(0) ShowNotif("Lighting", "Time Locked to Night") end)
-
--- Window Dragging & Tab Switch
-local dT, dS, sP local function uI(i) local d = i.Position - dS M.Position = UDim2.new(sP.X.Scale, sP.X.Offset + d.X, sP.Y.Scale, sP.Y.Offset + d.Y) end
-TB.InputBegan:Connect(function(i) if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then dT = true; dS = i.Position; sP = M.Position i.Changed:Connect(function() if i.UserInputState == Enum.UserInputState.End then dT = false end end) end end)
-U.InputChanged:Connect(function(i) if dT and (i.UserInputType == Enum.UserInputType.MouseMovement or i.UserInputType == Enum.UserInputType.Touch) then uI(i) end end)
-
-local hTab = cTb("HOME 🏠", "Home"); cTb("RULES 📜", "Rules"); cTb("MAINSCRIP ⚡", "MainScrip"); cTb("PLAYER ⚙️", "Player"); cTb("LIGHTING 🌟", "Lighting")
-hTab.TextColor3 = Color3.fromRGB(212, 175, 55); Pgs.Home.Visible = true; M.Visible = true; aG(Tg) 
-P.PlayerAdded:Connect(function() if espA then task.wait(0.5); mESP() end end)
-
-task.wait(0.5)
-ShowNotif("RLX Hub", "Welcome Back!")
-";cS.Volume=0.5
-local function Ck() cS:Play() end
-local M=Instance.new("Frame",SG);M.Name="MainHubFrame";M.BackgroundColor3=Color3.fromRGB(15,15,18);M.BorderSizePixel=0;M.Visible=false;Instance.new("UICorner",M).CornerRadius=UDim.new(0,10)
-local MS=Instance.new("UIStroke",M);MS.Thickness=1.5;MS.Color=Color3.fromRGB(212,175,55)
-local Tg=Instance.new("TextButton",SG);Tg.Name="RLX_ToggleText";Tg.Text="<b>RLX HUB 🕊️</b>";Tg.RichText=true;Tg.TextColor3=Color3.fromRGB(255,255,255);Tg.Font=Enum.Font.GothamBold;Tg.TextSize=14;Tg.BackgroundTransparency=1;Tg.Size=UDim2.new(0,120,0,30);Tg.AnchorPoint=Vector2.new(0.5,0);Tg.Position=UDim2.new(0.5,0,0,-45);aG(Tg)
-local TB=Instance.new("TextLabel",M);TB.Size=UDim2.new(1,0,0,40);TB.BackgroundTransparency=1;TB.Text="   RLX HUB BY ANJASZRELAXZ";TB.TextColor3=Color3.fromRGB(255,255,255);TB.Font=Enum.Font.GothamBold;TB.TextSize=13;TB.TextXAlignment=Enum.TextXAlignment.Left;aG(TB)
-local CB=Instance.new("TextButton",TB);CB.Size=UDim2.new(0,30,0,30);CB.Position=UDim2.new(1,-35,0,5);CB.Text="✕";CB.TextColor3=Color3.fromRGB(180,180,190);CB.TextSize=14;CB.Font=Enum.Font.GothamBold;CB.BackgroundTransparency=1
-local sF=Instance.new("Frame",M);sF.Size=UDim2.new(0,180,0,20);sF.Position=UDim2.new(1,-190,1,-25);sF.BackgroundTransparency=1
-local sLbl=Instance.new("TextLabel",sF);sLbl.Size=UDim2.new(1,0,1,0);sLbl.BackgroundTransparency=1;sLbl.RichText=true;sLbl.Text="⚡ <b>FPS:</b> -- | 📡 <b>PING:</b> -- ms";sLbl.TextColor3=Color3.fromRGB(180,180,185);sLbl.Font=Enum.Font.Code;sLbl.TextSize=10;sLbl.TextXAlignment=Enum.TextXAlignment.Right
-local fC,lFU=0,os.clock()
-R.RenderStepped:Connect(function() fC=fC+1 local n=os.clock() if n-lFU>=1 then local cFps=math.floor(fC/(n-lFU)) local cPng=0 local s,e=pcall(function() return math.floor(S.Network.ServerStatsItem["Data Ping"]:GetValue()) end) cPng=s and e or math.floor(L:GetNetworkPing()*1000) sLbl.Text="⚡ <b>FPS:</b> "..cFps.." | 📡 <b>PING:</b> "..cPng.." ms";fC=0;lFU=n end end)
-local function uLP() Tg.Position=UDim2.new(M.Position.X.Scale,M.Position.X.Offset,M.Position.Y.Scale,M.Position.Y.Offset-(M.Size.Y.Offset/2)-30) end
-local function uL() M.Size=C.ViewportSize.X<800 and UDim2.new(0,480,0,280) or UDim2.new(0,600,0,360) M.AnchorPoint=Vector2.new(0.5,0.5);M.Position=UDim2.new(0.5,0,0.5,0) uLP() end
-uL();C:GetPropertyChangedSignal("ViewportSize"):Connect(uL) M:GetPropertyChangedSignal("Position"):Connect(uLP)
-Tg.MouseButton1Click:Connect(function() Ck();M.Visible=not M.Visible end) CB.MouseButton1Click:Connect(function() Ck();M.Visible=false end)
-local Sb=Instance.new("Frame",M);Sb.Size=UDim2.new(0,130,1,-55);Sb.Position=UDim2.new(0,12,0,42);Sb.BackgroundColor3=Color3.fromRGB(10,10,12);Sb.BorderSizePixel=0;Instance.new("UICorner",Sb).CornerRadius=UDim.new(0,6)
-local sLy=Instance.new("UIListLayout",Sb);sLy.Padding=UDim.new(0,5);sLy.HorizontalAlignment=Enum.HorizontalAlignment.Center
-local sPd=Instance.new("UIPadding",Sb);sPd.PaddingTop=UDim.new(0,8)
-local Ct=Instance.new("Frame",M);Ct.Size=UDim2.new(1,-164,1,-55);Ct.Position=UDim2.new(0,152,0,42);Ct.BackgroundTransparency=1
-local Pgs={}
-local function cPg(n) local p=Instance.new("ScrollingFrame",Ct);p.Name=n.."Page";p.Size=UDim2.new(1,0,1,0);p.BackgroundTransparency=1;p.Visible=false;p.ScrollBarThickness=2;p.ScrollBarImageColor3=Color3.fromRGB(212,175,55) local ly=Instance.new("UIListLayout",p) ly.Padding=UDim.new(0,8);ly.HorizontalAlignment=Enum.HorizontalAlignment.Center ly:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function() p.CanvasSize=UDim2.new(0,0,0,ly.AbsoluteContentSize.Y+15) end) Pgs[n]=p;return p end
-local function cTb(t,n) local b=Instance.new("TextButton",Sb);b.Size=UDim2.new(0.9,0,0,34);b.BackgroundColor3=Color3.fromRGB(20,20,25);b.RichText=true;b.Text="<b>"..t.."</b>";b.TextColor3=Color3.fromRGB(160,160,170);b.Font=Enum.Font.GothamBold;b.TextSize=10;b.BorderSizePixel=0;Instance.new("UICorner",b).CornerRadius=UDim.new(0,5) b.MouseButton1Click:Connect(function() Ck();for k,v in pairs(Pgs) do v.Visible=(k==n) end for _,x in pairs(Sb:GetChildren()) do if x:IsA("TextButton") then x.TextColor3=Color3.fromRGB(160,160,170) end end b.TextColor3=Color3.fromRGB(212,175,55) end) return b end
-local hP,rP,mP,pP=cPg("Home"),cPg("Rules"),cPg("MainScrip"),cPg("Player")
-local Pr=Instance.new("Frame",hP);Pr.Size=UDim2.new(0.95,0,0,90);Pr.BackgroundColor3=Color3.fromRGB(22,22,26);Instance.new("UICorner",Pr).CornerRadius=UDim.new(0,6)
-local Av=Instance.new("ImageLabel",Pr);Av.Size=UDim2.new(0,60,0,60);Av.Position=UDim2.new(0,15,0.5,-30);Av.Image=P:GetUserThumbnailAsync(L.UserId,Enum.ThumbnailType.HeadShot,Enum.ThumbnailSize.Size420x420);Av.BackgroundTransparency=1;Instance.new("UICorner",Av).CornerRadius=UDim.new(1,0)
-local uT=Instance.new("TextLabel",Pr);uT.Size=UDim2.new(1,-95,1,0);uT.Position=UDim2.new(0,90,0,0);uT.RichText=true;uT.Text="Welcome <i>Executive</i>,\n<b><font color='rgb(212,175,55)'>"..L.Name.."</font></b>";uT.TextColor3=Color3.fromRGB(255,255,255);g=Instance.new("UIGradient") g.Color=ColorSequence.new({ColorSequenceKeypoint.new(0,Color3.fromRGB(255,255,255)),ColorSequenceKeypoint.new(0.5,Color3.fromRGB(212,175,55)),ColorSequenceKeypoint.new(1,Color3.fromRGB(255,255,255))}) g.Parent=uT uT.Font=Enum.Font.GothamBold;uT.TextSize=14;uT.BackgroundTransparency=1;uT.TextXAlignment=Enum.TextXAlignment.Left
-local dT=Instance.new("TextButton",hP);dT.Size=UDim2.new(0.95,0,0,38);dT.BackgroundColor3=Color3.fromRGB(88,101,242);dT.Text="✨ COPY DISCORD LINK";dT.Font=Enum.Font.GothamBold;dT.TextColor3=Color3.fromRGB(255,255,255);dT.TextSize=11;Instance.new("UICorner",dT).CornerRadius=UDim.new(0,6)
-dT.MouseButton1Click:Connect(function() Ck() if setclipboard then setclipboard("https://discord.gg/cWcbAskEt") uT.Text="Welcome <i>Executive</i>,\n<b><font color='rgb(75,255,75)'>LINK COPIED!</font></b>" task.wait(2) uT.Text="Welcome <i>Executive</i>,\n<b><font color='rgb(212,175,55)'>"..L.Name.."</font></b>" end end)
-local function aR(t) local l=Instance.new("TextLabel",rP);l.Size=UDim2.new(0.95,0,0,30);l.RichText=true;l.Text=" •  <b>"..t.."</b>";l.TextColor3=Color3.fromRGB(240,240,245);l.Font=Enum.Font.GothamMedium;l.TextSize=12;l.BackgroundTransparency=1;l.TextXAlignment=Enum.TextXAlignment.Left;aG(l) end
-aR("Script jangan diperjualbelikan!");aR("Respect All Members.");aR("Stay Loyal with RLX HUB.");aR("Warm regards - Developer by AnjaszRelaxz.")
-local sC=Instance.new("Frame",mP);sC.Size=UDim2.new(0.95,0,0,40);sC.BackgroundTransparency=1
-local sB=Instance.new("TextBox",sC);sB.Size=UDim2.new(1,0,1,0);sB.BackgroundColor3=Color3.fromRGB(10,10,12);sB.PlaceholderText="🔍 Cari script di sini...";sB.Text="";sB.Font=Enum.Font.Gotham;sB.TextSize=11;sB.TextColor3=Color3.fromRGB(255,255,255);sB.PlaceholderColor3=Color3.fromRGB(120,120,130);Instance.new("UICorner",sB).CornerRadius=UDim.new(0,6)
-local sSt=Instance.new("UIStroke",sB);sSt.Color=Color3.fromRGB(212,175,55);sSt.Thickness=1
-local sBts={}
-local function aBt(pg,t,u) local b=Instance.new("TextButton",pg);b.Size=UDim2.new(0.95,0,0,38);b.BackgroundColor3=Color3.fromRGB(22,22,26);b.RichText=true;b.Text="<b>"..t.."</b>";b.TextColor3=Color3.fromRGB(255,255,255);b.Font=Enum.Font.GothamBold;b.TextSize=11;b.BorderSizePixel=0;Instance.new("UICorner",b).CornerRadius=UDim.new(0,6);aG(b) b.MouseButton1Click:Connect(function() Ck();sL(u) end) table.insert(sBts,{Instance=b,SearchName=string.lower(t)}) end
-sB:GetPropertyChangedSignal("Text"):Connect(function() local sT=string.lower(sB.Text) for _,d in pairs(sBts) do d.Instance.Visible=(sT=="" or string.find(d.SearchName,sT)) and true or false end end)
-aBt(mP,"KORN HUB (LT2) 🌳","https://raw.githubusercontent.com/DevKron/Kron_Hub/refs/heads/main/version_1.0")
-aBt(mP,"INVISIBLE 👽","https://raw.githubusercontent.com/g4247921-cmd/RLX-HUB/refs/heads/main/inivisble")
-aBt(mP,"DARK HUB (LT2) 🌑","https://raw.githubusercontent.com/darkxwin/darkxsourcethinkyoutousedarkx/main/darkx")
-aBt(mP,"CAR FLY 🚗","https://rawscripts.net/raw/Universal-Script-Car-fly-mobile-33376")
-aBt(mP,"TELEPORT PLAYER 📍","https://raw.githubusercontent.com/g4247921-cmd/MasterRLX-/refs/heads/main/TeleportPlayer")
-aBt(mP,"MUSIK YT PLAYER 🎵","https://raw.githubusercontent.com/Dan41/Roblox-Scripts/refs/heads/main/Youtube%20Music%20Player/YoutubeMusicPlayer.lua")
-aBt(mP,"SC FLY 🚀","https://pastebin.com/raw/MsL78SwX")
-aBt(mP,"ALL DANCE/EMOTE 💃","https://raw.githubusercontent.com/7yd7/Hub/refs/heads/Branch/GUIS/Emotes.lua")
-local _WS,_JP=16,50 local Nc,aFling,hA,espA=false,false,false,false
-local function uHum() local c=L.Character if c then local h=c:FindFirstChildOfClass("Humanoid") if h and h.Health>0 then h.WalkSpeed=_WS h.UseJumpPower=true h.JumpPower=_JP end end end
-L.CharacterAdded:Connect(function(c) c:WaitForChild("Humanoid") task.wait(0.3) uHum() end)
-local function fK(hrp) hrp.Velocity=Vector3.new(0,0,0) hrp.RotVelocity=Vector3.new(0,0,0) hrp.AssemblyLinearVelocity=Vector3.new(0,0,0) hrp.AssemblyAngularVelocity=Vector3.new(0,0,0) end
-R.PreSimulation:Connect(function() pcall(function() if aFling and L.Character then local hrp=L.Character:FindFirstChild("HumanoidRootPart") if hrp then fK(hrp) end end end) end)
-R.Heartbeat:Connect(function() pcall(function() if aFling and L.Character then local hrp=L.Character:FindFirstChild("HumanoidRootPart") if hrp then fK(hrp) end end end) end)
-R.RenderStepped:Connect(function() pcall(function() local c=L.Character if c then local h=c:FindFirstChildOfClass("Humanoid") if h and h.Health>0 then if h.WalkSpeed~=_WS then h.WalkSpeed=_WS end if h.JumpPower~=_JP then h.UseJumpPower=true;h.JumpPower=_JP end end if Nc or aFling then for _,v in pairs(c:GetDescendants()) do if v:IsA("BasePart") then v.CanCollide=false end end end end end) end)
-task.spawn(function() while task.wait(0.2) do pcall(function() for _,p in pairs(P:GetPlayers()) do if p~=L and p.Character then local hrp=p.Character:FindFirstChild("HumanoidRootPart") if hrp then if hA then hrp.Size=Vector3.new(15,15,15);hrp.Transparency=0.7;hrp.BrickColor=BrickColor.new("Bright gold");hrp.CanCollide=false else hrp.Size=Vector3.new(2,2,1);hrp.Transparency=1 end end end end end) end end)
-local cache={}
-local function removeESP(p) if cache[p] then pcall(function() cache[p].H:Destroy() cache[p].L.Visible=false;cache[p].L:Remove() end) cache[p]=nil end end
-local function mESP() for _,p in pairs(P:GetPlayers()) do if p~=L then if espA then if not cache[p] and p.Character then local h=Instance.new("Highlight") h.Name="RLX_Cham";h.FillColor=Color3.fromRGB(212,175,55);h.FillTransparency=0.5;h.OutlineColor=Color3.fromRGB(255,255,255);h.OutlineTransparency=0;h.DepthMode=Enum.HighlightDepthMode.AlwaysOnTop;h.Parent=p.Character local l=Drawing.new("Line");l.Thickness=1;l.Color=Color3.fromRGB(212,175,55) cache[p]={H=h,L=l} end else removeESP(p) end end end end
-P.PlayerRemoving:Connect(removeESP)
-R.RenderStepped:Connect(function() if not espA then return end for p,v in pairs(cache) do pcall(function() if p.Character and p.Character:FindFirstChild("HumanoidRootPart") and p.Character:FindFirstChildOfClass("Humanoid") and p.Character.Humanoid.Health>0 then local hrp=p.Character.HumanoidRootPart local pos,onScreen=C:WorldToViewportPoint(hrp.Position) if onScreen then v.L.From=Vector2.new(C.ViewportSize.X/2,C.ViewportSize.Y);v.L.To=Vector2.new(pos.X,pos.Y);v.L.Visible=true if not p.Character:FindFirstChild("RLX_Cham") then v.H.Parent=p.Character end else v.L.Visible=false end else v.L.Visible=false end end) end end)
-local function cSl(n,mi,ma,it,cb) local f=Instance.new("Frame",pP);f.Size=UDim2.new(0.95,0,0,50);f.BackgroundTransparency=1 local l=Instance.new("TextLabel",f);l.Size=UDim2.new(1,0,0,18);l.RichText=true;l.Text="<b>"..n.." : <font color='rgb(212,175,55)'>"..it.."</font></b>";l.TextColor3=Color3.fromRGB(240,240,245);l.BackgroundTransparency=1;l.Font=Enum.Font.GothamBold;l.TextSize=11;l.TextXAlignment=Enum.TextXAlignment.Left;aG(l) local br=Instance.new("Frame",f);br.Size=UDim2.new(1,0,0,8);br.Position=UDim2.new(0,0,0,24);br.BackgroundColor3=Color3.fromRGB(30,30,35);Instance.new("UICorner",br).CornerRadius=UDim.new(0,4) local fl=Instance.new("Frame",br);fl.Size=UDim2.new((it-mi)/(ma-mi),0,1,0);fl.BackgroundColor3=Color3.fromRGB(212,175,55);Instance.new("UICorner",fl).CornerRadius=UDim.new(0,4) local function Up(i) local r=math.clamp((i.Position.X-br.AbsolutePosition.X)/br.AbsoluteSize.X,0,1) local v=math.floor(mi+(r*(ma-mi))) fl.Size=UDim2.new(r,0,1,0) l.Text="<b>"..n.." : <font color='rgb(212,175,55)'>"..v.."</font></b>" cb(v) end local dg=false br.InputBegan:Connect(function(i) if i.UserInputType==Enum.UserInputType.MouseButton1 or i.UserInputType==Enum.UserInputType.Touch then dg=true;Up(i) end end) U.InputChanged:Connect(function(i) if dg and (i.UserInputType==Enum.UserInputType.MouseMovement or i.UserInputType==Enum.UserInputType.Touch) then Up(i) end end) U.InputEnded:Connect(function(i) if i.UserInputType==Enum.UserInputType.MouseButton1 or i.UserInputType==Enum.UserInputType.Touch then dg=false end end) end
-cSl("WalkSpeed",16,250,16,function(v) _WS=v uHum() end) cSl("JumpPower",50,350,50,function(v) _JP=v uHum() end)
-local function sBt(pg,t,fc) local b=Instance.new("TextButton",pg);b.Size=UDim2.new(0.95,0,0,36);b.BackgroundColor3=Color3.fromRGB(22,22,26);b.RichText=true;b.Text="<b>"..t.."</b>";b.TextColor3=Color3.fromRGB(255,255,255);b.Font=Enum.Font.GothamBold;b.TextSize=11;Instance.new("UICorner",b).CornerRadius=UDim.new(0,6);aG(b) b.MouseButton1Click:Connect(function() Ck();fc(b) end) end
-sBt(pP,"NOCLIP: <font color='rgb(255,75,75)'>OFF</font>",function(b) Nc=not Nc b.Text="<b>NOCLIP: "..(Nc and "<font color='rgb(75,255,75)'>ON</font>" or "<font color='rgb(255,75,75)'>OFF</font>").."</b>" end)
-sBt(pP,"ANTI FLING: <font color='rgb(255,75,75)'>OFF</font>",function(b) aFling=not aFling b.Text="<b>ANTI FLING: "..(aFling and "<font color='rgb(75,255,75)'>ON</font>" or "<font color='rgb(255,75,75)'>OFF</font>").."</b>" end)
-sBt(pP,"GACOR ESP (CHAMS/LINE): <font color='rgb(255,75,75)'>OFF</font>",function(b) espA=not espA b.Text="<b>GACOR ESP: "..(espA and "<font color='rgb(75,255,75)'>ON</font>" or "<font color='rgb(255,75,75)'>OFF</font>").."</b>" mESP() end)
-sBt(pP,"HITBOX EXPANDER: <font color='rgb(255,75,75)'>OFF</font>",function(b) hA=not hA b.Text="<b>HITBOX EXPANDER: "..(hA and "<font color='rgb(75,255,75)'>ON</font>" or "<font color='rgb(255,75,75)'>OFF</font>").."</b>" end)
-sBt(pP,"SERVER HOP",function() local x=H:JSONDecode(game:HttpGet("https://games.roblox.com/v1/games/"..game.PlaceId.."/servers/Public?sortOrder=Asc&limit=100")) for _,s in pairs(x.data) do if s.playing<s.maxPlayers and s.id~=game.JobId then T:TeleportToPlaceInstance(game.PlaceId,s.id,L) break end end end)
-sBt(pP,"REFRESH AVATAR (/re)",function() local c=L.Character if c and c:FindFirstChild("HumanoidRootPart") then local pos=c.HumanoidRootPart.CFrame;c:BreakJoints();L.CharacterAdded:Wait();task.wait(0.25) if L.Character and L.Character:FindFirstChild("HumanoidRootPart") then L.Character.HumanoidRootPart.CFrame=pos end end end)
-sBt(pP,"REJOIN SERVER",function() T:Teleport(game.PlaceId,L) end) sBt(pP,"INFINITE YIELD",function() sL("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source") end)
-local dT,dS,sP local function uI(i) local d=i.Position-dS M.Position=UDim2.new(sP.X.Scale,sP.X.Offset+d.X,sP.Y.Scale,sP.Y.Offset+d.Y) end
-TB.InputBegan:Connect(function(i) if i.UserInputType==Enum.UserInputType.MouseButton1 or i.UserInputType==Enum.UserInputType.Touch then dT=true;dS=i.Position;sP=M.Position i.Changed:Connect(function() if i.UserInputState==Enum.UserInputState.End then dT=false end end) end end)
-U.InputChanged:Connect(function(i) if dT and (i.UserInputType==Enum.UserInputType.MouseMovement or i.UserInputType==Enum.UserInputType.Touch) then uI(i) end end)
-local hTab=cTb("HOME 🏠","Home");cTb("RULES 📜","Rules");cTb("MAINSCRIP ⚡","MainScrip");cTb("PLAYER ⚙️","Player")
-hTab.TextColor3=Color3.fromRGB(212,175,55);Pgs.Home.Visible=true;aG(Tg) P.PlayerAdded:Connect(function() if espA then task.wait(0.5);mESP() end end)
+-- Contoh penggunaan generator toggle (Sambungan Sistem Anda):
+cTg(pP,"Noclip System 🌀",false,function(v)Nc=v end)
+cTg(pP,"Anti-Fling System 🛡️",false,function(v)aFling=v end)
+cTg(pP,"Hitbox Expander 🎯",false,function(v)hA=v end)
+cTg(pP,"Player ESP Highlights 👁️",false,function(v)espA=v;mESP()P.PlayerAdded:Connect(function(p)p.CharacterAdded:Connect(function()task.wait(0.5)mESP()end)end)end)

@@ -229,10 +229,115 @@ local function lockTime(clockTime)
 	end)
 end
 
+-- Fungsi Helper untuk Menghapus Efek Cinematic Lama agar tidak tumpuk
+local function clearCinematicEffects()
+	for _, child in ipairs(Ltg:GetChildren()) do
+		if child.Name == "CustomCinematicEffect" then
+			child:Destroy()
+		end
+	end
+	-- Hapus Letterbox UI jika ada
+	local existingGui = lP:WaitForChild("PlayerGui"):FindFirstChild("CinematicLetterboxGui")
+	if existingGui then existingGui:Destroy() end
+end
+
+-- Tombol Waktu Dasar
 sBt(lP, "☀️ PAGI (MORNING) - 08:00", function() lockTime(8) ShowNotif("Lighting", "Time Locked to Morning") end)
 sBt(lP, "🌤️ SIANG (NOON) - 12:00", function() lockTime(12) ShowNotif("Lighting", "Time Locked to Noon") end)
 sBt(lP, "🌅 SORE (SUNSET) - 17.3", function() lockTime(17.3) ShowNotif("Lighting", "Time Locked to Sunset") end)
 sBt(lP, "🌌 MALAM (NIGHT) - 00:00", function() lockTime(0) ShowNotif("Lighting", "Time Locked to Night") end)
+
+-- === FITUR PILIHAN LAYAR & EFEK CINEMATIC HD ===
+
+sBt(lP, "💎 REALISTIC HD (Ultra Graphics)", function()
+	clearCinematicEffects()
+	lockTime(14) -- Siang terang estetik
+	
+	local cc = Instance.new("ColorCorrectionEffect", Ltg)
+	cc.Name = "CustomCinematicEffect"
+	cc.Brightness = 0.05
+	cc.Contrast = 0.25
+	cc.Saturation = 0.15
+	
+	local bloom = Instance.new("BloomEffect", Ltg)
+	bloom.Name = "CustomCinematicEffect"
+	bloom.Intensity = 0.4
+	bloom.Size = 24
+	
+	ShowNotif("Visual", "Realistic HD Activated!")
+end)
+
+sBt(lP, "🌫️ BLUR CINEMATIC (Deep Depth)", function()
+	clearCinematicEffects()
+	
+	local blur = Instance.new("BlurEffect", Ltg)
+	blur.Name = "CustomCinematicEffect"
+	blur.Size = 12
+	
+	local cc = Instance.new("ColorCorrectionEffect", Ltg)
+	cc.Name = "CustomCinematicEffect"
+	cc.Saturation = -0.1
+	cc.Contrast = 0.2
+	
+	ShowNotif("Visual", "Cinematic Blur Activated!")
+end)
+
+sBt(lP, "🎬 LAYAR FILM (Letterbox Cinematic)", function()
+	clearCinematicEffects()
+	lockTime(17.5) -- Suasana sore menjelang malam
+	
+	-- Efek warna sinematik (agak keemasan/hangat)
+	Mo = Instance.new("ColorCorrectionEffect", Ltg)
+	Mo.Name = "CustomCinematicEffect"
+	Mo.TintColor = Color3.fromRGB(255, 235, 205)
+	Mo.Contrast = 0.3
+	Mo.Saturation = 0.05
+	
+	-- Membuat Bar Hitam Atas & Bawah ala Layar Bioskop (Letterbox)
+	local gui = Instance.new("ScreenGui", lP:WaitForChild("PlayerGui"))
+	gui.Name = "CinematicLetterboxGui"
+	gui.ResetOnSpawn = false
+	
+	local topBar = Instance.new("Frame", gui)
+	topBar.Size = UDim2.new(1, 0, 0.1, 0)
+	topBar.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+	topBar.BorderSizePixel = 0
+	
+	local botBar = Instance.new("Frame", gui)
+	botBar.Size = UDim2.new(1, 0, 0.1, 0)
+	botBar.Position = UDim2.new(0, 0, 0.9, 0)
+	botBar.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+	botBar.BorderSizePixel = 0
+	
+	ShowNotif("Visual", "Movie Screen / Letterbox Enabled!")
+end)
+
+sBt(lP, "🌸 ANIME STYLE (Vibrant & Cute)", function()
+	clearCinematicEffects()
+	lockTime(9)
+	
+	local cc = Instance.new("ColorCorrectionEffect", Ltg)
+	cc.Name = "CustomCinematicEffect"
+	cc.Brightness = 0.1
+	cc.Contrast = 0.15
+	cc.Saturation = 0.45 -- Warna sangat cerah ala anime
+	
+	local sun = Instance.new("SunRaysEffect", Ltg)
+	sun.Name = "CustomCinematicEffect"
+	sun.Intensity = 0.3
+	
+	ShowNotif("Visual", "Anime Vibe Activated!")
+end)
+
+sBt(lP, "🔄 RESET NORMAL LIGHTING", function()
+	clearCinematicEffects()
+	if timeConnection then 
+		timeConnection:Disconnect() 
+		timeConnection = nil 
+	end
+	targetTime = nil
+	ShowNotif("Lighting", "Reset to Default Game Lighting")
+end)
 
 -- Window Dragging & Tab Switch
 local dT, dS, sP local function uI(i) local d = i.Position - dS M.Position = UDim2.new(sP.X.Scale, sP.X.Offset + d.X, sP.Y.Scale, sP.Y.Offset + d.Y) end

@@ -253,6 +253,14 @@ sBt(lP, "💎 REALISTIC HD (Ultra Graphics)", function()
 	clearCinematicEffects()
 	lockTime(14) -- Siang terang estetik
 	
+	-- Paksa engine grafik jadi Future agar efek HD dan bayangan aktif
+	pcall(function()
+		Ltg.Technology = Enum.Technology.Future
+		Ltg.GlobalShadows = true
+		Ltg.EnvironmentDiffuseScale = 1
+		Ltg.EnvironmentSpecularScale = 1
+	end)
+	
 	local cc = Instance.new("ColorCorrectionEffect", Ltg)
 	cc.Name = "CustomCinematicEffect"
 	cc.Brightness = 0.05
@@ -272,12 +280,12 @@ sBt(lP, "🌫️ BLUR CINEMATIC (Deep Depth)", function()
 	
 	local blur = Instance.new("BlurEffect", Ltg)
 	blur.Name = "CustomCinematicEffect"
-	blur.Size = 12
+	blur.Size = 14
 	
 	local cc = Instance.new("ColorCorrectionEffect", Ltg)
 	cc.Name = "CustomCinematicEffect"
 	cc.Saturation = -0.1
-	cc.Contrast = 0.2
+	cc.Contrast = 0.25
 	
 	ShowNotif("Visual", "Cinematic Blur Activated!")
 end)
@@ -287,11 +295,11 @@ sBt(lP, "🎬 LAYAR FILM (Letterbox Cinematic)", function()
 	lockTime(17.5) -- Suasana sore menjelang malam
 	
 	-- Efek warna sinematik (agak keemasan/hangat)
-	Mo = Instance.new("ColorCorrectionEffect", Ltg)
-	Mo.Name = "CustomCinematicEffect"
-	Mo.TintColor = Color3.fromRGB(255, 235, 205)
-	Mo.Contrast = 0.3
-	Mo.Saturation = 0.05
+	local mo = Instance.new("ColorCorrectionEffect", Ltg)
+	mo.Name = "CustomCinematicEffect"
+	mo.TintColor = Color3.fromRGB(255, 235, 205)
+	mo.Contrast = 0.3
+	mo.Saturation = 0.05
 	
 	-- Membuat Bar Hitam Atas & Bawah ala Layar Bioskop (Letterbox)
 	local gui = Instance.new("ScreenGui", lP:WaitForChild("PlayerGui"))
@@ -319,12 +327,12 @@ sBt(lP, "🌸 ANIME STYLE (Vibrant & Cute)", function()
 	local cc = Instance.new("ColorCorrectionEffect", Ltg)
 	cc.Name = "CustomCinematicEffect"
 	cc.Brightness = 0.1
-	cc.Contrast = 0.15
-	cc.Saturation = 0.45 -- Warna sangat cerah ala anime
+	cc.Contrast = 0.2
+	cc.Saturation = 0.5 -- Warna sangat cerah ala anime
 	
 	local sun = Instance.new("SunRaysEffect", Ltg)
 	sun.Name = "CustomCinematicEffect"
-	sun.Intensity = 0.3
+	sun.Intensity = 0.4
 	
 	ShowNotif("Visual", "Anime Vibe Activated!")
 end)
@@ -336,6 +344,9 @@ sBt(lP, "🔄 RESET NORMAL LIGHTING", function()
 		timeConnection = nil 
 	end
 	targetTime = nil
+	pcall(function()
+		Ltg.Technology = Enum.Technology.Compatibility
+	end)
 	ShowNotif("Lighting", "Reset to Default Game Lighting")
 end)
 

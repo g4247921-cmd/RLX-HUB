@@ -1,0 +1,766 @@
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+local RunService = game:GetService("RunService")
+local Lighting = game:GetService("Lighting")
+
+local player = Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
+-- ============================================================
+-- 🎨 LUXURIOUS HAZARD YELLOW THEME & STRAIGHT CONFIG
+-- ============================================================
+local THEME = {
+    COLOR_BG = Color3.fromRGB(16, 12, 2),        
+    COLOR_PRIMARY = Color3.fromRGB(255, 204, 0),   
+    COLOR_TILE = Color3.fromRGB(24, 18, 2),        
+    COLOR_TILE2 = Color3.fromRGB(36, 28, 4),      
+    COLOR_ACCENT = Color3.fromRGB(255, 180, 0),    
+    COLOR_TEXT = Color3.fromRGB(255, 235, 120),   
+    COLOR_MUTED = Color3.fromRGB(160, 130, 40),   
+    COLOR_SELECTED = Color3.fromRGB(65, 50, 2),   
+}
+
+local FONT = {
+    Title  = Enum.Font.GothamBlack,
+    Header = Enum.Font.GothamBold,
+    Body   = Enum.Font.GothamMedium,
+    Button = Enum.Font.GothamSemibold,
+    Mono   = Enum.Font.Code,
+}
+
+local activeTab = "CopyAvatar"
+
+-- State & Engine Configuration
+local cameraSettings = { fov = 50, offset = 35 }
+local isOrbiting = false
+local orbitSpeed = 1.0
+local orbitZoom = 15
+local orbitAngle = 0
+local orbitConn = nil
+
+local showOverheadGUI = true
+local showPlayers = true
+local showAllGUI = true
+local emergencyButton
+
+local cinematicFilters = {
+    colorGrading = true,
+    depthOfField = true,
+    bloom = true,
+    sunRays = true
+}
+
+local activePreset = "Cinematic 50"
+local gui, mainFrame, contentFrame, blurEffect, uiScale
+local tabButtons = {}
+
+-- Copy Avatar, Playerlist, & Animation Playlist State (Client-Side Local View)
+local targetUsernameInput = ""
+local clonedDummyModel = nil
+local activeAnimTrack = nil
+local currentTrackIndex = 1
+
+local CAMERA_PRESETS = {
+    { Name = "Cinematic 30", Fov = 30, Offset = 45 },
+    { Name = "Cinematic 50", Fov = 50, Offset = 35 },
+    { Name = "Realistic",    Fov = 75, Offset = 15 },
+    { Name = "Action Cam",   Fov = 95, Offset = -10 },
+    { Name = "Anamorphic",   Fov = 42, Offset = 40 },
+    { Name = "Horror Thrill",Fov = 60, Offset = -25 },
+    { Name = "Cyberpunk",    Fov = 85, Offset = 0 },
+    { Name = "Noir B&W",     Fov = 55, Offset = 20 },
+    { Name = "Vintaj Retro", Fov = 65, Offset = 10 },
+    { Name = "Dreamy Soft",  Fov = 45, Offset = 30 },
+    { Name = "Matrix Green", Fov = 70, Offset = 5 },
+    { Name = "Default",      Fov = 70, Offset = 0 }
+}
+
+-- Playlist Animasi Keren (Client-side)
+local ANIMATION_PLAYLIST = {
+    { Name = "🔥 VIP Club Dance", ID = "rbxassetid://507771019" },
+    { Name = "✨ Smooth Swagger", ID = "rbxassetid://507777268" },
+    { Name = "💎 Casual Lean",    ID = "rbxassetid://507776043" },
+    { Name = "🌟 Elegant Wave",   ID = "rbxassetid://507770677" },
+    { Name = "⚡ Flex Pose",      ID = "rbxassetid://507784945" }
+}
+
+local function addCorner(inst, r)
+    local c = Instance.new("UICorner")
+    c.CornerRadius = UDim.new(0, r or 10)
+    c.Parent = inst
+    return c
+end
+
+local function addNeonStroke(inst, thickness, transp)
+    local s = Instance.new("UIStroke")
+    s.Thickness = thickness or 1.0
+    s.Transparency = transp or 0.25
+    s.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+    s.Color = THEME.COLOR_PRIMARY
+    s.Parent = inst
+    return s
+end
+
+local function setMenuBlur(enabled)
+    if enabled then
+        if not blurEffect then
+            blurEffect = Instance.new("BlurEffect")
+            blurEffect.Size = 12
+            blurEffect.Parent = Lighting
+        else
+            blurEffect.Enabled = true
+        end
+    else
+        if blurEffect then blurEffect.Enabled = false end
+    end
+end
+
+-- ============================================================
+-- CAMERA & VISUAL ENGINE
+-- ============================================================
+local function toggleOrbit(state)
+    isOrbiting = state
+    if orbitConn then 
+        orbitConn:Disconnect() 
+        orbitConn = nil 
+    end
+
+    local cam = workspace.CurrentCamera
+    if state then
+        cam.CameraType = Enum.CameraType.Scriptable
+        orbitConn = RunService.RenderStepped:Connect(function(dt)
+            if not isOrbiting then return end
+            orbitAngle += dt * orbitSpeed
+            
+            local focusPos = Vector3.new(0, 5, 0)
+            if clonedDummyModel and clonedDummyModel:FindFirstChild("HumanoidRootPart") then
+                focusPos = clonedDummyModel.HumanoidRootPart.Position
+            elseif player.Character and player.Character:FindFirstChild("Head") then
+                focusPos = player.Character.Head.Position
+            end
+
+            local x = focusPos.X + math.cos(orbitAngle) * orbitZoom
+            local z = focusPos.Z + math.sin(orbitAngle) * orbitZoom
+            local y = focusPos.Y + 3
+            cam.CFrame = CFrame.new(Vector3.new(x, y, z), focusPos)
+        end)
+    else
+        cam.CameraType = Enum.CameraType.Custom
+    end
+end
+
+local function applyCameraVisuals(presetName, fov, offset)
+    cameraSettings.fov = fov
+    cameraSettings.offset = offset
+    local tInfo = TweenInfo.new(0.4, Enum.EasingStyle.Cubic, Enum.EasingDirection.Out)
+
+    if workspace.CurrentCamera and not isOrbiting then
+        TweenService:Create(workspace.CurrentCamera, tInfo, { FieldOfView = fov }):Play()
+    end
+
+    local humanoid = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
+    if humanoid then
+        TweenService:Create(humanoid, tInfo, { CameraOffset = Vector3.new(0, offset / 50, 0) }):Play()
+    end
+
+    local cc = Lighting:FindFirstChild("Preset_ColorCorrection") or Instance.new("ColorCorrectionEffect", Lighting)
+    cc.Name = "Preset_ColorCorrection"
+    local dof = Lighting:FindFirstChild("Preset_DepthOfField") or Instance.new("DepthOfFieldEffect", Lighting)
+    dof.Name = "Preset_DepthOfField"
+    local bloom = Lighting:FindFirstChild("Preset_Bloom") or Instance.new("BloomEffect", Lighting)
+    bloom.Name = "Preset_Bloom"
+    local sunRays = Lighting:FindFirstChild("Preset_SunRays") or Instance.new("SunRaysEffect", Lighting)
+    sunRays.Name = "Preset_SunRays"
+
+    cc.Enabled = cinematicFilters.colorGrading
+    dof.Enabled = cinematicFilters.depthOfField
+    bloom.Enabled = cinematicFilters.bloom
+    sunRays.Enabled = cinematicFilters.sunRays
+
+    if presetName == "Cinematic 30" then
+        TweenService:Create(cc, tInfo, { Saturation = -0.15, Contrast = 0.25, TintColor = Color3.fromRGB(255, 235, 200) }):Play()
+        TweenService:Create(dof, tInfo, { FocusDistance = 10, InFocusRadius = 12, FarBlurRadius = 32 }):Play()
+        TweenService:Create(bloom, tInfo, { Intensity = 0.45, Size = 28 }):Play()
+    elseif presetName == "Cinematic 50" then
+        TweenService:Create(cc, tInfo, { Saturation = -0.06, Contrast = 0.18, TintColor = Color3.fromRGB(255, 242, 215) }):Play()
+        TweenService:Create(dof, tInfo, { FocusDistance = 14, InFocusRadius = 15, FarBlurRadius = 26 }):Play()
+        TweenService:Create(bloom, tInfo, { Intensity = 0.4, Size = 24 }):Play()
+    elseif presetName == "Realistic" then
+        TweenService:Create(cc, tInfo, { Saturation = 0.12, Contrast = 0.28, TintColor = Color3.fromRGB(242, 248, 255) }):Play()
+        TweenService:Create(dof, tInfo, { FocusDistance = 28, InFocusRadius = 35, FarBlurRadius = 18 }):Play()
+    elseif presetName == "Cyberpunk" then
+        TweenService:Create(cc, tInfo, { Saturation = 0.5, Contrast = 0.35, TintColor = Color3.fromRGB(255, 140, 220) }):Play()
+        TweenService:Create(bloom, tInfo, { Intensity = 0.8, Size = 45 }):Play()
+    elseif presetName == "Noir B&W" then
+        TweenService:Create(cc, tInfo, { Saturation = -1.0, Contrast = 0.5, TintColor = Color3.fromRGB(240, 240, 240) }):Play()
+        TweenService:Create(dof, tInfo, { FocusDistance = 12, InFocusRadius = 10, FarBlurRadius = 35 }):Play()
+    elseif presetName == "Vintaj Retro" then
+        TweenService:Create(cc, tInfo, { Saturation = -0.3, Contrast = 0.15, TintColor = Color3.fromRGB(255, 210, 140) }):Play()
+    elseif presetName == "Dreamy Soft" then
+        TweenService:Create(cc, tInfo, { Saturation = 0.2, Contrast = -0.1, TintColor = Color3.fromRGB(230, 240, 255) }):Play()
+        TweenService:Create(bloom, tInfo, { Intensity = 0.6, Size = 50 }):Play()
+    elseif presetName == "Matrix Green" then
+        TweenService:Create(cc, tInfo, { Saturation = 0.2, Contrast = 0.3, TintColor = Color3.fromRGB(120, 255, 150) }):Play()
+    else
+        TweenService:Create(cc, tInfo, { Saturation = 0, Contrast = 0, TintColor = Color3.new(1,1,1) }):Play()
+    end
+end
+
+-- ============================================================
+-- CLIENT-ONLY COPY AVATAR & ANIMATION PLAYLIST ENGINE
+-- ============================================================
+local function cleanupClonedDummy()
+    if activeAnimTrack then
+        activeAnimTrack:Stop()
+        activeAnimTrack:Destroy()
+        activeAnimTrack = nil
+    end
+    if clonedDummyModel then
+        clonedDummyModel:Destroy()
+        clonedDummyModel = nil
+    end
+end
+
+local function playDummyAnimation(animId)
+    if not clonedDummyModel then return end
+    local humanoid = clonedDummyModel:FindFirstChildOfClass("Humanoid")
+    if not humanoid then return end
+    local animator = humanoid:FindFirstChildOfClass("Animator") or Instance.new("Animator", humanoid)
+
+    if activeAnimTrack then
+        activeAnimTrack:Stop()
+        activeAnimTrack:Destroy()
+        activeAnimTrack = nil
+    end
+
+    pcall(function()
+        local anim = Instance.new("Animation")
+        anim.AnimationId = animId
+        activeAnimTrack = animator:LoadAnimation(anim)
+        activeAnimTrack.Looped = true
+        activeAnimTrack:Play()
+    end)
+end
+
+local function spawnClientAvatarCopy(username)
+    cleanupClonedDummy()
+
+    pcall(function()
+        local targetUserId = Players:GetUserIdFromNameAsync(username)
+        if not targetUserId then return end
+
+        local model = Players:CreateHumanoidModelFromUserId(targetUserId)
+        if model then
+            model.Name = "ClientCopy_" .. username
+            
+            -- Sembunyikan atau buat local-view agar hanya terlihat oleh client sendiri jika perlu, 
+            -- atau biarkan di workspace karena CreateHumanoidModelFromUserId pada dasarnya aman di client.
+            local char = player.Character
+            local spawnCF = (char and char:FindFirstChild("HumanoidRootPart")) and (char.HumanoidRootPart.CFrame * CFrame.new(0, 0, -6)) or CFrame.new(0, 5, 0)
+            model:SetPrimaryPartCFrame(spawnCF)
+            
+            model.Parent = workspace
+            clonedDummyModel = model
+
+            playDummyAnimation(ANIMATION_PLAYLIST[currentTrackIndex].ID)
+        end
+    end)
+end
+
+-- ============================================================
+-- BUILD STRAIGHT, LUXURIOUS, & RESPONSIVE UI
+-- ============================================================
+local loadTabContent = nil
+
+local function buildInterface()
+    if playerGui:FindFirstChild("RLXHubStraightGUI") then
+        playerGui.RLXHubStraightGUI:Destroy()
+    end
+
+    gui = Instance.new("ScreenGui")
+    gui.Name = "RLXHubStraightGUI"
+    gui.ResetOnSpawn = false
+    gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    gui.DisplayOrder = 999
+    gui.Parent = playerGui
+
+    mainFrame = Instance.new("Frame")
+    mainFrame.Name = "MainFrame"
+    mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+    mainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+    mainFrame.Size = UDim2.new(0, 620, 0, 410)
+    mainFrame.BackgroundColor3 = THEME.COLOR_BG
+    mainFrame.BackgroundTransparency = 0.03
+    mainFrame.BorderSizePixel = 0
+    mainFrame.Rotation = 0
+    mainFrame.ClipsDescendants = true
+    mainFrame.Parent = gui
+
+    addCorner(mainFrame, 14)
+    addNeonStroke(mainFrame, 1.3, 0.15)
+
+    uiScale = Instance.new("UIScale")
+    uiScale.Parent = mainFrame
+
+    local function updateScale()
+        local screenSize = workspace.CurrentCamera.ViewportSize
+        if screenSize.X < 650 then
+            uiScale.Scale = math.clamp(screenSize.X / 630, 0.75, 1.0)
+        else
+            uiScale.Scale = 1.0
+        end
+    end
+    workspace.CurrentCamera:GetPropertyChangedSignal("ViewportSize"):Connect(updateScale)
+    updateScale()
+
+    -- Top Tab Bar
+    local topBar = Instance.new("Frame")
+    topBar.Name = "TopBar"
+    topBar.Size = UDim2.new(1, -24, 0, 38)
+    topBar.Position = UDim2.new(0, 12, 0, 12)
+    topBar.BackgroundTransparency = 1
+    topBar.Parent = mainFrame
+
+    local tabLayout = Instance.new("UIListLayout")
+    tabLayout.FillDirection = Enum.FillDirection.Horizontal
+    tabLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    tabLayout.Padding = UDim.new(0, 6)
+    tabLayout.Parent = topBar
+
+    -- Content Area
+    local contentContainer = Instance.new("Frame")
+    contentContainer.Name = "ContentContainer"
+    contentContainer.Size = UDim2.new(1, -24, 1, -66)
+    contentContainer.Position = UDim2.new(0, 12, 0, 58)
+    contentContainer.BackgroundColor3 = THEME.COLOR_TILE
+    contentContainer.BackgroundTransparency = 0.2
+    contentContainer.Parent = mainFrame
+
+    addCorner(contentContainer, 10)
+    addNeonStroke(contentContainer, 0.9, 0.5)
+
+    contentFrame = Instance.new("ScrollingFrame")
+    contentFrame.Size = UDim2.new(1, -12, 1, -12)
+    contentFrame.Position = UDim2.new(0, 6, 0, 6)
+    contentFrame.BackgroundTransparency = 1
+    contentFrame.BorderSizePixel = 0
+    contentFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+    contentFrame.AutomaticCanvasSize = Enum.AutomaticSize.Y
+    contentFrame.ScrollBarThickness = 3
+    contentFrame.ScrollBarImageColor3 = THEME.COLOR_PRIMARY
+    contentFrame.Parent = contentContainer
+
+    local contentLayout = Instance.new("UIListLayout")
+    contentLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    contentLayout.Padding = UDim.new(0, 8)
+    contentLayout.Parent = contentFrame
+
+    local tabs = {
+        { Name = "CopyAvatar", Label = "👤 Copy Avatar" },
+        { Name = "Cinematic",  Label = "🎬 Cinematic" },
+        { Name = "Visuals",    Label = "✨ Filters" },
+        { Name = "Settings",   Label = "⚙️ Config" }
+    }
+
+    tabButtons = {}
+    for idx, tabInfo in ipairs(tabs) do
+        local tBtn = Instance.new("TextButton")
+        tBtn.Size = UDim2.new(0.25, -5, 1, 0)
+        tBtn.BackgroundColor3 = (activeTab == tabInfo.Name) and THEME.COLOR_SELECTED or THEME.COLOR_TILE2
+        tBtn.Text = tabInfo.Label
+        tBtn.Font = FONT.Button
+        tBtn.TextSize = 10
+        tBtn.TextColor3 = (activeTab == tabInfo.Name) and THEME.COLOR_PRIMARY or THEME.COLOR_TEXT
+        tBtn.AutoButtonColor = false
+        tBtn.LayoutOrder = idx
+        tBtn.Parent = topBar
+        addCorner(tBtn, 6)
+        addNeonStroke(tBtn, 0.8, 0.4)
+
+        tabButtons[tabInfo.Name] = tBtn
+
+        tBtn.MouseButton1Click:Connect(function()
+            activeTab = tabInfo.Name
+            for name, btn in pairs(tabButtons) do
+                local isCurrent = (name == activeTab)
+                TweenService:Create(btn, TweenInfo.new(0.12), {
+                    BackgroundColor3 = isCurrent and THEME.COLOR_SELECTED or THEME.COLOR_TILE2,
+                    TextColor3 = isCurrent and THEME.COLOR_PRIMARY or THEME.COLOR_TEXT
+                }):Play()
+            end
+            loadTabContent()
+        end)
+    end
+
+    loadTabContent()
+end
+
+-- ============================================================
+-- TAB CONTENT GENERATOR
+-- ============================================================
+loadTabContent = function()
+    if not contentFrame then return end
+    for _, ch in ipairs(contentFrame:GetChildren()) do
+        if not ch:IsA("UILayout") and not ch:IsA("UIPadding") then ch:Destroy() end
+    end
+
+    local function createCard(height, order)
+        local card = Instance.new("Frame")
+        card.Size = UDim2.new(1, 0, 0, height)
+        card.BackgroundColor3 = THEME.COLOR_TILE2
+        card.BackgroundTransparency = 0.2
+        card.LayoutOrder = order or 0
+        card.Parent = contentFrame
+        addCorner(card, 8)
+        addNeonStroke(card, 0.8, 0.5)
+        return card
+    end
+
+    local function createToggle(parent, name, defaultState, callback, order)
+        local card = createCard(42, order)
+        local label = Instance.new("TextLabel")
+        label.BackgroundTransparency = 1
+        label.Size = UDim2.new(1, -70, 1, 0)
+        label.Position = UDim2.new(0, 10, 0, 0)
+        label.Text = name
+        label.Font = FONT.Body
+        label.TextColor3 = THEME.COLOR_TEXT
+        label.TextSize = 11
+        label.TextXAlignment = Enum.TextXAlignment.Left
+        label.Parent = card
+
+        local toggleBg = Instance.new("Frame")
+        toggleBg.Size = UDim2.fromOffset(40, 20)
+        toggleBg.AnchorPoint = Vector2.new(1, 0.5)
+        toggleBg.Position = UDim2.new(1, -10, 0.5, 0)
+        toggleBg.BackgroundColor3 = defaultState and THEME.COLOR_SELECTED or THEME.COLOR_TILE
+        toggleBg.Parent = card
+        addCorner(toggleBg, 999)
+        addNeonStroke(toggleBg, 0.8, 0.4)
+
+        local knob = Instance.new("Frame")
+        knob.Size = UDim2.fromOffset(14, 14)
+        knob.AnchorPoint = Vector2.new(0, 0.5)
+        knob.Position = defaultState and UDim2.new(1, -16, 0.5, 0) or UDim2.new(0, 2, 0.5, 0)
+        knob.BackgroundColor3 = defaultState and THEME.COLOR_PRIMARY or THEME.COLOR_MUTED
+        knob.Parent = toggleBg
+        addCorner(knob, 999)
+
+        local btn = Instance.new("TextButton")
+        btn.BackgroundTransparency = 1
+        btn.Size = UDim2.fromScale(1, 1)
+        btn.Text = ""
+        btn.Parent = toggleBg
+
+        local state = defaultState
+        btn.MouseButton1Click:Connect(function()
+            state = not state
+            TweenService:Create(toggleBg, TweenInfo.new(0.12), {BackgroundColor3 = state and THEME.COLOR_SELECTED or THEME.COLOR_TILE}):Play()
+            TweenService:Create(knob, TweenInfo.new(0.12), {
+                Position = state and UDim2.new(1, -16, 0.5, 0) or UDim2.new(0, 2, 0.5, 0),
+                BackgroundColor3 = state and THEME.COLOR_PRIMARY or THEME.COLOR_MUTED
+            }):Play()
+            callback(state)
+        end)
+        return card
+    end
+
+    if activeTab == "CopyAvatar" then
+        -- Card Input, Headshot Icon, & Auto Detect Nickname
+        local inputCard = createCard(85, 1)
+        
+        local headshotIcon = Instance.new("ImageLabel")
+        headshotIcon.Size = UDim2.fromOffset(45, 45)
+        headshotIcon.Position = UDim2.new(0, 10, 0, 18)
+        headshotIcon.BackgroundColor3 = THEME.COLOR_TILE
+        headshotIcon.Image = "rbxassetid://0"
+        headshotIcon.Parent = inputCard
+        addCorner(headshotIcon, 8)
+        addNeonStroke(headshotIcon, 0.8, 0.4)
+
+        local textBox = Instance.new("TextBox")
+        textBox.Size = UDim2.new(1, -135, 0, 32)
+        textBox.Position = UDim2.new(0, 65, 0, 14)
+        textBox.BackgroundColor3 = THEME.COLOR_TILE
+        textBox.Text = targetUsernameInput
+        textBox.PlaceholderText = "Ketik Username target..."
+        textBox.Font = FONT.Body
+        textBox.TextColor3 = THEME.COLOR_TEXT
+        textBox.PlaceholderColor3 = THEME.COLOR_MUTED
+        textBox.TextSize = 11
+        textBox.ClearTextOnFocus = false
+        textBox.Parent = inputCard
+        addCorner(textBox, 6)
+        addNeonStroke(textBox, 0.8, 0.4)
+
+        local spawnBtn = Instance.new("TextButton")
+        spawnBtn.Size = UDim2.new(0, 52, 0, 32)
+        spawnBtn.Position = UDim2.new(1, -62, 0, 14)
+        spawnBtn.BackgroundColor3 = THEME.COLOR_SELECTED
+        spawnBtn.Text = "COPY"
+        spawnBtn.Font = FONT.Button
+        spawnBtn.TextColor3 = THEME.COLOR_PRIMARY
+        spawnBtn.TextSize = 10
+        spawnBtn.Parent = inputCard
+        addCorner(spawnBtn, 6)
+        addNeonStroke(spawnBtn, 0.8, 0.3)
+
+        local autoDetectLbl = Instance.new("TextLabel")
+        autoDetectLbl.Size = UDim2.new(1, -190, 0, 16)
+        autoDetectLbl.Position = UDim2.new(0, 65, 0, 54)
+        autoDetectLbl.BackgroundTransparency = 1
+        autoDetectLbl.Text = "Status: Masukkan username (Client-Only)"
+        autoDetectLbl.Font = FONT.Body
+        autoDetectLbl.TextColor3 = THEME.COLOR_MUTED
+        autoDetectLbl.TextSize = 9
+        autoDetectLbl.TextXAlignment = Enum.TextXAlignment.Left
+        autoDetectLbl.Parent = inputCard
+
+        textBox:GetPropertyChangedSignal("Text"):Connect(function()
+            targetUsernameInput = textBox.Text
+            if #targetUsernameInput >= 3 then
+                pcall(function()
+                    local uid = Players:GetUserIdFromNameAsync(targetUsernameInput)
+                    if uid then
+                        local content, isReady = Players:GetUserThumbnailAsync(uid, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size150x150)
+                        if isReady then headshotIcon.Image = content end
+                        autoDetectLbl.Text = "Status: ID " .. uid .. " (Aman)"
+                        autoDetectLbl.TextColor3 = THEME.COLOR_PRIMARY
+                    end
+                end)
+            end
+        end)
+
+        -- Tombol Reset Avatar
+        local resetBtn = Instance.new("TextButton")
+        resetBtn.Size = UDim2.new(0, 115, 0, 24)
+        resetBtn.Position = UDim2.new(1, -125, 0, 52)
+        resetBtn.BackgroundColor3 = THEME.COLOR_TILE
+        resetBtn.Text = "🔄 RESET AVATAR"
+        resetBtn.Font = FONT.Button
+        resetBtn.TextColor3 = THEME.COLOR_PRIMARY
+        resetBtn.TextSize = 9
+        resetBtn.Parent = inputCard
+        addCorner(resetBtn, 6)
+        addNeonStroke(resetBtn, 0.8, 0.4)
+
+        resetBtn.MouseButton1Click:Connect(function()
+            cleanupClonedDummy()
+            textBox.Text = ""
+            headshotIcon.Image = "rbxassetid://0"
+            autoDetectLbl.Text = "Status: Reset bersih"
+            autoDetectLbl.TextColor3 = THEME.COLOR_MUTED
+        end)
+
+        spawnBtn.MouseButton1Click:Connect(function()
+            if #targetUsernameInput > 0 then
+                spawnClientAvatarCopy(targetUsernameInput)
+            end
+        end)
+
+        -- Card Playerlist (Pilih Player dalam Server secara Instan)
+        local playerlistCard = createCard(110, 2)
+        local plTitle = Instance.new("TextLabel")
+        plTitle.Size = UDim2.new(1, 0, 0, 16)
+        plTitle.Position = UDim2.new(0, 10, 0, 6)
+        plTitle.Text = "📋 SERVER PLAYERLIST (PILIH CEPAT)"
+        plTitle.Font = FONT.Header
+        plTitle.TextColor3 = THEME.COLOR_PRIMARY
+        plTitle.TextSize = 10
+        plTitle.TextXAlignment = Enum.TextXAlignment.Left
+        plTitle.Parent = playerlistCard
+
+        local plHolder = Instance.new("ScrollingFrame")
+        plHolder.Size = UDim2.new(1, -20, 1, -28)
+        plHolder.Position = UDim2.fromOffset(10, 24)
+        plHolder.BackgroundTransparency = 1
+        plHolder.CanvasSize = UDim2.new(0, 0, 0, 0)
+        plHolder.AutomaticCanvasSize = Enum.AutomaticSize.Y
+        plHolder.ScrollBarThickness = 2
+        plHolder.Parent = playerlistCard
+
+        local plLayout = Instance.new("UIListLayout")
+        plLayout.Padding = UDim.new(0, 3)
+        plLayout.Parent = plHolder
+
+        for _, p in ipairs(Players:GetPlayers()) do
+            local pItemBtn = Instance.new("TextButton")
+            pItemBtn.Size = UDim2.new(1, 0, 0, 24)
+            pItemBtn.BackgroundColor3 = THEME.COLOR_TILE
+            pItemBtn.Text = "  👤 " .. p.Name .. " (" .. p.DisplayName .. ")"
+            pItemBtn.Font = FONT.Button
+            pItemBtn.TextSize = 9
+            pItemBtn.TextColor3 = THEME.COLOR_TEXT
+            pItemBtn.TextXAlignment = Enum.TextXAlignment.Left
+            pItemBtn.Parent = plHolder
+            addCorner(pItemBtn, 5)
+            addNeonStroke(pItemBtn, 0.7, 0.4)
+
+            pItemBtn.MouseButton1Click:Connect(function()
+                textBox.Text = p.Name
+                spawnClientAvatarCopy(p.Name)
+            end)
+        end
+
+        -- Card Playlist Animasi (Animation Work Client-Side)
+        local playlistCard = createCard(120, 3)
+        local playlistTitle = Instance.new("TextLabel")
+        playlistTitle.Size = UDim2.new(1, 0, 0, 16)
+        playlistTitle.Position = UDim2.new(0, 10, 0, 6)
+        playlistTitle.Text = "✨ ANIMATION PLAYLIST (WORK)"
+        playlistTitle.Font = FONT.Header
+        playlistTitle.TextColor3 = THEME.COLOR_PRIMARY
+        playlistTitle.TextSize = 10
+        playlistTitle.TextXAlignment = Enum.TextXAlignment.Left
+        playlistTitle.Parent = playlistCard
+
+        local animHolder = Instance.new("ScrollingFrame")
+        animHolder.Size = UDim2.new(1, -20, 1, -28)
+        animHolder.Position = UDim2.fromOffset(10, 24)
+        animHolder.BackgroundTransparency = 1
+        animHolder.CanvasSize = UDim2.new(0, 0, 0, 0)
+        animHolder.AutomaticCanvasSize = Enum.AutomaticSize.Y
+        animHolder.ScrollBarThickness = 2
+        animHolder.Parent = playlistCard
+
+        local animLayout = Instance.new("UIListLayout")
+        animLayout.Padding = UDim.new(0, 3)
+        animLayout.Parent = animHolder
+
+        for idx, animData in ipairs(ANIMATION_PLAYLIST) do
+            local aBtn = Instance.new("TextButton")
+            aBtn.Size = UDim2.new(1, 0, 0, 24)
+            aBtn.BackgroundColor3 = (currentTrackIndex == idx) and THEME.COLOR_SELECTED or THEME.COLOR_TILE
+            aBtn.Text = "  " .. animData.Name
+            aBtn.Font = FONT.Button
+            aBtn.TextSize = 9
+            aBtn.TextColor3 = (currentTrackIndex == idx) and THEME.COLOR_PRIMARY or THEME.COLOR_TEXT
+            aBtn.TextXAlignment = Enum.TextXAlignment.Left
+            aBtn.Parent = animHolder
+            addCorner(aBtn, 5)
+            addNeonStroke(aBtn, 0.7, 0.4)
+
+            aBtn.MouseButton1Click:Connect(function()
+                currentTrackIndex = idx
+                playDummyAnimation(animData.ID)
+                loadTabContent()
+            end)
+        end
+
+    elseif activeTab == "Cinematic" then
+        local card = createCard(145, 1)
+        local title = Instance.new("TextLabel")
+        title.Size = UDim2.new(1, 0, 0, 16)
+        title.Position = UDim2.new(0, 10, 0, 8)
+        title.Text = "CAMERA & MOVIE PRESETS"
+        title.Font = FONT.Header
+        title.TextColor3 = THEME.COLOR_PRIMARY
+        title.TextSize = 11
+        title.TextXAlignment = Enum.TextXAlignment.Left
+        title.Parent = card
+
+        local gridHolder = Instance.new("Frame")
+        gridHolder.BackgroundTransparency = 1
+        gridHolder.Size = UDim2.new(1, -20, 1, -30)
+        gridHolder.Position = UDim2.fromOffset(10, 28)
+        gridHolder.Parent = card
+
+        local grid = Instance.new("UIGridLayout")
+        grid.CellSize = UDim2.new(0.25, -5, 0, 30)
+        grid.CellPadding = UDim2.fromOffset(5, 5)
+        grid.Parent = gridHolder
+
+        for _, p in ipairs(CAMERA_PRESETS) do
+            local pBtn = Instance.new("TextButton")
+            pBtn.BackgroundColor3 = (activePreset == p.Name) and THEME.COLOR_SELECTED or THEME.COLOR_TILE
+            pBtn.Text = p.Name:upper()
+            pBtn.Font = FONT.Button
+            pBtn.TextSize = 8
+            pBtn.TextColor3 = (activePreset == p.Name) and THEME.COLOR_PRIMARY or THEME.COLOR_TEXT
+            pBtn.Parent = gridHolder
+            addCorner(pBtn, 5)
+            addNeonStroke(pBtn, 0.8, 0.4)
+
+            pBtn.MouseButton1Click:Connect(function()
+                activePreset = p.Name
+                applyCameraVisuals(p.Name, p.Fov, p.Offset)
+                loadTabContent()
+            end)
+        end
+
+        createToggle(contentFrame, "CINEMATIC ORBIT CAMERA", isOrbiting, toggleOrbit, 2)
+
+    elseif activeTab == "Visuals" then
+        createToggle(contentFrame, "CINEMATIC COLOR GRADING", cinematicFilters.colorGrading, function(s)
+            cinematicFilters.colorGrading = s
+            applyCameraVisuals(activePreset, cameraSettings.fov, cameraSettings.offset)
+        end, 1)
+
+        createToggle(contentFrame, "CINEMATIC DEPTH OF FIELD", cinematicFilters.depthOfField, function(s)
+            cinematicFilters.depthOfField = s
+            applyCameraVisuals(activePreset, cameraSettings.fov, cameraSettings.offset)
+        end, 2)
+
+        createToggle(contentFrame, "CINEMATIC BLOOM GLOW", cinematicFilters.bloom, function(s)
+            cinematicFilters.bloom = s
+            applyCameraVisuals(activePreset, cameraSettings.fov, cameraSettings.offset)
+        end, 3)
+
+        createToggle(contentFrame, "CINEMATIC SUN RAYS", cinematicFilters.sunRays, function(s)
+            cinematicFilters.sunRays = s
+            applyCameraVisuals(activePreset, cameraSettings.fov, cameraSettings.offset)
+        end, 4)
+
+    elseif activeTab == "Settings" then
+        local card = createCard(55, 1)
+        local lbl = Instance.new("TextLabel")
+        lbl.Size = UDim2.new(1, -20, 1, 0)
+        lbl.Position = UDim2.new(0, 10, 0, 0)
+        lbl.BackgroundTransparency = 1
+        lbl.Text = "⚙️ RLX Hub Straight Edition - Playerlist & Client Copy 🔥"
+        lbl.Font = FONT.Body
+        lbl.TextColor3 = THEME.COLOR_PRIMARY
+        lbl.TextSize = 11
+        lbl.TextXAlignment = Enum.TextXAlignment.Left
+        lbl.Parent = card
+    end
+end
+
+-- ============================================================
+-- FLOATING LAUNCHER BUTTON
+-- ============================================================
+local function createFloatingLauncher()
+    local launcherGui = Instance.new("ScreenGui")
+    launcherGui.Name = "RLXStraightLauncher"
+    launcherGui.ResetOnSpawn = false
+    launcherGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    launcherGui.DisplayOrder = 998
+    launcherGui.Parent = playerGui
+
+    local floatBtn = Instance.new("TextButton")
+    floatBtn.Size = UDim2.fromOffset(42, 42)
+    floatBtn.Position = UDim2.new(0, 16, 0.5, -21)
+    floatBtn.BackgroundColor3 = THEME.COLOR_BG
+    floatBtn.Text = "⚡"
+    floatBtn.TextSize = 18
+    floatBtn.Font = FONT.Title
+    floatBtn.TextColor3 = THEME.COLOR_PRIMARY
+    floatBtn.AutoButtonColor = false
+    floatBtn.Parent = launcherGui
+
+    addCorner(floatBtn, 10)
+    addNeonStroke(floatBtn, 1.2, 0.2)
+
+    local visible = true
+    floatBtn.MouseButton1Click:Connect(function()
+        visible = not visible
+        mainFrame.Visible = visible
+        setMenuBlur(visible)
+    end)
+end
+
+-- Inisialisasi Eksekusi
+buildInterface()
+createFloatingLauncher()
+setMenuBlur(true)
+applyCameraVisuals("Cinematic 50", 50,

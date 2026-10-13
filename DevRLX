@@ -557,6 +557,7 @@ task.spawn(function()
         end) 
     end 
 end)
+
 -- ESP System
 local cache = {}
 local function removeESP(p) 
@@ -565,7 +566,7 @@ local function removeESP(p)
             if cache[p].H then cache[p].H:Destroy() end 
             if cache[p].L then cache[p].L.Visible = false; cache[p].L:Remove() end 
         end) 
-        cache[p] = nil 
+         cache[p] = nil 
     end 
 end
 
@@ -1069,4 +1070,4 @@ P.PlayerAdded:Connect(function()
 end)
 
 task.wait(0.5)
-ShowNotif("RLX Hub", "Loaded! Click
+ShowNotif("RLX Hub", "Loaded! Click RLX HUB button to open.")

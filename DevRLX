@@ -1231,4 +1231,4 @@ P.PlayerAdded:Connect(function()
 end)
 
 task.wait(0.5)
-ShowNotif("RLX Hub", "Loaded! Click
+ShowNotif("RLX Hub", "Loaded! Click RLX

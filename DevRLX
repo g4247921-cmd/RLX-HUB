@@ -1,3 +1,8 @@
+-- ====================================================================
+-- 🕊️ RLX HUB - ULTIMATE EXECUTIVE EDITION (WITH SERVER TOOLS & THEMES)
+-- Developed by AnjaszRelaxz
+-- ====================================================================
+
 local P = game:GetService("Players")
 local U = game:GetService("UserInputService")
 local R = game:GetService("RunService")
@@ -1226,4 +1231,4 @@ P.PlayerAdded:Connect(function()
 end)
 
 task.wait(0.5)
-ShowNotif("RLX Hub", "Loaded! Click RLX
+ShowNotif("RLX Hub", "Loaded! Click RLX HUB button to open.")

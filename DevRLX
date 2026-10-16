@@ -1,5 +1,5 @@
 -- ====================================================================
--- 🕊️ RLX HUB - ULTIMATE EXECUTIVE EDITION (WITH SERVER TOOLS & THEMES)
+-- 🕊️ RLX HUB - NEXT-GEN EXECUTIVE EDITION (SMOOTH SCROLLING FIXED)
 -- Developed by AnjaszRelaxz
 -- ====================================================================
 
@@ -38,31 +38,38 @@ local function sL(u)
 end
 
 local function aG(o) 
-    local g = o:FindFirstChildOfClass("UIGradient") or Instance.new("UIGradient") 
+    local g = o:FindFirstChildOfClass("UIGradient") or Instance.new("UIGradient", o) 
     g.Color = ColorSequence.new({
         ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)), 
         ColorSequenceKeypoint.new(0.5, currentThemeColor), 
         ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 255, 255))
     }) 
-    g.Parent = o 
     return g
 end
 
--- ✨ HOVER GRADIENT EFFECT FUNCTION
-local function addHoverEffect(btn)
+-- ✨ ADVANCED BUTTON HOVER TWEEN EFFECT
+local function addAdvancedHoverEffect(btn)
     local stroke = btn:FindFirstChildOfClass("UIStroke") or Instance.new("UIStroke", btn)
-    stroke.Thickness = 1
-    stroke.Transparency = 1
+    stroke.Thickness = 1.2
+    stroke.Transparency = 0.8
     stroke.Color = currentThemeColor
 
+    local originalSize = btn.Size
+
     btn.MouseEnter:Connect(function()
-        TS:Create(btn, TweenInfo.new(0.25), {BackgroundColor3 = Color3.fromRGB(35, 35, 45)}):Play()
-        TS:Create(stroke, TweenInfo.new(0.25), {Transparency = 0}):Play()
+        TS:Create(btn, TweenInfo.new(0.2, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {
+            BackgroundColor3 = Color3.fromRGB(35, 35, 48),
+            Size = UDim2.new(originalSize.X.Scale, originalSize.X.Offset, originalSize.Y.Scale, originalSize.Y.Offset + 2)
+        }):Play()
+        TS:Create(stroke, TweenInfo.new(0.2), {Transparency = 0}):Play()
     end)
 
     btn.MouseLeave:Connect(function()
-        TS:Create(btn, TweenInfo.new(0.25), {BackgroundColor3 = Color3.fromRGB(22, 22, 26)}):Play()
-        TS:Create(stroke, TweenInfo.new(0.25), {Transparency = 1}):Play()
+        TS:Create(btn, TweenInfo.new(0.2, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {
+            BackgroundColor3 = Color3.fromRGB(20, 20, 26),
+            Size = originalSize
+        }):Play()
+        TS:Create(stroke, TweenInfo.new(0.2), {Transparency = 0.8}):Play()
     end)
 end
 
@@ -77,30 +84,31 @@ cS.Volume = 0.5
 local function Ck() cS:Play() end
 
 -- ====================================================================
--- 🔔 COMPACT & ELEGANT SMALL TOAST NOTIFICATION SYSTEM
+-- 🔔 ELEGANT TOAST NOTIFICATION SYSTEM
 -- ====================================================================
 local NotifyContainer = Instance.new("Frame", SG)
 NotifyContainer.Name = "NotifyContainer"
-NotifyContainer.Size = UDim2.new(0, 190, 1, -20)
-NotifyContainer.Position = UDim2.new(1, -200, 0, 10)
+NotifyContainer.Size = UDim2.new(0, 200, 1, -20)
+NotifyContainer.Position = UDim2.new(1, -210, 0, 10)
 NotifyContainer.BackgroundTransparency = 1
 
 local function ShowNotif(title, message)
     task.spawn(function()
         local NotifBox = Instance.new("Frame", NotifyContainer)
-        NotifBox.Size = UDim2.new(1, 0, 0, 45)
-        NotifBox.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
-        NotifBox.Position = UDim2.new(1.5, 0, 0, #NotifyContainer:GetChildren() * 50 - 50)
+        NotifBox.Size = UDim2.new(1, 0, 0, 48)
+        NotifBox.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
+        NotifBox.BackgroundTransparency = 0.1
+        NotifBox.Position = UDim2.new(1.5, 0, 0, #NotifyContainer:GetChildren() * 54 - 54)
         NotifBox.ClipsDescendants = true
-        Instance.new("UICorner", NotifBox).CornerRadius = UDim.new(0, 5)
+        Instance.new("UICorner", NotifBox).CornerRadius = UDim.new(0, 8)
         
         local nStroke = Instance.new("UIStroke", NotifBox)
-        nStroke.Thickness = 1
+        nStroke.Thickness = 1.2
         nStroke.Color = currentThemeColor
         
         local nTitle = Instance.new("TextLabel", NotifBox)
         nTitle.Size = UDim2.new(1, -16, 0, 18)
-        nTitle.Position = UDim2.new(0, 8, 0, 4)
+        nTitle.Position = UDim2.new(0, 10, 0, 5)
         nTitle.RichText = true
         nTitle.Text = "✨ <b>" .. string.upper(title) .. "</b>"
         nTitle.TextColor3 = currentThemeColor
@@ -111,11 +119,11 @@ local function ShowNotif(title, message)
         
         local nMsg = Instance.new("TextLabel", NotifBox)
         nMsg.Size = UDim2.new(1, -16, 0, 18)
-        nMsg.Position = UDim2.new(0, 8, 0, 22)
+        nMsg.Position = UDim2.new(0, 10, 0, 24)
         nMsg.RichText = true
         nMsg.Text = message
-        nMsg.TextColor3 = Color3.fromRGB(220, 220, 225)
-        nMsg.Font = Enum.Font.Gotham
+        nMsg.TextColor3 = Color3.fromRGB(220, 220, 230)
+        nMsg.Font = Enum.Font.GothamMedium
         nMsg.TextSize = 9
         nMsg.BackgroundTransparency = 1
         nMsg.TextXAlignment = Enum.TextXAlignment.Left
@@ -129,14 +137,17 @@ local function ShowNotif(title, message)
 end
 
 -- ====================================================================
--- 🖥️ MAIN HUB INTERFACE & WINDOW STRUCTURE
+-- 🖥️ MAIN HUB INTERFACE & LOCKED CENTER POSITIONING
 -- ====================================================================
 local M = Instance.new("Frame", SG)
 M.Name = "MainHubFrame"
-M.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
+M.BackgroundColor3 = Color3.fromRGB(12, 12, 16)
+M.BackgroundTransparency = 0.05
 M.BorderSizePixel = 0
 M.Visible = false
-Instance.new("UICorner", M).CornerRadius = UDim.new(0, 10)
+M.AnchorPoint = Vector2.new(0.5, 0.5)
+M.Position = UDim2.new(0.5, 0, 0.5, 0)
+Instance.new("UICorner", M).CornerRadius = UDim.new(0, 12)
 
 local MS = Instance.new("UIStroke", M)
 MS.Thickness = 1.5
@@ -150,16 +161,25 @@ Tg.TextColor3 = Color3.fromRGB(255, 255, 255)
 Tg.Font = Enum.Font.GothamBold
 Tg.TextSize = 14
 Tg.BackgroundTransparency = 1
-Tg.Size = UDim2.new(0, 120, 0, 30)
+Tg.Size = UDim2.new(0, 130, 0, 32)
 Tg.AnchorPoint = Vector2.new(0.5, 0)
 Tg.Position = UDim2.new(0.5, 0, 0, 10)
 Tg.Visible = true
-aG(Tg)
+local tgGrad = aG(Tg)
+
+-- Animated Title Gradient
+task.spawn(function()
+    local rot = 0
+    while task.wait(0.03) do
+        rot = (rot + 2) % 360
+        if tgGrad then tgGrad.Rotation = rot end
+    end
+end)
 
 local TB = Instance.new("TextLabel", M)
-TB.Size = UDim2.new(1, 0, 0, 40)
+TB.Size = UDim2.new(1, 0, 0, 42)
 TB.BackgroundTransparency = 1
-TB.Text = "   RLX HUB BY ANJASZRELAXZ"
+TB.Text = "   RLX HUB  |  EXECUTIVE EDITION"
 TB.TextColor3 = Color3.fromRGB(255, 255, 255)
 TB.Font = Enum.Font.GothamBold
 TB.TextSize = 13
@@ -168,7 +188,7 @@ aG(TB)
 
 local CB = Instance.new("TextButton", TB)
 CB.Size = UDim2.new(0, 30, 0, 30)
-CB.Position = UDim2.new(1, -35, 0, 5)
+CB.Position = UDim2.new(1, -36, 0, 6)
 CB.Text = "✕"
 CB.TextColor3 = Color3.fromRGB(180, 180, 190)
 CB.TextSize = 14
@@ -177,8 +197,8 @@ CB.BackgroundTransparency = 1
 
 -- FPS & Ping Display
 local sF = Instance.new("Frame", M)
-sF.Size = UDim2.new(0, 180, 0, 20)
-sF.Position = UDim2.new(1, -190, 1, -25)
+sF.Size = UDim2.new(0, 200, 0, 20)
+sF.Position = UDim2.new(1, -210, 1, -26)
 sF.BackgroundTransparency = 1
 
 local sLbl = Instance.new("TextLabel", sF)
@@ -206,41 +226,52 @@ R.RenderStepped:Connect(function()
     end 
 end)
 
-local function uLP() 
-    Tg.Position = UDim2.new(M.Position.X.Scale, M.Position.X.Offset, M.Position.Y.Scale, M.Position.Y.Offset - (M.Size.Y.Offset / 2) - 30) 
-end
-
+-- Responsive Auto-Scale for Mobile & PC
 local function uL() 
-    M.Size = C.ViewportSize.X < 800 and UDim2.new(0, 540, 0, 310) or UDim2.new(0, 660, 0, 390) 
+    if C.ViewportSize.X < 700 then
+        M.Size = UDim2.new(0, 480, 0, 290)
+    elseif C.ViewportSize.X < 950 then
+        M.Size = UDim2.new(0, 560, 0, 330)
+    else
+        M.Size = UDim2.new(0, 680, 0, 400)
+    end
     M.AnchorPoint = Vector2.new(0.5, 0.5)
     M.Position = UDim2.new(0.5, 0, 0.5, 0) 
-    uLP() 
 end
 uL()
 C:GetPropertyChangedSignal("ViewportSize"):Connect(uL)
-M:GetPropertyChangedSignal("Position"):Connect(uLP)
 
+-- Control Open/Close via RLX HUB Button & Close Button Only
 Tg.MouseButton1Click:Connect(function() Ck(); M.Visible = not M.Visible end) 
 CB.MouseButton1Click:Connect(function() Ck(); M.Visible = false end)
 
--- Sidebar & Navigation
-local Sb = Instance.new("Frame", M)
-Sb.Size = UDim2.new(0, 130, 1, -55)
-Sb.Position = UDim2.new(0, 12, 0, 42)
-Sb.BackgroundColor3 = Color3.fromRGB(10, 10, 12)
+-- Sidebar Navigation (With Fixed Smooth Scrolling)
+local Sb = Instance.new("ScrollingFrame", M)
+Sb.Name = "Sidebar"
+Sb.Size = UDim2.new(0, 135, 1, -58)
+Sb.Position = UDim2.new(0, 12, 0, 44)
+Sb.BackgroundColor3 = Color3.fromRGB(8, 8, 11)
 Sb.BorderSizePixel = 0
-Instance.new("UICorner", Sb).CornerRadius = UDim.new(0, 6)
+Sb.ScrollBarThickness = 2
+Sb.ScrollBarImageColor3 = currentThemeColor
+Sb.ElasticBehavior = Enum.ElasticBehavior.WhenScrollable
+Sb.ScrollingDirection = Enum.ScrollingDirection.Y
+Sb.AutomaticCanvasSize = Enum.AutomaticSize.Y
+Sb.CanvasSize = UDim2.new(0, 0, 0, 0)
+Sb.Active = true
+Instance.new("UICorner", Sb).CornerRadius = UDim.new(0, 8)
 
 local sLy = Instance.new("UIListLayout", Sb)
-sLy.Padding = UDim.new(0, 4)
+sLy.Padding = UDim.new(0, 5)
 sLy.HorizontalAlignment = Enum.HorizontalAlignment.Center
 
 local sPd = Instance.new("UIPadding", Sb)
-sPd.PaddingTop = UDim.new(0, 6)
+sPd.PaddingTop = UDim.new(0, 8)
+sPd.PaddingBottom = UDim.new(0, 8)
 
 local Ct = Instance.new("Frame", M)
-Ct.Size = UDim2.new(1, -164, 1, -55)
-Ct.Position = UDim2.new(0, 152, 0, 42)
+Ct.Size = UDim2.new(1, -170, 1, -58)
+Ct.Position = UDim2.new(0, 158, 0, 44)
 Ct.BackgroundTransparency = 1
 
 local Pgs = {}
@@ -250,38 +281,72 @@ local function cPg(n)
     p.Size = UDim2.new(1, 0, 1, 0)
     p.BackgroundTransparency = 1
     p.Visible = false
-    p.ScrollBarThickness = 2
+    p.ScrollBarThickness = 3
     p.ScrollBarImageColor3 = currentThemeColor
+    p.ElasticBehavior = Enum.ElasticBehavior.WhenScrollable
+    p.ScrollingDirection = Enum.ScrollingDirection.Y
+    p.AutomaticCanvasSize = Enum.AutomaticSize.Y
+    p.CanvasSize = UDim2.new(0, 0, 0, 0)
+    p.Active = true
+    p.ClipsDescendants = true
     
     local ly = Instance.new("UIListLayout", p) 
     ly.Padding = UDim.new(0, 8)
     ly.HorizontalAlignment = Enum.HorizontalAlignment.Center 
-    ly:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function() 
-        p.CanvasSize = UDim2.new(0, 0, 0, ly.AbsoluteContentSize.Y + 15) 
-    end) 
+
+    local pd = Instance.new("UIPadding", p)
+    pd.PaddingTop = UDim.new(0, 4)
+    pd.PaddingBottom = UDim.new(0, 25) -- Safe Buffer Space for Smooth Bottom Scroll
+
     Pgs[n] = p
     return p 
 end
 
 local function cTb(t, n) 
     local b = Instance.new("TextButton", Sb)
-    b.Size = UDim2.new(0.9, 0, 0, 28)
-    b.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
+    b.Size = UDim2.new(0.92, 0, 0, 30)
+    b.BackgroundColor3 = Color3.fromRGB(18, 18, 24)
     b.RichText = true
     b.Text = "<b>" .. t .. "</b>"
     b.TextColor3 = Color3.fromRGB(160, 160, 170)
     b.Font = Enum.Font.GothamBold
-    b.TextSize = 9
+    b.TextSize = 10
     b.BorderSizePixel = 0
-    Instance.new("UICorner", b).CornerRadius = UDim.new(0, 5)
+    Instance.new("UICorner", b).CornerRadius = UDim.new(0, 6)
     
+    local stroke = Instance.new("UIStroke", b)
+    stroke.Thickness = 1
+    stroke.Transparency = 1
+    stroke.Color = currentThemeColor
+
+    b.MouseEnter:Connect(function()
+        if b.TextColor3 ~= currentThemeColor then
+            TS:Create(b, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(28, 28, 38)}):Play()
+            TS:Create(stroke, TweenInfo.new(0.2), {Transparency = 0.5}):Play()
+        end
+    end)
+
+    b.MouseLeave:Connect(function()
+        if b.TextColor3 ~= currentThemeColor then
+            TS:Create(b, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(18, 18, 24)}):Play()
+            TS:Create(stroke, TweenInfo.new(0.2), {Transparency = 1}):Play()
+        end
+    end)
+
     b.MouseButton1Click:Connect(function() 
         Ck()
         for k, v in pairs(Pgs) do v.Visible = (k == n) end 
         for _, x in pairs(Sb:GetChildren()) do 
-            if x:IsA("TextButton") then x.TextColor3 = Color3.fromRGB(160, 160, 170) end 
+            if x:IsA("TextButton") then 
+                x.TextColor3 = Color3.fromRGB(160, 160, 170)
+                TS:Create(x, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(18, 18, 24)}):Play()
+                local str = x:FindFirstChildOfClass("UIStroke")
+                if str then TS:Create(str, TweenInfo.new(0.2), {Transparency = 1}):Play() end
+            end 
         end 
         b.TextColor3 = currentThemeColor 
+        TS:Create(b, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(32, 32, 45)}):Play()
+        TS:Create(stroke, TweenInfo.new(0.2), {Transparency = 0}):Play()
     end) 
     return b 
 end
@@ -301,9 +366,9 @@ local thP = cPg("Themes")
 -- ====================================================================
 local Pr = Instance.new("Frame", hP)
 Pr.Size = UDim2.new(0.95, 0, 0, 115)
-Pr.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
+Pr.BackgroundColor3 = Color3.fromRGB(18, 18, 24)
 Instance.new("UICorner", Pr).CornerRadius = UDim.new(0, 8)
-local pSt = Instance.new("UIStroke", Pr); pSt.Thickness = 1; pSt.Color = Color3.fromRGB(35, 35, 45)
+local pSt = Instance.new("UIStroke", Pr); pSt.Thickness = 1; pSt.Color = Color3.fromRGB(35, 35, 48)
 
 local Av = Instance.new("ImageLabel", Pr)
 Av.Size = UDim2.new(0, 65, 0, 65)
@@ -326,7 +391,7 @@ uT.TextXAlignment = Enum.TextXAlignment.Left
 local Div = Instance.new("Frame", Pr)
 Div.Size = UDim2.new(1, -110, 0, 1)
 Div.Position = UDim2.new(0, 95, 0, 56)
-Div.BackgroundColor3 = Color3.fromRGB(45, 45, 55)
+Div.BackgroundColor3 = Color3.fromRGB(45, 45, 58)
 Div.BorderSizePixel = 0
 
 local liveTime = Instance.new("TextLabel", Pr)
@@ -351,9 +416,9 @@ end)
 
 local sInfo = Instance.new("Frame", hP)
 sInfo.Size = UDim2.new(0.95, 0, 0, 75)
-sInfo.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
+sInfo.BackgroundColor3 = Color3.fromRGB(18, 18, 24)
 Instance.new("UICorner", sInfo).CornerRadius = UDim.new(0, 8)
-local siSt = Instance.new("UIStroke", sInfo); siSt.Thickness = 1; siSt.Color = Color3.fromRGB(35, 35, 45)
+local siSt = Instance.new("UIStroke", sInfo); siSt.Thickness = 1; siSt.Color = Color3.fromRGB(35, 35, 48)
 
 local siLbl = Instance.new("TextLabel", sInfo)
 siLbl.Size = UDim2.new(1, -20, 1, 0)
@@ -421,7 +486,7 @@ sC.BackgroundTransparency = 1
 
 local sB = Instance.new("TextBox", sC)
 sB.Size = UDim2.new(1, 0, 1, 0)
-sB.BackgroundColor3 = Color3.fromRGB(10, 10, 12)
+sB.BackgroundColor3 = Color3.fromRGB(10, 10, 14)
 sB.PlaceholderText = "🔍 Cari script di sini..."
 sB.Text = ""
 sB.Font = Enum.Font.Gotham
@@ -438,7 +503,7 @@ local sBts = {}
 local function aBt(pg, t, u) 
     local b = Instance.new("TextButton", pg)
     b.Size = UDim2.new(0.95, 0, 0, 38)
-    b.BackgroundColor3 = Color3.fromRGB(22, 22, 26)
+    b.BackgroundColor3 = Color3.fromRGB(20, 20, 26)
     b.RichText = true
     b.Text = "<b>" .. t .. "</b>"
     b.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -447,7 +512,7 @@ local function aBt(pg, t, u)
     b.BorderSizePixel = 0
     Instance.new("UICorner", b).CornerRadius = UDim.new(0, 6)
     aG(b) 
-    addHoverEffect(b)
+    addAdvancedHoverEffect(b)
     
     b.MouseButton1Click:Connect(function() 
         Ck()
@@ -477,7 +542,7 @@ aBt(mP, "SC FLY 🚀", "https://pastebin.com/raw/MsL78SwX")
 aBt(mP, "ALL DANCE/EMOTE 💃", "https://raw.githubusercontent.com/7yd7/Hub/refs/heads/Branch/GUIS/Emotes.lua")
 
 -- ====================================================================
--- ⚡ ULTRA RIGID MOVEMENT & PLAYER CORE
+-- ⚡ ULTRA RIGID ANTI-FLING & REAL-TIME AUTO-GHOST SYSTEM
 -- ====================================================================
 local _WS, _JP = 16, 50 
 local Nc, aFling, hA, espA = false, false, false, false
@@ -503,24 +568,48 @@ L.CharacterAdded:Connect(function(c)
     updateHumanoid()
 end)
 
-local function resetPhysics(hrp)
-    hrp.Velocity = Vector3.new(0, 0, 0)
-    hrp.RotVelocity = Vector3.new(0, 0, 0)
-    hrp.AssemblyLinearVelocity = Vector3.new(0, 0, 0)
-    hrp.AssemblyAngularVelocity = Vector3.new(0, 0, 0)
-end
-
-R.Heartbeat:Connect(function()
+-- Real-time Ultra Rigid Anti-Fling + Touch Auto Ghost
+R.Stepped:Connect(function()
     pcall(function()
-        if L.Character and aFling then
-            local hrp = L.Character:FindFirstChild("HumanoidRootPart")
-            if hrp then
-                resetPhysics(hrp)
-                if hrp.AssemblyLinearVelocity.Magnitude > 75 or hrp.AssemblyAngularVelocity.Magnitude > 75 then
-                    hrp.Anchored = true
-                    resetPhysics(hrp)
-                    task.wait(0.1)
-                    hrp.Anchored = false
+        local char = L.Character
+        if not char then return end
+        
+        local hum = char:FindFirstChildOfClass("Humanoid")
+        local hrp = char:FindFirstChild("HumanoidRootPart")
+
+        -- Force Movement Speeds
+        if hum and hum.Health > 0 then
+            if hum.WalkSpeed ~= _WS then hum.WalkSpeed = _WS end
+            if hum.JumpPower ~= _JP then hum.UseJumpPower = true; hum.JumpPower = _JP end
+            if bhopActive and hum.FloorMaterial ~= Enum.Material.Air then
+                hum:ChangeState(Enum.HumanoidStateType.Jumping)
+            end
+        end
+
+        -- Ultra Rigid Anti-Fling Logic
+        if aFling and hrp then
+            if hrp.AssemblyLinearVelocity.Magnitude > 60 or hrp.AssemblyAngularVelocity.Magnitude > 60 then
+                hrp.AssemblyLinearVelocity = Vector3.new(0, 0, 0)
+                hrp.AssemblyAngularVelocity = Vector3.new(0, 0, 0)
+            end
+
+            for _, player in pairs(P:GetPlayers()) do
+                if player ~= L and player.Character then
+                    local pHrp = player.Character:FindFirstChild("HumanoidRootPart")
+                    if pHrp and (pHrp.Position - hrp.Position).Magnitude <= 10 then
+                        for _, part in pairs(char:GetDescendants()) do
+                            if part:IsA("BasePart") then
+                                part.CanCollide = false
+                            end
+                        end
+                        break
+                    end
+                end
+            end
+        elseif Nc then
+            for _, part in pairs(char:GetDescendants()) do
+                if part:IsA("BasePart") then
+                    part.CanCollide = false
                 end
             end
         end
@@ -531,35 +620,9 @@ U.JumpRequest:Connect(function()
     if infJumpActive then
         pcall(function()
             local hum = L.Character and L.Character:FindFirstChildOfClass("Humanoid")
-            if hum then
-                hum:ChangeState(Enum.HumanoidStateType.Jumping)
-            end
+            if hum then hum:ChangeState(Enum.HumanoidStateType.Jumping) end
         end)
     end
-end)
-
-R.RenderStepped:Connect(function() 
-    pcall(function() 
-        local c = L.Character 
-        if c then 
-            local h = c:FindFirstChildOfClass("Humanoid") 
-            if h and h.Health > 0 then 
-                if h.WalkSpeed ~= _WS then h.WalkSpeed = _WS end 
-                if h.JumpPower ~= _JP then 
-                    h.UseJumpPower = true 
-                    h.JumpPower = _JP 
-                end 
-                if bhopActive and h.FloorMaterial ~= Enum.Material.Air then
-                    h:ChangeState(Enum.HumanoidStateType.Jumping)
-                end
-            end 
-            if Nc or aFling then 
-                for _, v in pairs(c:GetDescendants()) do 
-                    if v:IsA("BasePart") then v.CanCollide = false end 
-                end 
-            end 
-        end 
-    end) 
 end)
 
 -- Hitbox Adjuster Loop
@@ -674,7 +737,7 @@ local function cSl(pg, n, mi, ma, it, cb)
     local br = Instance.new("Frame", f)
     br.Size = UDim2.new(1, 0, 0, 8)
     br.Position = UDim2.new(0, 0, 0, 24)
-    br.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
+    br.BackgroundColor3 = Color3.fromRGB(28, 28, 36)
     Instance.new("UICorner", br).CornerRadius = UDim.new(0, 4) 
     
     local fl = Instance.new("Frame", br)
@@ -727,7 +790,7 @@ local function cTgl(pg, t, default, cb)
     local state = default or false
     local b = Instance.new("TextButton", pg)
     b.Size = UDim2.new(0.95, 0, 0, 36)
-    b.BackgroundColor3 = Color3.fromRGB(22, 22, 26)
+    b.BackgroundColor3 = Color3.fromRGB(20, 20, 26)
     b.RichText = true
     b.Text = "<b>" .. t .. " : <font color='" .. (state and "rgb(0,255,150)'>[ ON ]" or "rgb(255,50,50)'>[ OFF ]") .. "</font></b>"
     b.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -735,7 +798,7 @@ local function cTgl(pg, t, default, cb)
     b.TextSize = 11
     b.BorderSizePixel = 0
     Instance.new("UICorner", b).CornerRadius = UDim.new(0, 6)
-    addHoverEffect(b)
+    addAdvancedHoverEffect(b)
     
     b.MouseButton1Click:Connect(function()
         Ck()
@@ -749,7 +812,7 @@ end
 local function sBt(pg, t, fc) 
     local b = Instance.new("TextButton", pg)
     b.Size = UDim2.new(0.95, 0, 0, 36)
-    b.BackgroundColor3 = Color3.fromRGB(22, 22, 26)
+    b.BackgroundColor3 = Color3.fromRGB(20, 20, 26)
     b.RichText = true
     b.Text = "<b>" .. t .. "</b>"
     b.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -758,7 +821,7 @@ local function sBt(pg, t, fc)
     b.BorderSizePixel = 0
     Instance.new("UICorner", b).CornerRadius = UDim.new(0, 6)
     aG(b) 
-    addHoverEffect(b)
+    addAdvancedHoverEffect(b)
     b.MouseButton1Click:Connect(function() Ck(); fc() end)
     return b
 end
@@ -1189,29 +1252,8 @@ sBt(vP, "📼 VHS / Vintage Classic", applyVHS)
 sBt(vP, "🔄 Reset Visual (Semula)", resetVisuals)
 
 -- ====================================================================
--- 🖱️ WINDOW DRAGGING & TAB NAVIGATION CORE
+-- 🖱️ TAB NAVIGATION INITIALIZATION
 -- ====================================================================
-local dT, dS, sP 
-local function uI(i) 
-    local d = i.Position - dS 
-    M.Position = UDim2.new(sP.X.Scale, sP.X.Offset + d.X, sP.Y.Scale, sP.Y.Offset + d.Y) 
-end
-
-TB.InputBegan:Connect(function(i) 
-    if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then 
-        dT = true; dS = i.Position; sP = M.Position 
-        i.Changed:Connect(function() 
-            if i.UserInputState == Enum.UserInputState.End then dT = false end 
-        end) 
-    end 
-end)
-
-U.InputChanged:Connect(function(i) 
-    if dT and (i.UserInputType == Enum.UserInputType.MouseMovement or i.UserInputType == Enum.UserInputType.Touch) then 
-        uI(i) 
-    end 
-end)
-
 local hTab = cTb("HOME 🏠", "Home")
 cTb("RULES 📜", "Rules")
 cTb("MAINSCRIP ⚡", "MainScrip")

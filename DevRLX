@@ -1,5 +1,5 @@
 -- ====================================================================
--- 🕊️ RLX HUB - NEXT-GEN EXECUTIVE EDITION (SMOOTH SCROLLING FIXED)
+-- 🕊️ RLX HUB - NEXT-GEN EXECUTIVE EDITION (FIXED MOVEMENT & RIGID ANTI-FLING)
 -- Developed by AnjaszRelaxz
 -- ====================================================================
 
@@ -245,7 +245,7 @@ C:GetPropertyChangedSignal("ViewportSize"):Connect(uL)
 Tg.MouseButton1Click:Connect(function() Ck(); M.Visible = not M.Visible end) 
 CB.MouseButton1Click:Connect(function() Ck(); M.Visible = false end)
 
--- Sidebar Navigation (With Fixed Smooth Scrolling)
+-- Sidebar Navigation
 local Sb = Instance.new("ScrollingFrame", M)
 Sb.Name = "Sidebar"
 Sb.Size = UDim2.new(0, 135, 1, -58)
@@ -296,7 +296,7 @@ local function cPg(n)
 
     local pd = Instance.new("UIPadding", p)
     pd.PaddingTop = UDim.new(0, 4)
-    pd.PaddingBottom = UDim.new(0, 25) -- Safe Buffer Space for Smooth Bottom Scroll
+    pd.PaddingBottom = UDim.new(0, 25)
 
     Pgs[n] = p
     return p 
@@ -542,13 +542,13 @@ aBt(mP, "SC FLY 🚀", "https://pastebin.com/raw/MsL78SwX")
 aBt(mP, "ALL DANCE/EMOTE 💃", "https://raw.githubusercontent.com/7yd7/Hub/refs/heads/Branch/GUIS/Emotes.lua")
 
 -- ====================================================================
--- ⚡ ULTRA RIGID ANTI-FLING & REAL-TIME AUTO-GHOST SYSTEM
+-- ⚡ FIXED PLAYER MOVEMENT & ULTRA STRICT ANTI-FLING CORE
 -- ====================================================================
 local _WS, _JP = 16, 50 
 local Nc, aFling, hA, espA = false, false, false, false
 local infJumpActive, bhopActive = false, false
 
-local function updateHumanoid()
+local function applyMovement()
     pcall(function()
         local char = L.Character
         if char then
@@ -557,27 +557,42 @@ local function updateHumanoid()
                 hum.WalkSpeed = _WS
                 hum.UseJumpPower = true
                 hum.JumpPower = _JP
+                if hum:HasAttribute("JumpHeight") or pcall(function() return hum.JumpHeight end) then
+                    hum.JumpHeight = (_JP / 50) * 7.2
+                end
             end
         end
     end)
 end
 
-L.CharacterAdded:Connect(function(c)
-    c:WaitForChild("Humanoid")
-    task.wait(0.3)
-    updateHumanoid()
-end)
+-- Force Movement Lock Connection
+local function bindCharacter(char)
+    if not char then return end
+    local hum = char:WaitForChild("Humanoid", 5)
+    if hum then
+        applyMovement()
+        hum:GetPropertyChangedSignal("WalkSpeed"):Connect(function()
+            if hum.WalkSpeed ~= _WS then hum.WalkSpeed = _WS end
+        end)
+        hum:GetPropertyChangedSignal("JumpPower"):Connect(function()
+            if hum.JumpPower ~= _JP then hum.JumpPower = _JP end
+        end)
+    end
+end
 
--- Real-time Ultra Rigid Anti-Fling + Touch Auto Ghost
+if L.Character then bindCharacter(L.Character) end
+L.CharacterAdded:Connect(bindCharacter)
+
+-- Ultra Strict Real-time Loop (Anti-Fling + Ghost Collisions)
 R.Stepped:Connect(function()
     pcall(function()
         local char = L.Character
         if not char then return end
-        
+
         local hum = char:FindFirstChildOfClass("Humanoid")
         local hrp = char:FindFirstChild("HumanoidRootPart")
 
-        -- Force Movement Speeds
+        -- Constant Movement Override
         if hum and hum.Health > 0 then
             if hum.WalkSpeed ~= _WS then hum.WalkSpeed = _WS end
             if hum.JumpPower ~= _JP then hum.UseJumpPower = true; hum.JumpPower = _JP end
@@ -586,23 +601,32 @@ R.Stepped:Connect(function()
             end
         end
 
-        -- Ultra Rigid Anti-Fling Logic
+        -- Strictly Enforced Anti-Fling & Proximity Anti-Touch Ghost
         if aFling and hrp then
-            if hrp.AssemblyLinearVelocity.Magnitude > 60 or hrp.AssemblyAngularVelocity.Magnitude > 60 then
+            -- Reset Abnormal Rotational Velocity & Linear Fling Impulse
+            if hrp.AssemblyLinearVelocity.Magnitude > 45 then
                 hrp.AssemblyLinearVelocity = Vector3.new(0, 0, 0)
+            end
+            if hrp.AssemblyAngularVelocity.Magnitude > 45 then
                 hrp.AssemblyAngularVelocity = Vector3.new(0, 0, 0)
             end
 
+            -- Instant Collision Drop when players are near avatar (<12 studs)
+            local nearbyPlayerDetected = false
             for _, player in pairs(P:GetPlayers()) do
                 if player ~= L and player.Character then
                     local pHrp = player.Character:FindFirstChild("HumanoidRootPart")
-                    if pHrp and (pHrp.Position - hrp.Position).Magnitude <= 10 then
-                        for _, part in pairs(char:GetDescendants()) do
-                            if part:IsA("BasePart") then
-                                part.CanCollide = false
-                            end
-                        end
+                    if pHrp and (pHrp.Position - hrp.Position).Magnitude <= 12 then
+                        nearbyPlayerDetected = true
                         break
+                    end
+                end
+            end
+
+            if nearbyPlayerDetected then
+                for _, part in pairs(char:GetDescendants()) do
+                    if part:IsA("BasePart") then
+                        part.CanCollide = false
                     end
                 end
             end
@@ -773,12 +797,12 @@ end
 
 cSl(pP, "WalkSpeed", 16, 250, 16, function(v) 
     _WS = v
-    updateHumanoid() 
+    applyMovement() 
 end) 
 
 cSl(pP, "JumpPower", 50, 350, 50, function(v) 
     _JP = v
-    updateHumanoid() 
+    applyMovement() 
 end)
 
 cSl(pP, "Camera FOV", 70, 120, 70, function(v)
@@ -827,7 +851,7 @@ local function sBt(pg, t, fc)
 end
 
 cTgl(pP, "Noclip", false, function(s) Nc = s; ShowNotif("Player", "Noclip: " .. tostring(s)) end)
-cTgl(pP, "Anti-Fling", false, function(s) aFling = s; ShowNotif("Player", "Anti-Fling: " .. tostring(s)) end)
+cTgl(pP, "Strict Anti-Fling", false, function(s) aFling = s; ShowNotif("Player", "Anti-Fling: " .. tostring(s)) end)
 cTgl(pP, "Hitbox Expand", false, function(s) hA = s; ShowNotif("Player", "Hitbox: " .. tostring(s)) end)
 cTgl(pP, "Player Chams/ESP", false, function(s) espA = s; mESP(); ShowNotif("Player", "ESP: " .. tostring(s)) end)
 cTgl(pP, "Infinite Jump", false, function(s) infJumpActive = s; ShowNotif("Player", "Infinite Jump: " .. tostring(s)) end)
